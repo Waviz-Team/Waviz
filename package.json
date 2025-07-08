@@ -1,0 +1,31 @@
+{
+  "name": "waviz",
+  "version": "1.0.0",
+  "description": "Modern, modular React library for audio and signal visualization.",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc",
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OSP1-CSVJ/Waviz.git"
+  },
+  "keywords": ["audio", "visualization", "react", "web audio API", "canvas"],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OSP1-CSVJ/Waviz/issues"
+  },
+  "homepage": "https://github.com/OSP1-CSVJ/Waviz#readme",
+  "dependencies": {
+    "react": "^19.1.0"
+  },
+  "devDependencies": {
+    "vite": "^7.0.3"
+  }
+}
