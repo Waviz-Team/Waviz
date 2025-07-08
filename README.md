@@ -11,9 +11,9 @@ Waviz provides plug-and-play React components for audio visualization, including
 ⸻
 
 ✨ Features
-	•	🎵 File reading
-	•	📊 Audio visualization (waveform and bars)
-	•	🎛️ Component presets and styling options
+* 🎵 File reading
+* 📊 Audio visualization (waveform and bars)
+* 🎛️ Component presets and styling options
 
 ⸻
 
@@ -21,15 +21,17 @@ Waviz provides plug-and-play React components for audio visualization, including
 
 Waviz uses a modular architecture with single-responsibility function nodes:
 
-	•	✅ Clean separation of concerns
-	•	🔄 Easy to extend and maintain
-	•	🧩 Built for composability
+* ✅ Clean separation of concerns
+* 🔄 Easy to extend and maintain
+* 🧩 Built for composability
 
 ⸻
 
 📦 Installation (coming soon)
 
+```
 npm install waviz
+```
 
 ⸻
 
