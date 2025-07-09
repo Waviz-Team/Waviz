@@ -9,13 +9,20 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/OSP1-CSVJ/Waviz.git"
   },
-  "keywords": ["audio", "visualization", "react", "web audio API", "canvas"],
+  "keywords": [
+    "audio",
+    "visualization",
+    "react",
+    "web audio API",
+    "canvas"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -23,7 +30,8 @@
   },
   "homepage": "https://github.com/OSP1-CSVJ/Waviz#readme",
   "dependencies": {
-    "react": "^19.1.0"
+    "react": "^19.1.0",
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
     "vite": "^7.0.3"
