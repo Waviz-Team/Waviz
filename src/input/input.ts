@@ -1,9 +1,11 @@
+import React from 'react';
+
 class Input {
     file: File | null;
     audioContext: AudioContext | null;
     sourceNode: MediaElementAudioSourceNode | MediaStreamAudioSourceNode | null;
     onAudioReady: ((source: AudioNode) => void) | null;
-
+    
     constructor(onAudioReady?: (source: AudioNode) => void) {
         this.file = null;
         this.audioContext = null;
@@ -11,18 +13,26 @@ class Input {
     }
 
     //* File Inputs
-    loadAudioFile = (event) => {
-        const file = event.target.files[0];
+    loadAudioFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files[0] ;
+        //TODO: include validation for mp3 here maybe? or in <input type="file" accept = ".mp3">
+        if (!file)  return;
 
-        if (file) {
-            this.file = file;
-            const audio = new Audio();
-            audio.src = URL.createObjectURL(file);
-            audio.crossOrigin = "anonymous"; // Needed for CORS. Allows Web Audio API access with no credentials sent
-            audio.controls = true; //! Can change. For now, set to true to view audio player controls (play/pause/volume slider).
+        const validType = ['audio/mp3', 'audio/mpeg']   
 
-            this.connectToAudioElement(audio)
+        if(!validType.includes(file.type)) {
+          alert('Pls select an MP3 file!')
+          return
         }
+
+        this.file = file;
+        const audio = new Audio();
+        audio.src = URL.createObjectURL(file);
+        audio.crossOrigin = "anonymous"; // Needed for CORS. Allows Web Audio API access with no credentials sent
+        audio.controls = true; //! Can change. For now, set to true to view audio player controls (play/pause/volume slider).
+
+        this.connectToAudioElement(audio)
+        
     }
 
     //* Audio elements from Web Audio API
@@ -61,3 +71,5 @@ class Input {
         }
     }
 }
+
+export default Input;
