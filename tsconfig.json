@@ -1,6 +1,9 @@
-// {
-//   "compilerOptions": {
-//     "target": "es2022",
-//     "lib": ["es2022", "dom", "dom.iterable"]
-//   }
-// }
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "jsx": "react", // or "react" i?
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["react", "react-dom"]
+  }
+}

@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ChangeEvent } from 'react';
 
 class Input {
     file: File | null;
@@ -13,8 +14,8 @@ class Input {
     }
 
     //* File Inputs
-    loadAudioFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files[0] ;
+    loadAudioFile = (event: ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
         //TODO: include validation for mp3 here maybe? or in <input type="file" accept = ".mp3">
         if (!file)  return;
 

@@ -15,7 +15,13 @@
     "type": "git",
     "url": "git+https://github.com/OSP1-CSVJ/Waviz.git"
   },
-  "keywords": ["audio", "visualization", "react", "web audio API", "canvas"],
+  "keywords": [
+    "audio",
+    "visualization",
+    "react",
+    "web audio API",
+    "canvas"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -26,6 +32,8 @@
     "react": "^19.1.0"
   },
   "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "vite": "^7.0.3"
   }
 }
