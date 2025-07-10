@@ -57,6 +57,7 @@ class AudioAnalyzer {
                 dataArray: this.getFrequencyData(),
                 bufferLength: this.bufferLength
             }
+            console.log(this.frequencyDataArray);
             return freqBuffObject;
         }
         return null;

@@ -55,6 +55,17 @@ class Input {
         }
     }
 
+    // Something about HTML
+    connectToHTMLElement = (audioEl)=>{
+        if (!audioEl){
+            return
+        }
+
+        audioEl.crossOrigin = "anonymous"
+
+        this.connectToAudioElement(audioEl)
+    }
+
     getSourceNode() {
         return this.sourceNode;
     }
