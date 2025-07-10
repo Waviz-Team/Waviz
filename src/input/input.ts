@@ -45,7 +45,7 @@ class Input {
             this.sourceNode = this.audioContext.createMediaElementSource(audioEl); // Source node to bridge between html and WebAudioAPI
             // console.log(source);
             
-            this.sourceNode.connect(this.audioContext.destination); // Needed to connect to destination so audio still plays normally (since web Audio API hijacks signal). (.connect) comes from audioNode MediaElementSourceNode node
+            //! this.sourceNode.connect(this.audioContext.destination); // Needed to connect to destination so audio still plays normally (since web Audio API hijacks signal). (.connect) comes from audioNode MediaElementSourceNode node
             
             if (this.onAudioReady) { // Indicate audio source is ready for analysis
                 this.onAudioReady(this.sourceNode) // If callback function exists, will pass sourceNode to analyser
@@ -56,12 +56,21 @@ class Input {
     }
 
     // Something about HTML
-    connectToHTMLElement = (audioEl)=>{
+    connectToHTMLElement = (audioEl) => {
         if (!audioEl){
             return
         }
 
         audioEl.crossOrigin = "anonymous"
+
+        // Auto-resume audio context
+        audioEl.addEventListener('play', () => {
+            if (this.audioContext.state === 'suspended') {
+                this.audioContext.resume().then(() => {
+                    console.log('Input.connectToHTML has forcibly resumed play')
+                })
+            }
+        })
 
         this.connectToAudioElement(audioEl)
     }
