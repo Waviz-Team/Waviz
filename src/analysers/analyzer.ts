@@ -19,12 +19,13 @@ class AudioAnalyzer {
 
         this.analyserNode.fftSize = 2048; //TODO: Maybe allow users to set this (common vals: 256, 512, 1024, 2048+)
         this.bufferLength = this.analyserNode.frequencyBinCount; // = 1/2 of fftsize
-        this.dataArray = new Uint8Array(this.bufferLength); // Array of 128 freq values (or bins)
+        this.dataArray = new Uint8Array(this.bufferLength); // Array of bufferlength freq values (or bins)
 
         this.frequencyDataArray = new Uint8Array(this.bufferLength); 
         this.timeDomainDataArray = new Uint8Array(this.bufferLength); 
 
         sourceNode.connect(this.analyserNode);
+        this.analyserNode.connect(audioContext.destination); //! This line was missing
     }
 
     getFrequencyData() {
@@ -57,6 +58,7 @@ class AudioAnalyzer {
                 dataArray: this.getFrequencyData(),
                 bufferLength: this.bufferLength
             }
+            console.log(this.frequencyDataArray);
             return freqBuffObject;
         }
         return null;
