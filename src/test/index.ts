@@ -10,21 +10,31 @@ wavizTest.connectToHTMLElement(audio);
 const liveData = {
   get dataArray() {
     //? Get is interesting...
-    const buffer = wavizTest.getTimeBuffer();
+    const buffer = wavizTest.getFreqBuffer();
     return buffer ? buffer.dataArray : new Uint8Array(0);
   },
   get bufferLength() {
-    const buffer = wavizTest.getTimeBuffer();
+    const buffer = wavizTest.getFreqBuffer();
     return buffer ? buffer.bufferLength : 0;
   },
 };
 
+
+
+
+
+
 const waveVis = new Visualizer(canvas, liveData);
 
 audio.addEventListener('play', () => {
-  // console.log('Buffer length:', liveData.bufferLength);
-  // console.log('Data array length:', liveData.dataArray.length);
-  // console.log('Audio context state:', wavizTest.input.audioContext?.state);
-  // console.log('Data array sample:', liveData.dataArray.slice(0, 10));
-  waveVis.wave();
+  const optionsWave = { lineWidth: 3, lineColor: 'blue', multipliyer: 3 };
+
+  const optionsBars = { barWidth: 10, fillStyle: 'blue', numBars: 20 };
+
+  waveVis.bars(optionsBars);
 });
+
+audio.addEventListener('pause', () => {
+  waveVis.stop();
+});
+waveVis.stop();
