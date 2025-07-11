@@ -1,3 +1,4 @@
+
 interface Visualizer {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
