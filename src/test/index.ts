@@ -10,11 +10,11 @@ wavizTest.connectToHTMLElement(audio);
 const liveData = {
   get dataArray() {
     //? Get is interesting...
-    const buffer = wavizTest.getTimeBuffer();
+    const buffer = wavizTest.audioAnalyzer.getTimeBuffer();
     return buffer ? buffer.dataArray : new Uint8Array(0);
   },
   get bufferLength() {
-    const buffer = wavizTest.getTimeBuffer();
+    const buffer = wavizTest.audioAnalyzer.getTimeBuffer();
     return buffer ? buffer.bufferLength : 0;
   },
 };
