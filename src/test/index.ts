@@ -26,5 +26,5 @@ audio.addEventListener('play', () => {
   // console.log('Data array length:', liveData.dataArray.length);
   // console.log('Audio context state:', wavizTest.input.audioContext?.state);
   // console.log('Data array sample:', liveData.dataArray.slice(0, 10));
-  waveVis.wave();
+  waveVis.wave()
 });
