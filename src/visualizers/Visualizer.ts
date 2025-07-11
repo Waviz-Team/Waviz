@@ -1,4 +1,3 @@
-
 interface Visualizer {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
@@ -32,7 +31,8 @@ class Visualizer {
     for (let i = 0; i < bufferLength; i++) {
       // Normalize values
       const v = dataArray[i] / 256;
-      const y = v * this.canvas.height;
+      const y =
+        this.canvas.height / 2 + (v - 0.5) * this.canvas.height * multipliyer;
 
       if (i === 0) {
         this.ctx.moveTo(x, y);
@@ -45,7 +45,9 @@ class Visualizer {
     this.ctx.stroke();
 
     // Re-run draw cycle on next anumation frame
-    requestAnimationFrame(this.wave.bind(this, lineWidth, lineColor, multipliyer));
+    requestAnimationFrame(
+      this.wave.bind(this, lineWidth, lineColor, multipliyer)
+    );
   }
 }
 
