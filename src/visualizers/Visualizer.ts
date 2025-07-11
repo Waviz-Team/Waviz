@@ -1,23 +1,61 @@
-
-interface Visualizer {
-  canvas: HTMLCanvasElement;
-  ctx: CanvasRenderingContext2D;
-  dataArray: Uint8Array;
-  bufferLength: number;
-  analyser: any;
-}
+type VisualizationType = 'wave' | 'bars' | 'dots' | 'spectrum';
 
 class Visualizer {
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  analyser: any;
+  currentType: VisualizationType = 'wave';
+  animationId: number | null = null;
+  isRunning: boolean = false;
+
   constructor(canvas, analyser) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.analyser = analyser;
   }
 
+  //* API for starting/stopping
+  start(type: VisualizationType = 'wave') {
+    this.currentType = type;
+    this.isRunning = true;
+    this.animate();
+  }
+
+  stop() {
+    this.isRunning = false;
+    if (this.animationId) {
+      cancelAnimationFrame(this.animationId);
+      this.animationId = null;
+    }
+  }
+
+  switchTo(type: VisualizationType) {
+    this.currentType = type;
+  }
+
+  animate() {
+    if (!this.isRunning) return;
+    
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    switch (this.currentType) { // Switched from if statements to switch because it's apparantly faster once we have more than 5 items than if/else
+      case 'wave':
+        this.wave();
+        break;
+      case 'bars':
+        this.bars();
+    }
+
+    this.animationId = requestAnimationFrame(() => this.animate()); // Animation frame request moved here for more control/modularity
+  }
+
+  //* Visualizers
   wave() {
     // Get live data
-    const dataArray = this.analyser.dataArray;
+    const dataArray = this.analyser.timeData;
     const bufferLength = this.analyser.bufferLength;
+
+    if (!dataArray || bufferLength === 0) return; // Sanitation check
 
     // Setup canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -43,9 +81,17 @@ class Visualizer {
     }
 
     this.ctx.stroke();
+  }
 
-    // Re-run draw cycle on next anumation frame
-    requestAnimationFrame(this.wave.bind(this));
+  bars() {}
+
+  //* Methods to start visualizations
+  startWave() {
+    this.start('wave');
+  }
+
+  startBars() {
+    this.start('bars');
   }
 }
 

@@ -37,7 +37,7 @@ class Input {
     }
 
     //* Audio elements from Web Audio API
-    connectToAudioElement = (audioEl) => {
+    private connectToAudioElement = (audioEl) => {
         if (!audioEl) return;
         
         try { // Start with Web Audio Context to set up processing environment
