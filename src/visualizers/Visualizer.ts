@@ -1,10 +1,10 @@
-
 interface Visualizer {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   dataArray: Uint8Array;
   bufferLength: number;
   analyser: any;
+  animationLoop:any;
 }
 
 class Visualizer {
@@ -12,17 +12,25 @@ class Visualizer {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.analyser = analyser;
+    this.animationLoop;
   }
 
-  wave() {
+  wave(options?) {
+    // User Style options
+    const {
+      lineWidth = 2,
+      lineColor = '#E34AB0',
+      multipliyer = 1,
+    } = options || {};
+
     // Get live data
     const dataArray = this.analyser.dataArray;
     const bufferLength = this.analyser.bufferLength;
 
     // Setup canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeStyle = 'red';
+    this.ctx.lineWidth = lineWidth;
+    this.ctx.strokeStyle = lineColor;
 
     // Draw waveform
     this.ctx.beginPath();
@@ -32,7 +40,8 @@ class Visualizer {
     for (let i = 0; i < bufferLength; i++) {
       // Normalize values
       const v = dataArray[i] / 256;
-      const y = v * this.canvas.height;
+      const y =
+        this.canvas.height / 2 + (v - 0.5) * this.canvas.height * multipliyer;
 
       if (i === 0) {
         this.ctx.moveTo(x, y);
@@ -45,7 +54,43 @@ class Visualizer {
     this.ctx.stroke();
 
     // Re-run draw cycle on next anumation frame
-    requestAnimationFrame(this.wave.bind(this));
+    this.animationLoop = requestAnimationFrame(this.wave.bind(this, options));
+  }
+
+  bars(options?) {
+    // User Style options
+    const {
+      barWidth = 20,
+      fillStyle = '#E34AB0',
+      numBars = 10,
+    } = options || {};
+
+    // Get live data
+    const dataArray = this.analyser.dataArray;
+    const bufferLength = this.analyser.bufferLength;
+
+    // Setup canvas
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.fillStyle = fillStyle;
+
+    // Draw bars
+    const bars = this.canvas.width / numBars;
+    let x = 0;
+
+    for (let i = 0; i < bufferLength; i += Math.floor(bufferLength / numBars)) {
+      // Normalize values
+      const v = dataArray[i] / 256;
+      const y = v * this.canvas.height;
+      this.ctx.fillRect(x, this.canvas.height, barWidth, -y);
+
+      x += bars;
+    }
+    // Re-run draw cycle on next anumation frame
+    this.animationLoop = requestAnimationFrame(this.bars.bind(this, options));
+  }
+
+  stop() {
+    cancelAnimationFrame(this.animationLoop);
   }
 }
 
