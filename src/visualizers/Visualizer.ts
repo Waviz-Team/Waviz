@@ -14,15 +14,15 @@ class Visualizer {
     this.analyser = analyser;
   }
 
-  wave() {
+  wave(lineWidth = 2, lineColor = '#E34AB0', multipliyer = 1) {
     // Get live data
     const dataArray = this.analyser.dataArray;
     const bufferLength = this.analyser.bufferLength;
 
     // Setup canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeStyle = 'red';
+    this.ctx.lineWidth = lineWidth;
+    this.ctx.strokeStyle = lineColor;
 
     // Draw waveform
     this.ctx.beginPath();
@@ -45,7 +45,7 @@ class Visualizer {
     this.ctx.stroke();
 
     // Re-run draw cycle on next anumation frame
-    requestAnimationFrame(this.wave.bind(this));
+    requestAnimationFrame(this.wave.bind(this, lineWidth, lineColor, multipliyer));
   }
 }
 
