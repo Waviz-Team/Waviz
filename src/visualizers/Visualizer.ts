@@ -5,7 +5,7 @@ class Visualizer {
   ctx: CanvasRenderingContext2D;
   analyser: any;
   currentType: VisualizationType = 'wave';
-  animationId: number | null = null;
+  animationId: number | null = null; // Kill switch for animation loop. Without this, we lose ref and animation runs forever
   isRunning: boolean = false;
 
   constructor(canvas, analyser) {
@@ -46,7 +46,7 @@ class Visualizer {
         this.bars();
     }
 
-    this.animationId = requestAnimationFrame(() => this.animate()); // Animation frame request moved here for more control/modularity
+    this.animationId = requestAnimationFrame(() => this.animate()); // Animation frame request moved here for more control/modularity. Needed like this so that I can grab the number for cancellation without running animationframe again. 
   }
 
   //* Visualizers

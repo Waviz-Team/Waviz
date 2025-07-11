@@ -3,6 +3,7 @@ import AudioAnalyzer from "../analysers/analyzer";
 import Visualizer from "../visualizers/Visualizer";
 
 type VisualizationType = 'wave' | 'bars' | 'spectrum';
+type AudioSourceType = HTMLAudioElement | MediaStream | 'microphone' | 'screenAudio' | string;
 
 class Waviz {
     input: Input;
@@ -10,77 +11,49 @@ class Waviz {
     visualizer: Visualizer | null = null;
     isInitialized: boolean = false;
 
-    constructor(canvas?: HTMLCanvasElement) { // Optional canvas passthrough for params
+    constructor(canvas?: HTMLCanvasElement, audioSource?: AudioSourceType) { // Optional canvas passthrough for params
         this.audioAnalyzer = new AudioAnalyzer();
         this.input = new Input((sourceNode) => { // needed because setupAudioAnalysis needs to wait for async audio source
             this.setupAudioAnalysis(sourceNode);
         });
         
         if (canvas) {
-            this.initializeVisualizer(canvas);
+            this.visualizer = new Visualizer(canvas, this.audioAnalyzer);
+        }
+
+        if (audioSource) {
+            this.input.connectAudioSource(audioSource);
         }
     }
 
     //* WAVIZ setup methods
-    private setupAudioAnalysis(sourceNode) { // Method to setup the Waviz audio analysis
+    private setupAudioAnalysis(sourceNode) { // Method to setup the Waviz audio analysis. Needed here because of async calls expected in Input. If moved up, sourceNode won't exist in time since constructor runs first.
         const audioContext = this.input.getAudioContext();
-
-        if (!audioContext) { // Error handler for missing Audio Context
-            console.error('Audio Context not found');
-            return;
-        }
-
-        if (audioContext.state === 'suspended') { //! Perhaps not needed. Testing required. 
-            audioContext.resume().then(() => {
-                console.log('DEV: Audio context force started')
-            })
-        }
 
         // Analysis start
         this.audioAnalyzer.startAnalysis(audioContext, sourceNode);
         this.isInitialized = true;
     }
 
-    private initializeVisualizer(canvas) { // Method to setup the Visualizer
-        const analyzer = this.audioAnalyzer; // SUPER IMPORTANT TO CAPTURE DATA
-
-        const liveData = {
-            get timeData() { // Getter properties to execute function each time these are accessed so that data is always fresh
-                const buffer = analyzer.getTimeBuffer();
-                return buffer ? buffer.dataArray : new Uint8Array(0); // Fallback needed so that undefined is not passed and visualizer can continue even when there's no data
-            },
-            get bufferLength() {
-                const buffer = analyzer.getTimeBuffer();
-                return buffer ? buffer.bufferLength : 0;
-            },
-            get freqData() {
-                const buffer = analyzer.getFreqBuffer();
-                return buffer ? buffer.dataArray : new Uint8Array(0);
-            }
-        };
-
-        this.visualizer = new Visualizer(canvas, liveData);
-    }
-
-    debugInfo() {
-        if (!this.isInitialized || !this.audioAnalyzer) {
-            return {
-                error: 'initialization debug',
-                isInitialized: this.isInitialized,
-                hasAudioAnalyzer: !!this.audioAnalyzer // To convert value into boolean
-            };
-        }
+    // debugInfo() {
+    //     if (!this.isInitialized || !this.audioAnalyzer) {
+    //         return {
+    //             error: 'initialization debug',
+    //             isInitialized: this.isInitialized,
+    //             hasAudioAnalyzer: !!this.audioAnalyzer // To convert value into boolean
+    //         };
+    //     }
     
-        const timeBuffer = this.audioAnalyzer.getTimeBuffer();
-        const freqBuffer = this.audioAnalyzer.getFreqBuffer();
+    //     // const timeBuffer = this.audioAnalyzer.getTimeBuffer();
+    //     // const freqBuffer = this.audioAnalyzer.getFreqBuffer();
     
-        return {
-            bufferLength: timeBuffer?.bufferLength || 0,
-            timeDataLength: timeBuffer?.dataArray?.length || 0,
-            freqDataLength: freqBuffer?.dataArray?.length || 0,
-            audioContextState: this.input.getAudioContext()?.state
-        };
-    }
+    //     return {
+    //         bufferLength: timeBuffer?.bufferLength || 0,
+    //         timeDataLength: timeBuffer?.dataArray?.length || 0,
+    //         freqDataLength: freqBuffer?.dataArray?.length || 0,
+    //         audioContextState: this.input.getAudioContext()?.state
+    //     };
+    // }
 
     //* AudioAnalyzer delegator
     getFrequencyData() {
@@ -94,8 +67,7 @@ class Waviz {
     }
 
     //* Input Delegator
-    connectToHTMLElement = (audioEl) => this.input.connectToHTMLElement(audioEl);
-    loadAudioFile = (event) => this.input.loadAudioFile(event);
+    connectAudio = (audioSource: AudioSourceType) => this.input.connectToHTMLElement(audioSource);
     cleanup() {
         this.input.cleanup();
         this.isInitialized = false;
@@ -115,7 +87,8 @@ class Waviz {
     }
 
     //* Convenience Methods
-    wave() {
+    async wave() { //! JANKY FIX. WAIT FOR VIS CODE TO PLUG IN ASYNC
+        await this.input.intializePending();
         this.startVis('wave')
     }
 

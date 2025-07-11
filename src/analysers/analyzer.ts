@@ -15,7 +15,22 @@ class AudioAnalyzer {
     }
     
     startAnalysis(audioContext: AudioContext, sourceNode: AudioNode) {
+        if (!audioContext) { // Error handler for missing Audio Context
+            console.error('Audio Context not found');
+            return;
+        }
+        if (!sourceNode) {
+            console.error('Source node not found');
+            return;
+        }
+
         this.analyserNode = audioContext.createAnalyser(); //needed to access properties
+
+        if (audioContext.state === 'suspended') { //! Perhaps not needed. Testing required. 
+            audioContext.resume().then(() => {
+                console.log('DEV: Audio context force started');
+            })
+        }
 
         this.analyserNode.fftSize = 2048; //TODO: Maybe allow users to set this (common vals: 256, 512, 1024, 2048+)
         this.bufferLength = this.analyserNode.frequencyBinCount; // = 1/2 of fftsize
@@ -25,7 +40,7 @@ class AudioAnalyzer {
         this.timeDomainDataArray = new Uint8Array(this.bufferLength); 
 
         sourceNode.connect(this.analyserNode);
-        this.analyserNode.connect(audioContext.destination); //! This line was missing
+        this.analyserNode.connect(audioContext.destination); // Connect back to speakers //TODO: Add conditional for microphone to prevent echo
     }
 
     getFrequencyData() {
@@ -52,28 +67,18 @@ class AudioAnalyzer {
         return this.bufferLength;
     }
 
-    getFreqBuffer() { // For Visualizer that expects object with dataArray + freqData
-        if (this.analyserNode && this.frequencyDataArray && this.bufferLength) {
-            const freqBuffObject = {
-                dataArray: this.getFrequencyData(),
-                bufferLength: this.bufferLength
-            }
-            console.log(this.frequencyDataArray);
-            return freqBuffObject;
-        }
-        return null;
+    get timeData() {
+        return this.getTimeDomainData() || new Uint8Array(0);
     }
 
-    getTimeBuffer() { // For Visualizer that expects object with dataArray + timeData
-        if (this.analyserNode && this.timeDomainDataArray && this.bufferLength) {
-            const timeBuffObject = {
-                dataArray: this.getTimeDomainData(),
-                bufferLength: this.bufferLength
-            }
-            return timeBuffObject;
-        }
-        return null;        
+    get freqData() {
+        return this.getFrequencyData() || new Uint8Array(0);
     }
+
+    //! This is creating typescript errors. I can't figure out how to fix this atm. Users can directly call the prop for now
+    // get bufferLength() {
+    //     return this.bufferLength || 0;
+    // }
 }
 
 export default AudioAnalyzer;
