@@ -126,7 +126,7 @@ class Input {
     //* MediaStream methods
 
     // Pending input initializer
-    async intializePending() {
+    async initializePending() {
         if (!this.isWaitingForUser || !this.pendingAudioSrc) return;
 
         try {
