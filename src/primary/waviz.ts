@@ -74,27 +74,27 @@ class Waviz {
     }
 
     //* Visualizer Delegator
-    startVis(type: VisualizationType = 'wave') {
-        if (this.visualizer && this.isInitialized) {
-            this.visualizer.start(type);
-        }
-    }
+    // startVis(type: VisualizationType = 'wave') {
+    //     if (this.visualizer && this.isInitialized) {
+    //         this.visualizer.start(type);
+    //     }
+    // }
 
-    stopVis() {
-        if (this.visualizer) {
-            this.visualizer.stop();
-        }
-    }
+    // stopVis() {
+    //     if (this.visualizer) {
+    //         this.visualizer.stop();
+    //     }
+    // }
 
     //* Convenience Methods
     async wave() { //! JANKY FIX. WAIT FOR VIS CODE TO PLUG IN ASYNC
         await this.input.intializePending();
-        this.startVis('wave')
+        this.visualizer.wave();
     }
 
-    bar() {
-        this.startVis('bars')
-    }
+    // bar() {
+    //     this.startVis('bars')
+    // }
 }
 
 export default Waviz;

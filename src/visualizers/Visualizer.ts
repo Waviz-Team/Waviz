@@ -2,12 +2,12 @@ interface Visualizer {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   analyser: any;
-  animationLoop:any;
+  animationLoop: any;
 }
-
+class Visualizer {
   constructor(canvas, analyser) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
+    this.ctx = canvas.getContext("2d");
     this.analyser = analyser;
     this.animationLoop;
   }
@@ -16,15 +16,13 @@ interface Visualizer {
     // User Style options
     const {
       lineWidth = 2,
-      lineColor = '#E34AB0',
+      lineColor = "#E34AB0",
       multipliyer = 1,
     } = options || {};
 
     // Get live data
     const dataArray = this.analyser.timeData;
     const bufferLength = this.analyser.bufferLength;
-
-    if (!dataArray || bufferLength === 0) return; // Sanitation check
 
     // Setup canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -51,7 +49,6 @@ interface Visualizer {
     }
 
     this.ctx.stroke();
-  }
 
     // Re-run draw cycle on next anumation frame
     this.animationLoop = requestAnimationFrame(this.wave.bind(this, options));
@@ -61,12 +58,12 @@ interface Visualizer {
     // User Style options
     const {
       barWidth = 20,
-      fillStyle = '#E34AB0',
+      fillStyle = "#E34AB0",
       numBars = 10,
     } = options || {};
 
     // Get live data
-    const dataArray = this.analyser.dataArray;
+    const dataArray = this.analyser.freqData;
     const bufferLength = this.analyser.bufferLength;
 
     // Setup canvas

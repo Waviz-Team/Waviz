@@ -38,6 +38,7 @@ class AudioAnalyzer {
 
         this.frequencyDataArray = new Uint8Array(this.bufferLength); 
         this.timeDomainDataArray = new Uint8Array(this.bufferLength); 
+        console.log(this.frequencyDataArray);
 
         sourceNode.connect(this.analyserNode);
         // this.analyserNode.connect(audioContext.destination); // Connect back to speakers //TODO: Add conditional for microphone to prevent echo 
