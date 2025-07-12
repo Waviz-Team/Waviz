@@ -1,16 +1,13 @@
 interface Visualizer {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
-  dataArray: Uint8Array;
-  bufferLength: number;
   analyser: any;
-  animationLoop:any;
+  animationLoop: any;
 }
-
 class Visualizer {
   constructor(canvas, analyser) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
+    this.ctx = canvas.getContext("2d");
     this.analyser = analyser;
     this.animationLoop;
   }
@@ -19,12 +16,12 @@ class Visualizer {
     // User Style options
     const {
       lineWidth = 2,
-      lineColor = '#E34AB0',
+      lineColor = "#E34AB0",
       multipliyer = 1,
     } = options || {};
 
     // Get live data
-    const dataArray = this.analyser.dataArray;
+    const dataArray = this.analyser.timeData;
     const bufferLength = this.analyser.bufferLength;
 
     // Setup canvas
@@ -61,12 +58,12 @@ class Visualizer {
     // User Style options
     const {
       barWidth = 20,
-      fillStyle = '#E34AB0',
+      fillStyle = "#E34AB0",
       numBars = 10,
     } = options || {};
 
     // Get live data
-    const dataArray = this.analyser.dataArray;
+    const dataArray = this.analyser.freqData;
     const bufferLength = this.analyser.bufferLength;
 
     // Setup canvas

@@ -1,40 +1,23 @@
 import Waviz from '../primary/waviz';
-import Visualizer from '../visualizers/Visualizer';
 
 const canvas = document.getElementById('canvas');
 const audio = document.getElementById('audio');
-const wavizTest = new Waviz();
+const wavizTest = new Waviz(canvas, audio);
+// const wavizTest = new Waviz(canvas, 'microphone');
+// const wavizTest = new Waviz(canvas, 'screenAudio');
 
-wavizTest.connectToHTMLElement(audio);
-
-const liveData = {
-  get dataArray() {
-    //? Get is interesting...
-    const buffer = wavizTest.getFreqBuffer();
-    return buffer ? buffer.dataArray : new Uint8Array(0);
-  },
-  get bufferLength() {
-    const buffer = wavizTest.getFreqBuffer();
-    return buffer ? buffer.bufferLength : 0;
-  },
-};
-
-
-
-
-
-
-const waveVis = new Visualizer(canvas, liveData);
-
-audio.addEventListener('play', () => {
+// Testing option objects
   const optionsWave = { lineWidth: 3, lineColor: 'blue', multipliyer: 3 };
-
   const optionsBars = { barWidth: 10, fillStyle: 'blue', numBars: 20 };
 
-  waveVis.bars(optionsBars);
+//Test on play
+audio.addEventListener('play', async () => {
+  await wavizTest.input.intializePending(); //TODO: Figure out how to make this done in the classes
+  wavizTest.visualizer.bars();
 });
 
+
+// Test on pause
 audio.addEventListener('pause', () => {
-  waveVis.stop();
+  wavizTest.visualizer.stop();
 });
-waveVis.stop();
