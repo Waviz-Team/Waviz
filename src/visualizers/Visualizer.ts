@@ -17,7 +17,7 @@ class Visualizer {
     const {
       lineWidth = 2,
       lineColor = "#E34AB0",
-      multipliyer = 1,
+      multiplier = 1,
     } = options || {};
 
     // Get live data
@@ -38,7 +38,7 @@ class Visualizer {
       // Normalize values
       const v = dataArray[i] / 256;
       const y =
-        this.canvas.height / 2 + (v - 0.5) * this.canvas.height * multipliyer;
+        this.canvas.height / 2 + (v - 0.5) * this.canvas.height * multiplier;
 
       if (i === 0) {
         this.ctx.moveTo(x, y);

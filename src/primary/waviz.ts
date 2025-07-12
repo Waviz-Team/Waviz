@@ -2,7 +2,6 @@ import Input from "../input/input";
 import AudioAnalyzer from "../analysers/analyzer";
 import Visualizer from "../visualizers/Visualizer";
 
-type VisualizationType = 'wave' | 'bars' | 'spectrum';
 type AudioSourceType = HTMLAudioElement | MediaStream | 'microphone' | 'screenAudio' | string;
 
 class Waviz {
@@ -35,26 +34,6 @@ class Waviz {
         this.isInitialized = true;
     }
 
-    // debugInfo() {
-    //     if (!this.isInitialized || !this.audioAnalyzer) {
-    //         return {
-    //             error: 'initialization debug',
-    //             isInitialized: this.isInitialized,
-    //             hasAudioAnalyzer: !!this.audioAnalyzer // To convert value into boolean
-    //         };
-    //     }
-    
-    //     // const timeBuffer = this.audioAnalyzer.getTimeBuffer();
-    //     // const freqBuffer = this.audioAnalyzer.getFreqBuffer();
-    
-    //     return {
-    //         bufferLength: timeBuffer?.bufferLength || 0,
-    //         timeDataLength: timeBuffer?.dataArray?.length || 0,
-    //         freqDataLength: freqBuffer?.dataArray?.length || 0,
-    //         audioContextState: this.input.getAudioContext()?.state
-    //     };
-    // }
-
     //* AudioAnalyzer delegator
     getFrequencyData() {
         if (!this.isInitialized) return null;
@@ -67,28 +46,16 @@ class Waviz {
     }
 
     //* Input Delegator
-    connectAudio = (audioSource: AudioSourceType) => this.input.connectToHTMLElement(audioSource);
     cleanup() {
         this.input.cleanup();
         this.isInitialized = false;
     }
 
     //* Visualizer Delegator
-    // startVis(type: VisualizationType = 'wave') {
-    //     if (this.visualizer && this.isInitialized) {
-    //         this.visualizer.start(type);
-    //     }
-    // }
-
-    // stopVis() {
-    //     if (this.visualizer) {
-    //         this.visualizer.stop();
-    //     }
-    // }
 
     //* Convenience Methods
     async wave() { //! JANKY FIX. WAIT FOR VIS CODE TO PLUG IN ASYNC
-        await this.input.intializePending();
+        await this.input.initializePending();
         this.visualizer.wave();
     }
 
