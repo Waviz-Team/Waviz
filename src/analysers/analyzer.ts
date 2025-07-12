@@ -40,7 +40,7 @@ class AudioAnalyzer {
         this.timeDomainDataArray = new Uint8Array(this.bufferLength); 
 
         sourceNode.connect(this.analyserNode);
-        this.analyserNode.connect(audioContext.destination); // Connect back to speakers //TODO: Add conditional for microphone to prevent echo
+        // this.analyserNode.connect(audioContext.destination); // Connect back to speakers //TODO: Add conditional for microphone to prevent echo 
     }
 
     getFrequencyData() {

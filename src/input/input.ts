@@ -47,6 +47,7 @@ class Input {
  
             if (this.onAudioReady) { // Indicate audio source is ready for analysis
                 this.onAudioReady(this.sourceNode) // If callback function exists, will pass sourceNode to analyser
+                this.sourceNode.connect(this.audioContext.destination);
             }; 
         } catch (error) {
             console.error('Error connecting to audio element: ', error);
@@ -63,6 +64,7 @@ class Input {
 
             if (this.onAudioReady) {
                 this.onAudioReady(this.sourceNode);
+                this.sourceNode.connect(this.audioContext.destination);
             }
         } catch (error) {
             console.error('Media stream connection error: ', error)
@@ -142,7 +144,7 @@ class Input {
     }
 
     // Microphone input
-    private async connectToMicrophone() {
+    private async connectToMicrophone() { 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             this.connectToMediaStream(stream);
