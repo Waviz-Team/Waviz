@@ -16,17 +16,15 @@ audio.addEventListener('play', async () => {
   await wavizTest.wave();
 });
 
-audio.addEventListener('pause', async () => {
-    await wavizTest.stopVis();
+audio.addEventListener('play', () => {
+  const optionsWave = { lineWidth: 3, lineColor: 'blue', multipliyer: 3 };
+
+  const optionsBars = { barWidth: 10, fillStyle: 'blue', numBars: 20 };
+
+  waveVis.bars(optionsBars);
 });
 
-
-// Microphone Test
-document.addEventListener('click', async () => { // click anywhere to start
-    try {
-        const wavizTest = new Waviz(canvas, 'microphone');
-        await wavizTest.wave();
-    } catch (error) {
-        console.error('Microphone failed:', error);
-    }
-}, { once: true }); // Only run once
+audio.addEventListener('pause', () => {
+  waveVis.stop();
+});
+waveVis.stop();

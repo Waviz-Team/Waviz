@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <style>
-      canvas {
-        border: 1px solid black;
-      }
-    </style>
-
-    <script type="module" src="../src/test/index.ts" defer></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Waviz</title>
+    <link rel="icon" type="image/png" href="/Favicon.png" />
+    <script type="module" src="./src/test/index.ts" defer></script>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h1>Visualizer</h1>
-    <canvas id="canvas" width="800" height="400"></canvas><br />
-    <audio src="FreshFocus.mp3" id="audio" controls crossorigin="anonymous"></audio>
+    <div id="content">
+      <img src="Logo.png" width="200" />
+      <canvas id="canvas" width="500" height="200"></canvas>
+      <audio id="audio" src="/FreshFocus.mp3" controls></audio>
+    </div>
   </body>
 </html>
