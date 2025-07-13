@@ -28,7 +28,7 @@ class Input {
                 this.connectToAudioURL(audioSource);
             } else if (audioSource instanceof HTMLAudioElement) { // HTML property coming in. //! Needs to be instanceOf since these properties are objects
                 this.connectToHTMLElement(audioSource);
-                // console.log('connecting to html')
+                 console.log('connecting to html')
             } else if (audioSource instanceof MediaStream) { // For browser audio stream
                 this.connectToMediaStream(audioSource);
             }
@@ -51,7 +51,7 @@ class Input {
                 this.sourceNode.connect(this.audioContext.destination);
             }; 
         } catch (error) {
-            console.error('Error connecting to audio element: ', error);
+            // console.error('Error connecting to audio element: ', error);
         }
     }
 

@@ -1,10 +1,22 @@
+// {
+//   "compilerOptions": {
+//     "lib": ["es2016", "dom"],
+//     "moduleResolution": "node",
+//     "jsx": "react", // or "react" i?
+//     "esModuleInterop": true,
+//     "allowSyntheticDefaultImports": true,
+//     "types": ["react", "react-dom"]
+//   }
+// }
+
 {
   "compilerOptions": {
     "lib": ["es2016", "dom"],
-    "moduleResolution": "node",
-    "jsx": "react", // or "react" i?
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "types": ["react", "react-dom"]
-  }
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "checkJs": false,
+    "module": "esnext",
+    "moduleResolution": "node"
+  },
+  "include": ["src"]
 }
