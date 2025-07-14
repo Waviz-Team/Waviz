@@ -52,12 +52,8 @@ function PlugPlayComponent({
 
   return (
     <div className='content'>
-      <canvas ref={canvasReference} width={500} height={250}>
-        {' '}
-      </canvas>
-      <audio ref={audioReference} src={src} controls crossOrigin='anonymous'>
-        {' '}
-      </audio>
+      <canvas ref={canvasReference} width={500} height={250}></canvas>
+      <audio ref={audioReference} src={src} controls crossOrigin='anonymous'></audio>
     </div>
   );
 }
