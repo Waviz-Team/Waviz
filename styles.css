@@ -1,7 +1,9 @@
+
+
 body {
   font-family: sans-serif;
   color: #77929b;
-  background-color: rgb(68, 68, 136);
+  background-color: #051b30;
   height: 100vh;
 }
 
@@ -9,7 +11,7 @@ h1 {
   margin: 0;
 }
 
-#content {
+.content {
   width: 100vw;
   height: 100%;
   display: flex;

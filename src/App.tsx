@@ -3,11 +3,12 @@ import PlugPlayComponent from './components/PlugPlayComponent';
 
 export default function App() {
   return (
-    <div >
-      <h1>Waviz Plug-and-Play</h1>
+    <div className='content'>
+      <img src='/Logo.png' width='200'></img>
+      <img src='/pnpLogo.png' width='150'></img>
       <PlugPlayComponent
-        src="Lana Del Rey - Born To Die.mp3"
-        lineColor="blue"
+        src="/FreshFocus.mp3"
+        lineColor="lightBlue"
         lineWidth={2}
         multipliyer={1}
       />
