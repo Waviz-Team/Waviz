@@ -1,5 +1,11 @@
-import React from 'react';
+import * as React from 'react';
 import type { ChangeEvent } from 'react';
+
+declare global { // Needed to extend global scope of 'DisplayMediaStreamOptions' with the currentTab that is only supported in Chromium
+    interface DisplayMediaStreamOptions {
+        preferCurrentTab?: boolean;
+    }
+}
 
 type AudioSourceType = HTMLAudioElement | MediaStream | 'microphone' | 'screenAudio' | string;
 
@@ -49,7 +55,7 @@ class Input {
                 this.sourceNode.connect(this.audioContext.destination);
             }; 
         } catch (error) {
-            // console.error('Error connecting to audio element: ', error);
+            console.error('Error connecting to audio element: ', error);
         }
     }
 
@@ -153,7 +159,7 @@ class Input {
     }
 
     // Screen/tab Audio
-    private async connectToScreenAudio() {
+    private async connectToScreenAudio() { //! Currently only works for Chromium browsers!
         try {
             // Firefox/Safari browser checks since these two browsers currently do not support this feature. May remove these warnings once features are supported. Edge/Chrome supports getDisplayMedia.
             const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
@@ -167,7 +173,8 @@ class Input {
 
             const stream = await navigator.mediaDevices.getDisplayMedia({
                 video: true,
-                audio: true
+                audio: true,
+                preferCurrentTab: true, // This actually does exist for Chromium + Safairi/Firefox, however TypeScript does not accept it...
             });
 
             const audioTracks = stream.getAudioTracks();
