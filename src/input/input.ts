@@ -19,6 +19,7 @@ class Input {
 
     //* Audio Source Router
     async connectAudioSource(audioSource: AudioSourceType) {
+        console.log("SOURCE",audioSource)
         try { //TODO: Consider using switch
             if (audioSource === 'microphone' || audioSource === 'screenAudio') { // Needed as async for dynamic loading
                 this.pendingAudioSrc = audioSource;
