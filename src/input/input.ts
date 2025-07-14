@@ -24,13 +24,17 @@ class Input {
     }
 
     //* Audio Source Router
-    async connectAudioSource(audioSource: AudioSourceType) { // MediaStream is not included here because case 1 should handle all mediaStream cases.
+    async connectAudioSource(audioSource: AudioSourceType) {
         try { //? Current iteration is better for if-else. However, switch will be better for the future maybe...
             switch (true) { 
                 case audioSource === 'microphone' || audioSource === 'screenAudio':
                     this.pendingAudioSrc = audioSource;
                     this.isWaitingForUser = true;
                     return; // Return to prevent recursion with case (audioSource = string) since these sources are technically strings as well
+
+                case audioSource instanceof MediaStream: // Needed in case people want to directly pass in a mediastream instead
+                    this.connectToMediaStream(audioSource);
+                    return;
                 
                 case typeof audioSource === 'string':
                     this.connectToAudioURL(audioSource);
@@ -49,12 +53,20 @@ class Input {
         }
     }
 
+    //* Audio Context manager
+    private manageAudioContext() { // Helps modularize audioContext state as well as allows for re-use of audioContext
+        if (!this.audioContext) {
+            this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)(); // webkitAudioContext for older Chrome/Safari browsers. Could just use new AudioContext() if we know we're working with newer browsers only.
+        }
+        return this.audioContext;
+    }
+
     //* Local Audio (HTML/Files/URLS) handler
     private connectToAudioElement = (audioEl) => {
         if (!audioEl) return;
         
         try { // Start with Web Audio Context to set up processing environment
-            this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)(); // webkitAudioContext for older Chrome/Safari browsers. Could just use new AudioContext() if we know we're working with newer browsers only.
+            this.audioContext = this.manageAudioContext();
             this.sourceNode = this.audioContext.createMediaElementSource(audioEl); // Source node to bridge between html and WebAudioAPI
  
             if (this.onAudioReady) { // Indicate audio source is ready for analysis
@@ -71,7 +83,7 @@ class Input {
         if (!stream) return;
 
         try {
-            this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+            this.audioContext = this.manageAudioContext();
             this.sourceNode = this.audioContext.createMediaStreamSource(stream);
 
             if (this.onAudioReady) {
@@ -90,7 +102,7 @@ class Input {
         //TODO: include validation for mp3 here maybe? or in <input type="file" accept = ".mp3">
         if (!file)  return;
 
-        const validType = ['audio/mp3', 'audio/mpeg']   
+        const validType = ['audio/mp3', 'audio/mpeg', 'audio/wav', 'audio/ogg']   
 
         if(!validType.includes(file.type)) {
           alert('Pls select an MP3 file!');

@@ -41,7 +41,6 @@ class AudioAnalyzer {
         // console.log(this.frequencyDataArray);
 
         sourceNode.connect(this.analyserNode);
-        // this.analyserNode.connect(audioContext.destination); // Connect back to speakers //TODO: Add conditional for microphone to prevent echo 
     }
 
     getFrequencyData() {

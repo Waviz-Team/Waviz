@@ -54,14 +54,15 @@ class Waviz {
     //* Visualizer Delegator
 
     //* Convenience Methods
-    async wave() { //! JANKY FIX. WAIT FOR VIS CODE TO PLUG IN ASYNC
+    async wave() { //! If a way to initalizePending can be done in Input, that would be fantastic...
         await this.input.initializePending();
         this.visualizer.wave();
     }
 
-    // bar() {
-    //     this.startVis('bars')
-    // }
+    async bar() {
+        await this.input.initializePending();
+        this.visualizer.bars();
+    }
 }
 
 export default Waviz;
