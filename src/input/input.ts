@@ -1,5 +1,11 @@
-import React from 'react';
+import * as React from 'react';
 import type { ChangeEvent } from 'react';
+
+declare global { // Needed to extend global scope of 'DisplayMediaStreamOptions' with the currentTab that is only supported in Chromium
+    interface DisplayMediaStreamOptions {
+        preferCurrentTab?: boolean;
+    }
+}
 
 type AudioSourceType = HTMLAudioElement | MediaStream | 'microphone' | 'screenAudio' | string;
 
@@ -19,24 +25,40 @@ class Input {
 
     //* Audio Source Router
     async connectAudioSource(audioSource: AudioSourceType) {
-        console.log("SOURCE",audioSource)
-        try { //TODO: Consider using switch
-            if (audioSource === 'microphone' || audioSource === 'screenAudio') { // Needed as async for dynamic loading
-                this.pendingAudioSrc = audioSource;
-                this.isWaitingForUser = true;
-                return;
-            } else if (typeof audioSource === 'string') { // Treat as URL/source path
-                this.connectToAudioURL(audioSource);
-            } else if (audioSource instanceof HTMLAudioElement) { // HTML property coming in. //! Needs to be instanceOf since these properties are objects
-                this.connectToHTMLElement(audioSource);
-                 console.log('connecting to html')
-            } else if (audioSource instanceof MediaStream) { // For browser audio stream
-                this.connectToMediaStream(audioSource);
-            } //! FIX. NOT NEEDED
+        try { //? Current iteration is better for if-else. However, switch will be better for the future maybe...
+            switch (true) { 
+                case audioSource === 'microphone' || audioSource === 'screenAudio':
+                    this.pendingAudioSrc = audioSource;
+                    this.isWaitingForUser = true;
+                    return; // Return to prevent recursion with case (audioSource = string) since these sources are technically strings as well
+
+                case audioSource instanceof MediaStream: // Needed in case people want to directly pass in a mediastream instead
+                    this.connectToMediaStream(audioSource);
+                    return;
+                
+                case typeof audioSource === 'string':
+                    this.connectToAudioURL(audioSource);
+                    return; // Since all cases here should break out of the switch, all cases changed to return instead of breaks
+
+                case audioSource instanceof HTMLAudioElement:
+                    this.connectToHTMLElement(audioSource);
+                    return;
+
+                default:
+                    throw new Error(`Unsupported media/audio source type: ${typeof audioSource}`);
+            }
         } catch (error) {
             console.error('Failed to connect audio source: ', error);
             throw error;
         }
+    }
+
+    //* Audio Context manager
+    private manageAudioContext() { // Helps modularize audioContext state as well as allows for re-use of audioContext
+        if (!this.audioContext) {
+            this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)(); // webkitAudioContext for older Chrome/Safari browsers. Could just use new AudioContext() if we know we're working with newer browsers only.
+        }
+        return this.audioContext;
     }
 
     //* Local Audio (HTML/Files/URLS) handler
@@ -44,7 +66,7 @@ class Input {
         if (!audioEl) return;
         
         try { // Start with Web Audio Context to set up processing environment
-            this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)(); // webkitAudioContext for older Chrome/Safari browsers. Could just use new AudioContext() if we know we're working with newer browsers only.
+            this.audioContext = this.manageAudioContext();
             this.sourceNode = this.audioContext.createMediaElementSource(audioEl); // Source node to bridge between html and WebAudioAPI
  
             if (this.onAudioReady) { // Indicate audio source is ready for analysis
@@ -52,16 +74,16 @@ class Input {
                 this.sourceNode.connect(this.audioContext.destination);
             }; 
         } catch (error) {
-            // console.error('Error connecting to audio element: ', error);
+            console.error('Error connecting to audio element: ', error);
         }
     }
 
     //* MediaStream elements handler. Works with live audio stream from microphone, screen capture, etc.
-    connectToMediaStream = (stream: MediaStream) => {
+    private connectToMediaStream = (stream: MediaStream) => {
         if (!stream) return;
 
         try {
-            this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+            this.audioContext = this.manageAudioContext();
             this.sourceNode = this.audioContext.createMediaStreamSource(stream);
 
             if (this.onAudioReady) {
@@ -80,7 +102,7 @@ class Input {
         //TODO: include validation for mp3 here maybe? or in <input type="file" accept = ".mp3">
         if (!file)  return;
 
-        const validType = ['audio/mp3', 'audio/mpeg']   
+        const validType = ['audio/mp3', 'audio/mpeg', 'audio/wav', 'audio/ogg']   
 
         if(!validType.includes(file.type)) {
           alert('Pls select an MP3 file!');
@@ -126,7 +148,7 @@ class Input {
     //* MediaStream methods
 
     // Pending input initializer
-    async initializePending() {
+    async initializePending() { // Needed because user Gesture is needed by CORS before connecting Vis with audioContext
         if (!this.isWaitingForUser || !this.pendingAudioSrc) return;
 
         try {
@@ -156,7 +178,7 @@ class Input {
     }
 
     // Screen/tab Audio
-    private async connectToScreenAudio() {
+    private async connectToScreenAudio() { //! Currently only works for Chromium browsers!
         try {
             // Firefox/Safari browser checks since these two browsers currently do not support this feature. May remove these warnings once features are supported. Edge/Chrome supports getDisplayMedia.
             const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
@@ -170,7 +192,8 @@ class Input {
 
             const stream = await navigator.mediaDevices.getDisplayMedia({
                 video: true,
-                audio: true
+                audio: true,
+                preferCurrentTab: true, // This actually does exist for Chromium + Safairi/Firefox, however TypeScript does not accept it...
             });
 
             const audioTracks = stream.getAudioTracks();

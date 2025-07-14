@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import Waviz from '../primary/waviz';
+import Waviz from '../core/waviz';
 
 type vizComponentProps = {
   src: any;
