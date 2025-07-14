@@ -148,7 +148,7 @@ class Input {
     //* MediaStream methods
 
     // Pending input initializer
-    async initializePending() {
+    async initializePending() { // Needed because user Gesture is needed by CORS before connecting Vis with audioContext
         if (!this.isWaitingForUser || !this.pendingAudioSrc) return;
 
         try {
