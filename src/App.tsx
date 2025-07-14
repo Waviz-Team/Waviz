@@ -3,27 +3,18 @@ import WaveComponent from "./components/WaveComponent";
 
 export default function App() {
   const audioElement = useRef(null);
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    if (audioElement.current) {
-      setIsReady(true);
-    }
-  }, [audioElement]);
 
   return (
     <div className="content">
       <img src="/Logo.png" width="200"></img>
       <img src="/pnpLogo.png" width="150"></img>
+      
       <audio ref={audioElement} src="/FreshFocus.mp3" controls></audio>
-      {isReady && (
-        <WaveComponent
-          src={audioElement.current}
-          lineColor="blue"
-          lineWidth={2}
-          multiplier={1}
-        />
-      )}
+
+      <WaveComponent
+        src={audioElement}
+        options = {{lineColor:"blue",lineWidth:2, multiplier:1}}
+      />
     </div>
   );
 }
@@ -33,6 +24,5 @@ export default function App() {
 // MediaStream
 // Aduio Element
 // File string
-
 
 // options as options prop
