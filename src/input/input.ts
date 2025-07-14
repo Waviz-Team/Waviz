@@ -19,7 +19,7 @@ class Input {
 
     //* Audio Source Router
     async connectAudioSource(audioSource: AudioSourceType) {
-        try {
+        try { //TODO: Consider using switch
             if (audioSource === 'microphone' || audioSource === 'screenAudio') { // Needed as async for dynamic loading
                 this.pendingAudioSrc = audioSource;
                 this.isWaitingForUser = true;
@@ -31,7 +31,7 @@ class Input {
                  console.log('connecting to html')
             } else if (audioSource instanceof MediaStream) { // For browser audio stream
                 this.connectToMediaStream(audioSource);
-            }
+            } //! FIX. NOT NEEDED
         } catch (error) {
             console.error('Failed to connect audio source: ', error);
             throw error;
@@ -65,7 +65,6 @@ class Input {
 
             if (this.onAudioReady) {
                 this.onAudioReady(this.sourceNode);
-                this.sourceNode.connect(this.audioContext.destination);
             }
         } catch (error) {
             console.error('Media stream connection error: ', error)
@@ -75,7 +74,7 @@ class Input {
     //* Local Audio methods
 
     // Local File input (Create new AudioElement from user upload)
-    loadAudioFile = (event: ChangeEvent<HTMLInputElement>) => {
+    loadAudioFile = (event: ChangeEvent<HTMLInputElement>) => { //! Test local files
         const file = event.target.files?.[0];
         //TODO: include validation for mp3 here maybe? or in <input type="file" accept = ".mp3">
         if (!file)  return;
@@ -126,7 +125,7 @@ class Input {
     //* MediaStream methods
 
     // Pending input initializer
-    async intializePending() {
+    async initializePending() {
         if (!this.isWaitingForUser || !this.pendingAudioSrc) return;
 
         try {
@@ -158,19 +157,46 @@ class Input {
     // Screen/tab Audio
     private async connectToScreenAudio() {
         try {
+            // Firefox/Safari browser checks since these two browsers currently do not support this feature. May remove these warnings once features are supported. Edge/Chrome supports getDisplayMedia.
+            const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+            const isSafari = navigator.userAgent.toLowerCase().includes('safari') && !navigator.userAgent.toLowerCase().includes('chrome');
+            if (isFirefox) {
+                console.warn('Screen audio capture is currently not supported in Firefox.');
+            }
+            if (isSafari) {
+                console.warn('Screen audio capture is not currently supported by Safari.');
+            }
+
             const stream = await navigator.mediaDevices.getDisplayMedia({
                 video: true,
+                audio: true
             });
 
-            const audioTrack = stream.getAudioTracks();
-            if (audioTrack.length === 0) {
+            const audioTracks = stream.getAudioTracks();
+            const videoTracks = stream.getVideoTracks();
+            console.log('AudioTracks: ', audioTracks);
+            console.log('VideoTracks: ', videoTracks);
+
+            if (audioTracks.length === 0) {
+                videoTracks.forEach(track => track.stop()); // Stops the video recording that is being done. Also removes tracking indicator. 
                 throw new Error('No Audio Track available for screen capture');
             }
 
-            console.log('screenaudio Data: ', audioTrack[0].label);
+            audioTracks.forEach((track, index) => {
+                console.log(`Audio track ${index}: `, {
+                    label: track.label,
+                    enabled: track.enabled,
+                    readyState: track.readyState,
+                    settings: track.getSettings()
+                });
+            });
+
+            videoTracks.forEach(track => track.stop());
             this.connectToMediaStream(stream);
+            
         } catch (error) {
             console.error('Error accessing screen audio: ', error);
+            throw error;
         }
     }
 
