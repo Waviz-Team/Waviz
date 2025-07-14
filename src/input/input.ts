@@ -24,18 +24,25 @@ class Input {
     }
 
     //* Audio Source Router
-    async connectAudioSource(audioSource: AudioSourceType) {
-        try { //TODO: Consider using switch
-            if (audioSource === 'microphone' || audioSource === 'screenAudio') { // Needed as async for dynamic loading
-                this.pendingAudioSrc = audioSource;
-                this.isWaitingForUser = true;
-                return;
-            } else if (typeof audioSource === 'string') { // Treat as URL/source path
-                this.connectToAudioURL(audioSource);
-            } else if (audioSource instanceof HTMLAudioElement) { // HTML property coming in. //! Needs to be instanceOf since these properties are objects
-                this.connectToHTMLElement(audioSource);
-                // console.log('connecting to html')
-            } 
+    async connectAudioSource(audioSource: AudioSourceType) { // MediaStream is not included here because case 1 should handle all mediaStream cases.
+        try { //? Current iteration is better for if-else. However, switch will be better for the future maybe...
+            switch (true) { 
+                case audioSource === 'microphone' || audioSource === 'screenAudio':
+                    this.pendingAudioSrc = audioSource;
+                    this.isWaitingForUser = true;
+                    return; // Return to prevent recursion with case (audioSource = string) since these sources are technically strings as well
+                
+                case typeof audioSource === 'string':
+                    this.connectToAudioURL(audioSource);
+                    return; // Since all cases here should break out of the switch, all cases changed to return instead of breaks
+
+                case audioSource instanceof HTMLAudioElement:
+                    this.connectToHTMLElement(audioSource);
+                    return;
+
+                default:
+                    throw new Error(`Unsupported media/audio source type: ${typeof audioSource}`);
+            }
         } catch (error) {
             console.error('Failed to connect audio source: ', error);
             throw error;
@@ -60,7 +67,7 @@ class Input {
     }
 
     //* MediaStream elements handler. Works with live audio stream from microphone, screen capture, etc.
-    connectToMediaStream = (stream: MediaStream) => {
+    private connectToMediaStream = (stream: MediaStream) => {
         if (!stream) return;
 
         try {
