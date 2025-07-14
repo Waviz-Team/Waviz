@@ -49,7 +49,7 @@ class Input {
                 this.sourceNode.connect(this.audioContext.destination);
             }; 
         } catch (error) {
-            console.error('Error connecting to audio element: ', error);
+            // console.error('Error connecting to audio element: ', error);
         }
     }
 

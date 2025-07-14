@@ -1,15 +1,24 @@
+
+
 body {
   font-family: sans-serif;
   color: #77929b;
-  background-color: rgb(27, 27, 32);
+  background-color: #051b30;
   height: 100vh;
+}
+
+a{
+  color:white
+}
+a:visited{
+  color:white
 }
 
 h1 {
   margin: 0;
 }
 
-#content {
+.content {
   width: 100vw;
   height: 100%;
   display: flex;

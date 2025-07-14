@@ -28,7 +28,7 @@ class AudioAnalyzer {
 
         if (audioContext.state === 'suspended') { //! Perhaps not needed. Testing required. 
             audioContext.resume().then(() => {
-                console.log('DEV: Audio context force started');
+                 console.log('DEV: Audio context force started');
             })
         }
 
@@ -38,7 +38,7 @@ class AudioAnalyzer {
 
         this.frequencyDataArray = new Uint8Array(this.bufferLength); 
         this.timeDomainDataArray = new Uint8Array(this.bufferLength); 
-        console.log(this.frequencyDataArray);
+        // console.log(this.frequencyDataArray);
 
         sourceNode.connect(this.analyserNode);
         // this.analyserNode.connect(audioContext.destination); // Connect back to speakers //TODO: Add conditional for microphone to prevent echo 
