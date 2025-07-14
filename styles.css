@@ -7,6 +7,13 @@ body {
   height: 100vh;
 }
 
+a{
+  color:white
+}
+a:visited{
+  color:white
+}
+
 h1 {
   margin: 0;
 }
