@@ -24,11 +24,17 @@ class Visualizer {
     const dataArray = this.analyser.timeData;
     const bufferLength = this.analyser.bufferLength;
 
+    // Gradient
+    const gradient = this.ctx.createLinearGradient(0, 0, this.canvas.width, this.canvas.height)
+    gradient.addColorStop(0,'#E34AB0')    
+    gradient.addColorStop(1,'#5BC4F9')    
+
+
     // Setup canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.lineWidth = lineWidth;
-    this.ctx.strokeStyle = lineColor;
-
+    this.ctx.strokeStyle = gradient;
+    this.ctx.fillStyle = gradient
     // Draw waveform
     this.ctx.beginPath();
     const points = this.canvas.width / bufferLength;
@@ -41,13 +47,15 @@ class Visualizer {
         this.canvas.height / 2 + (v - 0.5) * this.canvas.height * multiplier;
 
       if (i === 0) {
-        this.ctx.moveTo(x, y);
-      } else {
+        this.ctx.moveTo(x, this.canvas.height);
+      } if (i===bufferLength-1){
+        this.ctx.lineTo(x, this.canvas.height);
+      }else {
         this.ctx.lineTo(x, y);
       }
       x += points;
     }
-
+    this.ctx.fill()
     this.ctx.stroke();
 
     // Re-run draw cycle on next anumation frame
