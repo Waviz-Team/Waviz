@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import Waviz from '../primary/waviz';
+import { waviz } from '../test/WavizTestJoao/src/waviz';
 
 type vizComponentProps = {
   src: string;
@@ -22,10 +23,14 @@ function PlugPlayComponent({
 
   useEffect(() => {
     if (!canvasReference.current || !audioReference.current) return;
-    wavizReference.current = new Waviz(
-      canvasReference.current,
-      audioReference.current
-    );
+    
+    // Check if Waviz already exists
+    if (!wavizReference.current) {
+      wavizReference.current = new Waviz(
+        canvasReference.current,
+        audioReference.current
+      );
+    }
 
     const playWave = () => {
       wavizReference.current.visualizer.wave({
@@ -53,7 +58,11 @@ function PlugPlayComponent({
   return (
     <div className='content'>
       <canvas ref={canvasReference} width={500} height={250}></canvas>
-      <audio ref={audioReference} src={src} controls crossOrigin='anonymous'></audio>
+      <audio
+        ref={audioReference}
+        src={src}
+        controls
+        crossOrigin='anonymous'></audio>
     </div>
   );
 }
