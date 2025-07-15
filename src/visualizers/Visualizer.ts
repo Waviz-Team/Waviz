@@ -1,18 +1,31 @@
+import AudioAnalyzer from "../analysers/analyzer";
 interface Visualizer {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
-  analyser: any;
+  analyser: AudioAnalyzer;
   animationLoop: any;
 }
+  export type WaveOptions = {
+  lineWidth?: number;
+  lineColor?: string;
+  multiplier?: number;
+};
+
+export type BarOptions ={
+  barWidth?:number;
+  fillStyle?: "string";
+  numBars?: number; 
+}
+
 class Visualizer {
-  constructor(canvas, analyser) {
+  constructor(canvas: HTMLCanvasElement, analyser: AudioAnalyzer) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
     this.analyser = analyser;
     this.animationLoop;
   }
 
-  wave(options?) {
+  wave(options?: WaveOptions) {
     // User Style options
     const {
       lineWidth = 2,
@@ -54,7 +67,7 @@ class Visualizer {
     this.animationLoop = requestAnimationFrame(this.wave.bind(this, options));
   }
 
-  bars(options?) {
+  bars(options?: BarOptions) {
     // User Style options
     const {
       barWidth = 20,

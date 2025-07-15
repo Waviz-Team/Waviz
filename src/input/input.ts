@@ -1,5 +1,3 @@
-import * as React from 'react';
-import type { ChangeEvent } from 'react';
 
 declare global { // Needed to extend global scope of 'DisplayMediaStreamOptions' with the currentTab that is only supported in Chromium
     interface DisplayMediaStreamOptions {
@@ -8,6 +6,8 @@ declare global { // Needed to extend global scope of 'DisplayMediaStreamOptions'
 }
 
 type AudioSourceType = HTMLAudioElement | MediaStream | 'microphone' | 'screenAudio' | string;
+// type MediaElementType = HTMLAudioElement | HTMLMediaElement;
+
 
 class Input {
     file: File | null;
@@ -64,7 +64,7 @@ class Input {
     }
 
     //* Local Audio (HTML/Files/URLS) handler
-    private connectToAudioElement = (audioEl) => {
+    private connectToAudioElement = (audioEl: HTMLMediaElement) => {
         if (!audioEl) return;
         
         try { // Start with Web Audio Context to set up processing environment
@@ -99,7 +99,7 @@ class Input {
     //* Local Audio methods
 
     // Local File input (Create new AudioElement from user upload)
-    loadAudioFile = (event: ChangeEvent<HTMLInputElement>) => { //! Test local files
+    loadAudioFile = (event: Event & { target: HTMLInputElement }) => { //! Test local files
         const file = event.target.files?.[0];
         //TODO: include validation for mp3 here maybe? or in <input type="file" accept = ".mp3">
         if (!file)  return;
@@ -131,7 +131,7 @@ class Input {
     }
 
     // HTML elements input (connects to an existing HTML audio element on WebAudioAPI)
-    connectToHTMLElement = (audioEl) => {
+    connectToHTMLElement = (audioEl: HTMLAudioElement) => {
         if (!audioEl) return;
 
         audioEl.crossOrigin = "anonymous";

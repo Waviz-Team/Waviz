@@ -8,8 +8,8 @@ const audio = document.getElementById('audio') as HTMLAudioElement;
 //   audio: true,
 //   preferCurrentTab: true
 // });
-const wavizTest = new Waviz(canvas, audio);
-// const wavizTest = new Waviz(canvas, 'microphone');
+ const wavizTest = new Waviz(canvas, audio);
+//  const wavizTest = new Waviz(canvas, 'microphone');
 // const wavizTest = new Waviz(canvas, 'screenAudio');
 // const wavizTest = new Waviz(canvas, stream);
 

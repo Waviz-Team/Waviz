@@ -1,8 +1,10 @@
 import Input from "../input/input";
 import AudioAnalyzer from "../analysers/analyzer";
 import Visualizer from "../visualizers/Visualizer";
+import { BarOptions, WaveOptions } from "../visualizers/Visualizer";
 
 type AudioSourceType = HTMLAudioElement | MediaStream | 'microphone' | 'screenAudio' | string;
+ 
 
 class Waviz {
     input: Input;
@@ -26,7 +28,7 @@ class Waviz {
     }
 
     //* WAVIZ setup methods
-    private setupAudioAnalysis(sourceNode) { // Method to setup the Waviz audio analysis. Needed here because of async calls expected in Input. If moved up, sourceNode won't exist in time since constructor runs first.
+    private setupAudioAnalysis(sourceNode: AudioNode) { // Method to setup the Waviz audio analysis. Needed here because of async calls expected in Input. If moved up, sourceNode won't exist in time since constructor runs first.
         const audioContext = this.input.getAudioContext();
 
         // Analysis start
@@ -54,12 +56,12 @@ class Waviz {
     //* Visualizer Delegator
 
     //* Convenience Methods
-    async wave(options?) { //! If a way to initalizePending can be done in Input, that would be fantastic...
+    async wave(options?: WaveOptions) { //! If a way to initalizePending can be done in Input, that would be fantastic...
         await this.input.initializePending();
         this.visualizer.wave(options);
     }
 
-    async bar(options?) {
+    async bar(options?: BarOptions) {
         await this.input.initializePending();
         this.visualizer.bars(options);
     }
