@@ -3,25 +3,29 @@ import Waviz from "../core/waviz";
 
 type vizComponentProps = {
   src: any; // should be a react reference
+  srcCanvas: any;
   options: {};
 };
 
-function WaveComponent({ src, options }: vizComponentProps) {
-  // Refrences
-  const canvasReference = useRef<HTMLCanvasElement>(null);
+function WaveComponent({ src, srcCanvas, options }: vizComponentProps) {
+
+  // References
   const wavizReference = useRef<Waviz | null>(null);
   const isPlaying = useRef(false);
-  const source = useRef(src);
-
+  const canvasRef = useRef(null)
+  if(srcCanvas){
+    canvasRef.current = srcCanvas.current
+  }
   // Use Effect Logic
   useEffect(() => {
+    
     // Check if canvas exists
-    if (!canvasReference.current) return;
+    if (!canvasRef.current) return;
 
-    if (!wavizReference.current && source.current.current) {
+    if (!wavizReference.current && src.current && canvasRef.current) {
       wavizReference.current = new Waviz(
-        canvasReference.current,
-        source.current.current
+        canvasRef.current,
+        src.current
       );
     }
 
@@ -49,12 +53,16 @@ if(src.current instanceof HTMLAudioElement){
 }else{
   wavizReference.current.wave(options);
 }
-  }, [src, options, isPlaying]);
+  }, [src, options, isPlaying, srcCanvas]);
 
   return (
     <div>
-      <canvas ref={canvasReference} width={500} height={250}></canvas>
+      <canvas ref={canvasRef} width={500} height={250}></canvas>
+
     </div>
   );
 }
 export default WaveComponent;
+
+
+
