@@ -12,18 +12,18 @@ export default function App() {
       <img src="/Logo.png" width="200"></img>
       <img src="/pnpLogo.png" width="150"></img>
 
-      {/* <WaveComponent
+    <WaveComponent
         srcAudio={audioElement}
         srcCanvas={canvasElement}
         options={{ lineColor: "blue", lineWidth: 2, multiplier: 1 }}
-      /> */}
-
+      /> 
+{/* 
       <BarComponent
         srcAudio={audioElement}
         srcCanvas={canvasElement}
         options={{barWidth: 20, fillStyle:"green", numBars: 10}}
       
-      />
+      /> */}
 
 
       {/* Don't forget to comment out the audio tag if using microphone or screenAudio */}
