@@ -2,67 +2,61 @@ import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../core/waviz";
 
 type vizComponentProps = {
-  src: any; // should be a react reference
-  srcCanvas: any;
+  srcAudio: any;
+  srcCanvas: React.RefObject<HTMLCanvasElement>;
   options: {};
 };
 
-function WaveComponent({ src, srcCanvas, options }: vizComponentProps) {
-
+function WaveComponent({ srcAudio, srcCanvas, options }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const isPlaying = useRef(false);
-  const canvasRef = useRef(null)
-  if(srcCanvas){
-    canvasRef.current = srcCanvas.current
-  }
+  const canvasRef = useRef(null);
+
   // Use Effect Logic
   useEffect(() => {
-    
+    //Check if canvas is passed in
+    if (srcCanvas) {
+      canvasRef.current = srcCanvas.current;
+    }
+
     // Check if canvas exists
     if (!canvasRef.current) return;
 
-    if (!wavizReference.current && src.current && canvasRef.current) {
-      wavizReference.current = new Waviz(
-        canvasRef.current,
-        src.current
-      );
+    if (!wavizReference.current && srcAudio.current && canvasRef.current) {
+      wavizReference.current = new Waviz(canvasRef.current, srcAudio.current);
     }
 
-if(src.current instanceof HTMLAudioElement){
+    if (srcAudio.current instanceof HTMLAudioElement) {
+      // Start visualizer
+      function playWave() {
+        if (!isPlaying.current) {
+          wavizReference.current.wave(options);
+          isPlaying.current = true;
+        }
+      }
 
-  // Start visualizer
-  function playWave() {
-    if (!isPlaying.current) {
+      // Stop visualizer
+      function stopWave() {
+        if (isPlaying.current) {
+          wavizReference.current.visualizer.stop();
+          isPlaying.current = false;
+        }
+      }
+
+      // Event listeners -
+      srcAudio.current.addEventListener("play", playWave);
+      srcAudio.current.addEventListener("pause", stopWave);
+    } else {
       wavizReference.current.wave(options);
-      isPlaying.current = true;
     }
-  }
-
-  // Stop visualizer
-  function stopWave() {
-    if (isPlaying.current) {
-      wavizReference.current.visualizer.stop();
-      isPlaying.current = false;
-    }
-  }
-
-  // Event listeners -
-  src.current.addEventListener("play", playWave);
-  src.current.addEventListener("pause", stopWave);
-}else{
-  wavizReference.current.wave(options);
-}
-  }, [src, options, isPlaying, srcCanvas]);
+  }, [srcAudio,srcCanvas, options, isPlaying, ]);
 
   return (
     <div>
-      <canvas ref={canvasRef} width={500} height={250}></canvas>
-
+      {!srcCanvas && <canvas ref={canvasRef} width={500} height={300}></canvas>}
+      {true && canvasRef.current}
     </div>
   );
 }
 export default WaveComponent;
-
-
-
