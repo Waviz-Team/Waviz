@@ -33,7 +33,8 @@ class Input {
                     return; // Return to prevent recursion with case (audioSource = string) since these sources are technically strings as well
 
                 case audioSource instanceof MediaStream: // Needed in case people want to directly pass in a mediastream instead
-                    this.connectToMediaStream(audioSource);
+                    this.pendingAudioSrc = audioSource;
+                    this.isWaitingForUser = true;
                     return;
                 
                 case typeof audioSource === 'string':
@@ -156,6 +157,8 @@ class Input {
                 await this.connectToMicrophone();
             } else if (this.pendingAudioSrc === 'screenAudio') {
                 await this.connectToScreenAudio();
+            } else if (this.pendingAudioSrc instanceof MediaStream) {
+                this.connectToMediaStream(this.pendingAudioSrc);
             }
 
             this.pendingAudioSrc = null;
