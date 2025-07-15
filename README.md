@@ -37,9 +37,12 @@ The purpose of the Input class is to help initialize an audio analyzer as well a
 * HTML Audio elements (defined as a HTML Audio Element)
 * Local File inputs 
 * URL/path strings to media files (defined as a string path)
-* Microphone (defined by 'microphone') - **This will require user permission for microphone access of the tab.**
+* Microphone (defined by 'microphone') - This will require user permission for microphone access of the tab.
 * Tab Audio (defined by 'screenAudio')- ***Warning: This feature is currently only supported by Chromium Browsers. It will require user permission for screen video capture of the tab. Will only capture current tab.***
+* MediaStream input (defined by an await statement of a mediaStream) - Highly recommend only using pre-defined methods if it exists for the mediaStream. This input will not have sanity checks and is here for edge cases/more flexibility and control for the user. 
 
+**Handlers:** We currently have two primary handlers for an audio input.
+* connectToAudioElement() - takes in an audio element as an argument. This will handle local files, htmls, and URL strings/paths to audio 
 
 ⸻
 
