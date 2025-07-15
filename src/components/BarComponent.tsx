@@ -31,7 +31,7 @@ function BarComponent({ srcAudio, srcCanvas, options }: vizComponentProps) {
       // Start visualizer
       function playBars() {
         if (!isPlaying.current) {
-          wavizReference.current.bars(options);
+          wavizReference.current.bar(options);
           isPlaying.current = true;
         }
       }
@@ -45,10 +45,10 @@ function BarComponent({ srcAudio, srcCanvas, options }: vizComponentProps) {
       }
 
       // Event listeners -
-      srcAudio.current.addEventListener("play", playWave);
-      srcAudio.current.addEventListener("pause", stopWave);
+      srcAudio.current.addEventListener("play", playBars);
+      srcAudio.current.addEventListener("pause", stopBars);
     } else {
-      wavizReference.current.bars(options);
+      wavizReference.current.bar(options);
     }
   }, [srcAudio,srcCanvas, options, isPlaying, ]);
 
