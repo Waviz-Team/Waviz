@@ -4,8 +4,10 @@
     "jsx": "react-jsx",
     "allowJs": true,
     "checkJs": false,
+    "target": "es2017",
     "module": "esnext",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "outDir": "./dist"
   },
   "include": ["src"]
 }

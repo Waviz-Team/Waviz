@@ -33,8 +33,9 @@ class Input {
                     this.isWaitingForUser = true;
                     return; // Return to prevent recursion with case (audioSource = string) since these sources are technically strings as well
 
-                case audioSource instanceof MediaStream: // Needed in case people want to directly pass in a mediastream instead
-                    this.connectToMediaStream(audioSource);
+                case audioSource instanceof MediaStream: // Needed in case people want to directly pass in a mediastream instead. User should ideally use one of our methods above since they have better checks. 
+                    this.pendingAudioSrc = audioSource;
+                    this.isWaitingForUser = true;
                     return;
                 
                 case typeof audioSource === 'string':
@@ -157,6 +158,14 @@ class Input {
                 await this.connectToMicrophone();
             } else if (this.pendingAudioSrc === 'screenAudio') {
                 await this.connectToScreenAudio();
+            } else if (this.pendingAudioSrc instanceof MediaStream) {
+                try {
+                    const stream = this.pendingAudioSrc;
+                    this.connectToMediaStream(stream);
+                } catch (error) {
+                    console.error('Error connecting MediaStream Element: ', error);
+                    throw error;
+                }
             }
 
             this.pendingAudioSrc = null;
