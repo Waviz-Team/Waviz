@@ -2,17 +2,22 @@ import React, { useRef, useEffect, useState } from "react";
 import WaveComponent from "./components/WaveComponent";
 
 export default function App() {
-const microphoneStream = await navigator.mediaDevices.getUserMedia({ 
-    audio: true 
-});
-  const audioElement = useRef(microphoneStream);
+// const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true })
 
+const audioElement = useRef(null);
+
+  // useEffect(()=>{
+  //   (async()=>{audioElement.current = await navigator.mediaDevices.getUserMedia({ 
+  //     audio: true })
+  //   })()
+  // },[audioElement])
+  
   return (
     <div className="content">
       <img src="/Logo.png" width="200"></img>
       <img src="/pnpLogo.png" width="150"></img>
       
-      {/* <audio ref={audioElement} src="/FreshFocus.mp3" controls></audio> */}
+      <audio ref={audioElement} src="/FreshFocus.mp3" controls></audio>
 
       <WaveComponent
         src={audioElement}

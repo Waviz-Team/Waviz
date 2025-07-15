@@ -23,7 +23,7 @@ class Visualizer {
     // Get live data
     const dataArray = this.analyser.timeData;
     const bufferLength = this.analyser.bufferLength;
-console.log(dataArray)
+// console.log(dataArray)
     // Setup canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.lineWidth = lineWidth;
