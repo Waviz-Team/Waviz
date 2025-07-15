@@ -54,14 +54,14 @@ class Waviz {
     //* Visualizer Delegator
 
     //* Convenience Methods
-    async wave() { //! If a way to initalizePending can be done in Input, that would be fantastic...
+    async wave(options?) { //! If a way to initalizePending can be done in Input, that would be fantastic...
         await this.input.initializePending();
-        this.visualizer.wave();
+        this.visualizer.wave(options);
     }
 
-    async bar() {
+    async bar(options?) {
         await this.input.initializePending();
-        this.visualizer.bars();
+        this.visualizer.bars(options);
     }
 }
 

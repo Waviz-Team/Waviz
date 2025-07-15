@@ -7,89 +7,54 @@ type vizComponentProps = {
 };
 
 function WaveComponent({ src, options }: vizComponentProps) {
-
-  // refrence to canvas and audio Dom elem
+  // Refrences
   const canvasReference = useRef<HTMLCanvasElement>(null);
-  
-
-  // referece to nodes + class instancess
   const wavizReference = useRef<Waviz | null>(null);
-
-  // 
+  const isPlaying = useRef(false);
   const source = useRef(src);
-  const [isPlaying, setIsPlaying] = useState(false);
-  
+
+  // Use Effect Logic
   useEffect(() => {
+    // Check if canvas exists
     if (!canvasReference.current) return;
 
-    if (!wavizReference.current && source.current) {
+    if (!wavizReference.current && source.current.current) {
       wavizReference.current = new Waviz(
         canvasReference.current,
         source.current.current
       );
     }
 
-    wavizReference.current.input.initializePending();
-    wavizReference.current.visualizer.wave(options);
+if(src.current instanceof HTMLAudioElement){
 
-  //   const playWave = () => {
-  //   wavizReference.current.input.initializePending();
-  //   wavizReference.current.visualizer.wave(options);
-  // };
+  // Start visualizer
+  function playWave() {
+    if (!isPlaying.current) {
+      wavizReference.current.wave(options);
+      isPlaying.current = true;
+    }
+  }
 
-  // const pauseWave = () => {
-  //   wavizReference.current.visualizer.stop();
-  // };
+  // Stop visualizer
+  function stopWave() {
+    if (isPlaying.current) {
+      wavizReference.current.visualizer.stop();
+      isPlaying.current = false;
+    }
+  }
 
-  // if(source.current){
-  //   const audio = source.current;
-  //   audio.addEventListener('play', playWave);
-  //   audio.addEventListener('pause', pauseWave);
-  // }
-
-  // return () => {
-  //   audio.removeEventListener('play', playWave);
-  //   audio.removeEventListener('pause', pauseWave);
-  //   wavizReference.current.visualizer.stop();
-  // };
-},[src, options]);
-
-
-
-
-
-
-    // wavizReference.current.input.initializePending();
-    // wavizReference.current.visualizer.wave(options);
-    
-    // if(isPlaying) {
-    //   wavizReference.current.input.initializePending();
-    //   wavizReference.current.visualizer.wave(options);
-    // } else {
-    //    wavizReference.current.visualizer.stop();
-    // }
-    //  return () => {
-    //   wavizReference.current.visualizer.stop();
-    //  }
-  // }, [isPlaying, options]);
-
-    // useEffect(()=>{
-    //   if(src.current){
-    //     setIsPlaying(true)
-    //   }
-    //   if(!src.current){
-    //     setIsPlaying(false)
-    //   }
-    // })
-
-
-
+  // Event listeners -
+  src.current.addEventListener("play", playWave);
+  src.current.addEventListener("pause", stopWave);
+}else{
+  wavizReference.current.wave(options);
+}
+  }, [src, options, isPlaying]);
 
   return (
-    <div className="content">
+    <div>
       <canvas ref={canvasReference} width={500} height={250}></canvas>
     </div>
   );
 }
 export default WaveComponent;
-
