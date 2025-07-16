@@ -3,28 +3,32 @@ import Waviz from "../core/waviz";
 
 type vizComponentProps = {
   srcAudio: any;
-  srcCanvas: React.RefObject<HTMLCanvasElement | null>;
-  options: {};
+  srcCanvas?: React.RefObject<HTMLCanvasElement | null>;
+  options?: {};
+  audioContext?: AudioContext;
 };
 
-function WaveComponent({ srcAudio, srcCanvas, options }: vizComponentProps) {
+function WaveComponent({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const isPlaying = useRef(false);
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [canvasReady, setCanvasReady] = useState(false);
 
   // Use Effect Logic
-  useEffect(() => {
-    //Check if canvas is passed in
-    if (srcCanvas) {
-      canvasRef.current = srcCanvas.current;
+ useEffect(() => { //Check if canvas is passed in
+    if (srcCanvas && srcCanvas.current) {
+      canvasRef.current = srcCanvas.current
+      setCanvasReady(true);
     }
-
+ }, [srcCanvas])
+  
+  useEffect(() => {
     // Check if canvas exists
-    if (!canvasRef.current) return;
+    if (!canvasReady || !canvasRef.current || !srcAudio.current) return;
 
-    if (!wavizReference.current && srcAudio.current && canvasRef.current) {
-      wavizReference.current = new Waviz(canvasRef.current, srcAudio.current);
+    if (!wavizReference.current) {
+      wavizReference.current = new Waviz(canvasRef.current, srcAudio.current, audioContext);
     }
 
     if (srcAudio.current instanceof HTMLAudioElement) {
@@ -47,15 +51,19 @@ function WaveComponent({ srcAudio, srcCanvas, options }: vizComponentProps) {
       // Event listeners -
       srcAudio.current.addEventListener("play", playWave);
       srcAudio.current.addEventListener("pause", stopWave);
+      
+      return () => { // Cleanup Listeners //! Possibly not needed...
+        srcAudio.current.removeEventListener("play", playWave)
+        srcAudio.current.removeEventListener("pause", stopWave)
+      };
     } else {
       wavizReference.current.wave(options);
     }
-  }, [srcAudio,srcCanvas, options, isPlaying, ]);
+  }, [canvasReady, srcAudio, options, isPlaying, audioContext]);
 
   return (
     <div>
       {!srcCanvas && <canvas ref={canvasRef} width={500} height={300}></canvas>}
-      {true && canvasRef.current}
     </div>
   );
 }

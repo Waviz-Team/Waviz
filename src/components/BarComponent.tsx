@@ -1,13 +1,14 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import Waviz from "../core/waviz";
 
 type vizComponentProps = {
   srcAudio: any;
   srcCanvas: React.RefObject<HTMLCanvasElement>;
   options: {};
+  audioContext?: AudioContext;
 };
 
-function BarComponent({ srcAudio, srcCanvas, options }: vizComponentProps) {
+function BarComponent({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const isPlaying = useRef(false);
@@ -24,7 +25,7 @@ function BarComponent({ srcAudio, srcCanvas, options }: vizComponentProps) {
     if (!canvasRef.current) return;
 
     if (!wavizReference.current && srcAudio.current && canvasRef.current) {
-      wavizReference.current = new Waviz(canvasRef.current, srcAudio.current);
+      wavizReference.current = new Waviz(canvasRef.current, srcAudio.current, audioContext);
     }
 
     if (srcAudio.current instanceof HTMLAudioElement) {
@@ -50,12 +51,11 @@ function BarComponent({ srcAudio, srcCanvas, options }: vizComponentProps) {
     } else {
       wavizReference.current.bar(options);
     }
-  }, [srcAudio,srcCanvas, options, isPlaying, ]);
+  }, [srcAudio,srcCanvas, options, isPlaying, audioContext]);
 
   return (
     <div>
       {!srcCanvas && <canvas ref={canvasRef} width={500} height={300}></canvas>}
-      {true && canvasRef.current}
     </div>
   );
 }

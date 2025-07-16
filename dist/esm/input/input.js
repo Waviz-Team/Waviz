@@ -1,5 +1,5 @@
 class Input {
-    constructor(onAudioReady) {
+    constructor(onAudioReady, audioContext) {
         this.pendingAudioSrc = null;
         this.isWaitingForUser = false;
         //* Local Audio (HTML/Files/URLS) handler
@@ -69,7 +69,7 @@ class Input {
             this.connectToAudioElement(audioEl);
         };
         this.file = null;
-        this.audioContext = null;
+        this.audioContext = audioContext || null;
         this.onAudioReady = onAudioReady || null; // Needed to store callback function we'll pass in
     }
     //* Audio Source Router
@@ -120,25 +120,25 @@ class Input {
     async initializePending() {
         if (!this.isWaitingForUser || !this.pendingAudioSrc)
             return;
+        const src = this.pendingAudioSrc;
+        this.pendingAudioSrc = null; // moved to the top instead of within the Try to avoid duplicate prompts for permission
+        this.isWaitingForUser = false;
         try {
-            if (this.pendingAudioSrc === 'microphone') {
+            if (src === 'microphone') {
                 await this.connectToMicrophone();
             }
-            else if (this.pendingAudioSrc === 'screenAudio') {
+            else if (src === 'screenAudio') {
                 await this.connectToScreenAudio();
             }
-            else if (this.pendingAudioSrc instanceof MediaStream) {
+            else if (src instanceof MediaStream) {
                 try {
-                    const stream = this.pendingAudioSrc;
-                    this.connectToMediaStream(stream);
+                    this.connectToMediaStream(src);
                 }
                 catch (error) {
                     console.error('Error connecting MediaStream Element: ', error);
                     throw error;
                 }
             }
-            this.pendingAudioSrc = null;
-            this.isWaitingForUser = false;
         }
         catch (error) {
             console.error('Failed to initialize pending audio source: ', error);

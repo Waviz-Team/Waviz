@@ -7,13 +7,13 @@ const input_1 = __importDefault(require("../input/input"));
 const analyzer_1 = __importDefault(require("../analysers/analyzer"));
 const Visualizer_1 = __importDefault(require("../visualizers/Visualizer"));
 class Waviz {
-    constructor(canvas, audioSource) {
+    constructor(canvas, audioSource, audioContext) {
         this.visualizer = null;
         this.isInitialized = false;
         this.audioAnalyzer = new analyzer_1.default();
         this.input = new input_1.default((sourceNode) => {
             this.setupAudioAnalysis(sourceNode);
-        });
+        }, audioContext);
         if (canvas) {
             this.visualizer = new Visualizer_1.default(canvas, this.audioAnalyzer);
         }

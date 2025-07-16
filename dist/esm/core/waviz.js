@@ -2,13 +2,13 @@ import Input from "../input/input";
 import AudioAnalyzer from "../analysers/analyzer";
 import Visualizer from "../visualizers/Visualizer";
 class Waviz {
-    constructor(canvas, audioSource) {
+    constructor(canvas, audioSource, audioContext) {
         this.visualizer = null;
         this.isInitialized = false;
         this.audioAnalyzer = new AudioAnalyzer();
         this.input = new Input((sourceNode) => {
             this.setupAudioAnalysis(sourceNode);
-        });
+        }, audioContext);
         if (canvas) {
             this.visualizer = new Visualizer(canvas, this.audioAnalyzer);
         }

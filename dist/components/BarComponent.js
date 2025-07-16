@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsx_runtime_1 = require("react/jsx-runtime");
 const react_1 = require("react");
 const waviz_1 = __importDefault(require("../core/waviz"));
-function BarComponent({ srcAudio, srcCanvas, options }) {
+function BarComponent({ srcAudio, srcCanvas, options, audioContext }) {
     // References
     const wavizReference = (0, react_1.useRef)(null);
     const isPlaying = (0, react_1.useRef)(false);
@@ -21,7 +21,7 @@ function BarComponent({ srcAudio, srcCanvas, options }) {
         if (!canvasRef.current)
             return;
         if (!wavizReference.current && srcAudio.current && canvasRef.current) {
-            wavizReference.current = new waviz_1.default(canvasRef.current, srcAudio.current);
+            wavizReference.current = new waviz_1.default(canvasRef.current, srcAudio.current, audioContext);
         }
         if (srcAudio.current instanceof HTMLAudioElement) {
             // Start visualizer
@@ -45,7 +45,7 @@ function BarComponent({ srcAudio, srcCanvas, options }) {
         else {
             wavizReference.current.bar(options);
         }
-    }, [srcAudio, srcCanvas, options, isPlaying,]);
+    }, [srcAudio, srcCanvas, options, isPlaying, audioContext]);
     return ((0, jsx_runtime_1.jsxs)("div", { children: [!srcCanvas && (0, jsx_runtime_1.jsx)("canvas", { ref: canvasRef, width: 500, height: 300 }), true && canvasRef.current] }));
 }
 exports.default = BarComponent;

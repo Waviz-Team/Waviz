@@ -12,7 +12,7 @@ declare class Input {
     onAudioReady: ((source: AudioNode) => void) | null;
     pendingAudioSrc: AudioSourceType | null;
     isWaitingForUser: boolean;
-    constructor(onAudioReady?: (source: AudioNode) => void);
+    constructor(onAudioReady?: (source: AudioNode) => void, audioContext?: AudioContext);
     connectAudioSource(audioSource: AudioSourceType): Promise<void>;
     private manageAudioContext;
     private connectToAudioElement;

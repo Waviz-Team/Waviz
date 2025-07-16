@@ -7,7 +7,7 @@ declare class Waviz {
     audioAnalyzer: AudioAnalyzer;
     visualizer: Visualizer | null;
     isInitialized: boolean;
-    constructor(canvas?: HTMLCanvasElement, audioSource?: AudioSourceType);
+    constructor(canvas?: HTMLCanvasElement, audioSource?: AudioSourceType, audioContext?: AudioContext);
     private setupAudioAnalysis;
     getFrequencyData(): Uint8Array<ArrayBuffer>;
     getTimeDomainData(): Uint8Array<ArrayBuffer>;

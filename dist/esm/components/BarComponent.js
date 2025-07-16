@@ -1,7 +1,7 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useRef, useEffect } from "react";
 import Waviz from "../core/waviz";
-function BarComponent({ srcAudio, srcCanvas, options }) {
+function BarComponent({ srcAudio, srcCanvas, options, audioContext }) {
     // References
     const wavizReference = useRef(null);
     const isPlaying = useRef(false);
@@ -16,7 +16,7 @@ function BarComponent({ srcAudio, srcCanvas, options }) {
         if (!canvasRef.current)
             return;
         if (!wavizReference.current && srcAudio.current && canvasRef.current) {
-            wavizReference.current = new Waviz(canvasRef.current, srcAudio.current);
+            wavizReference.current = new Waviz(canvasRef.current, srcAudio.current, audioContext);
         }
         if (srcAudio.current instanceof HTMLAudioElement) {
             // Start visualizer
@@ -40,7 +40,7 @@ function BarComponent({ srcAudio, srcCanvas, options }) {
         else {
             wavizReference.current.bar(options);
         }
-    }, [srcAudio, srcCanvas, options, isPlaying,]);
+    }, [srcAudio, srcCanvas, options, isPlaying, audioContext]);
     return (_jsxs("div", { children: [!srcCanvas && _jsx("canvas", { ref: canvasRef, width: 500, height: 300 }), true && canvasRef.current] }));
 }
 export default BarComponent;

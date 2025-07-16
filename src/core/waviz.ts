@@ -10,11 +10,11 @@ class Waviz {
     visualizer: Visualizer | null = null;
     isInitialized: boolean = false;
 
-    constructor(canvas?: HTMLCanvasElement, audioSource?: AudioSourceType) { // Optional canvas passthrough for params
+    constructor(canvas?: HTMLCanvasElement, audioSource?: AudioSourceType, audioContext?: AudioContext) { // Optional canvas passthrough for params
         this.audioAnalyzer = new AudioAnalyzer();
         this.input = new Input((sourceNode) => { // needed because setupAudioAnalysis needs to wait for async audio source
             this.setupAudioAnalysis(sourceNode);
-        });
+        }, audioContext);
         
         if (canvas) {
             this.visualizer = new Visualizer(canvas, this.audioAnalyzer);

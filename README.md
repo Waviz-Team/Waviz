@@ -30,7 +30,7 @@ Waviz uses a modular architecture with single-responsibility function nodes:
 ## How to use
 
 ### Input
-The purpose of the Input class is to help initialize an audio analyzer as well as identify the different types of audio/signals. The Input Class takes in one optional argument: a callback. The callback (tailored for an audio analyzer) must be initialized in order to use the other methods. 
+The purpose of the Input class is to help initialize an audio analyzer as well as identify the different types of audio/signals. The Input Class takes in two optional argument: a callback and an audioContext. The callback (tailored for an audio analyzer) must be initialized in order to use the other methods. The audioContext should only be passed if an audio context has already been set up. Otherwise, our Input class will create an audioContext by default for the user. 
 
 ### Methods
 **connectAudioSource():** A router that takes in an audioSource as an argument. This will route the audio to correct managers that we have pre-defined. The current audio supported are: 
