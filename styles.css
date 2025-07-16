@@ -18,6 +18,10 @@ h1 {
   margin: 0;
 }
 
+li{
+  margin: 20px 0;
+}
+
 .content {
   width: 100vw;
   height: 100%;
