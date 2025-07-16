@@ -1,4 +1,4 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { jsx as _jsx } from "react/jsx-runtime";
 import { useRef, useEffect } from "react";
 import Waviz from "../core/waviz";
 function BarComponent({ srcAudio, srcCanvas, options, audioContext }) {
@@ -41,7 +41,7 @@ function BarComponent({ srcAudio, srcCanvas, options, audioContext }) {
             wavizReference.current.bar(options);
         }
     }, [srcAudio, srcCanvas, options, isPlaying, audioContext]);
-    return (_jsxs("div", { children: [!srcCanvas && _jsx("canvas", { ref: canvasRef, width: 500, height: 300 }), true && canvasRef.current] }));
+    return (_jsx("div", { children: !srcCanvas && _jsx("canvas", { ref: canvasRef, width: 500, height: 300 }) }));
 }
 export default BarComponent;
 //# sourceMappingURL=BarComponent.js.map

@@ -46,7 +46,7 @@ function BarComponent({ srcAudio, srcCanvas, options, audioContext }) {
             wavizReference.current.bar(options);
         }
     }, [srcAudio, srcCanvas, options, isPlaying, audioContext]);
-    return ((0, jsx_runtime_1.jsxs)("div", { children: [!srcCanvas && (0, jsx_runtime_1.jsx)("canvas", { ref: canvasRef, width: 500, height: 300 }), true && canvasRef.current] }));
+    return ((0, jsx_runtime_1.jsx)("div", { children: !srcCanvas && (0, jsx_runtime_1.jsx)("canvas", { ref: canvasRef, width: 500, height: 300 }) }));
 }
 exports.default = BarComponent;
 //# sourceMappingURL=BarComponent.js.map

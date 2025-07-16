@@ -13,15 +13,21 @@ function WaveComponent({ srcAudio, srcCanvas, options, audioContext }: vizCompon
   const wavizReference = useRef<Waviz | null>(null);
   const isPlaying = useRef(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [canvasReady, setCanvasReady] = useState(false);
+  const [canvasReady, setCanvasReady] = useState(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
 
   // Use Effect Logic
- useEffect(() => { //Check if canvas is passed in
+ useEffect(() => { //Check if canvas is passed in and assign srcCanvas to canvasRef if passed in
     if (srcCanvas && srcCanvas.current) {
       canvasRef.current = srcCanvas.current
       setCanvasReady(true);
     }
  }, [srcCanvas])
+
+ useEffect(() => {
+  if (!srcCanvas && canvasRef.current) {
+    setCanvasReady(true);
+  }
+ }, [canvasRef.current, srcCanvas]);
   
   useEffect(() => {
     // Check if canvas exists
