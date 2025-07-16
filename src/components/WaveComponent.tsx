@@ -3,7 +3,7 @@ import Waviz from "../core/waviz";
 
 type vizComponentProps = {
   srcAudio: any;
-  srcCanvas: React.RefObject<HTMLCanvasElement>;
+  srcCanvas: React.RefObject<HTMLCanvasElement | null>;
   options: {};
 };
 
