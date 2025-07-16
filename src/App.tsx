@@ -4,7 +4,7 @@ import BarComponent from "./components/BarComponent";
 
 export default function App() {
   // audio element can take an HTMLAudioElement, microphone, or screenAudio
-  const audioElement = useRef(null);
+  const audioElement = useRef('screenAudio');
   const canvasElement = useRef(null);
 
   return (
@@ -28,7 +28,7 @@ export default function App() {
 
       {/* Don't forget to comment out the audio tag if using microphone or screenAudio */}
       <canvas ref={canvasElement} width="800" height="400"></canvas>
-      <audio ref={audioElement} src="/FreshFocus.mp3" controls></audio>
+      <audio src="/FreshFocus.mp3" controls></audio>
     </div>
   );
 }

@@ -8,9 +8,9 @@ const audio = document.getElementById('audio') as HTMLAudioElement;
 //   audio: true,
 //   preferCurrentTab: true
 // });
-const wavizTest = new Waviz(canvas, audio);
+// const wavizTest = new Waviz(canvas, audio);
 // const wavizTest = new Waviz(canvas, 'microphone');
-// const wavizTest = new Waviz(canvas, 'screenAudio');
+const wavizTest = new Waviz(canvas, 'screenAudio');
 // const wavizTest = new Waviz(canvas, stream);
 
 // Testing option objects
@@ -20,11 +20,11 @@ const wavizTest = new Waviz(canvas, audio);
 //Test on play
 audio.addEventListener('play', async () => {
   await wavizTest.input.initializePending(); //TODO: Figure out how to make this done in the classes
-  wavizTest.visualizer.bars();
+  wavizTest.visualizer!.bars();
 });
 
 
 // Test on pause
 audio.addEventListener('pause', () => {
-  wavizTest.visualizer.stop();
+  wavizTest.visualizer!.stop();
 });
