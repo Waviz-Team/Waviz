@@ -96,11 +96,11 @@ class Visualizer implements IVisualizer {
 
     if (!this.particleSystem){
       this.particleSystem = []
-      data.forEach((e)=>{
-        this.particleSystem.push(new particle(e, [(Math.random()-0.5)*10,-Math.random()*10], 1))
-        // console.log(this.particleSystem)
-      })
     }
+      for (let i = 0; i < data.length; i+=100){
+        this.particleSystem.push(new particle(data[i], [(Math.random()-0.5)*10,-Math.random()*10], 1))
+      }
+    
 
     if(this.particleSystem){
       this.particleSystem.forEach((e)=>{
@@ -108,11 +108,7 @@ class Visualizer implements IVisualizer {
           e.update()
           console.log(e.live)
         }
-        if(e.live===false){
-          e = new particle(e, [(Math.random()-0.5)*10,-Math.random()*10], 1)
-          e.update()
-        }
-        this.ctx.fillRect(...e.position, 5, 5)
+        this.ctx.fillRect(...e.position, 3, 3)
       })
     }
   }
@@ -201,6 +197,10 @@ class Visualizer implements IVisualizer {
     // this.line(data2);
     // this.ctx.stroke();
 
+        // const color = this.radialGradient();
+        this.ctx.fillStyle = color;
+        this.particles(data);
+        // this.ctx.fill();
 
   }
 
@@ -216,6 +216,13 @@ class Visualizer implements IVisualizer {
 }
 
 export default Visualizer;
+
+
+
+
+
+
+
 
 // ---
 
@@ -292,3 +299,4 @@ export default Visualizer;
 //   // Re-run draw cycle on next anumation frame
 //   this.renderLoop = requestAnimationFrame(this.bars.bind(this, options));
 // }
+// 
