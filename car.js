@@ -12,7 +12,7 @@ class car {
   }
 
   blinkers(direction) {
-    console.log(`the ${direction} is on`);
+    console.log(`the ${direction} blinker is on`);
   }
 
   action(options) {
@@ -27,6 +27,7 @@ const myCar = new car();
 myCar.action({
   accelerate: [100, 'forward'],
   lights: ['on'],
+  blinkers:['right']
 });
 
 //  options.forEach((e) => {

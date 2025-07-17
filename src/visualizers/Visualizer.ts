@@ -27,7 +27,6 @@ class Visualizer implements IVisualizer {
         break;
     }
 
-
     return processedData;
   }
 
@@ -54,7 +53,7 @@ class Visualizer implements IVisualizer {
     const polarData = [];
 
     data.forEach((e, i, a) => {
-      const angle = (i * (Math.PI * 2)) / a.length;
+      const angle = (i * (Math.PI * 3)) / a.length;
       const x = e * Math.cos(angle);
       const y = e * Math.sin(angle);
       polarData.push([x + width / 2, y + height / 2]);
@@ -64,29 +63,33 @@ class Visualizer implements IVisualizer {
   }
 
   // Drawing tools
-  particles(data, position, velocity, gravity){
-
-    class particle{
+  particles(data, position, velocity, gravity) {
+    class particle {
       canvasSize;
       position;
-      velocity
-      gravity
-      live=true
+      velocity;
+      gravity;
+      live = true;
 
-      constructor(position, velocity, gravity){
-        this.canvasSize = [500,500]
-        this.position = position
-        this.velocity = velocity
-        this.gravity = gravity
+      constructor(position, velocity, gravity) {
+        this.canvasSize = [500, 500];
+        this.position = position;
+        this.velocity = velocity;
+        this.gravity = gravity;
       }
 
-      update(){
-        if (this.position[0]>0 && this.position[0]<this.canvasSize[0] && this.position[1]>0 && this.position[0]<this.canvasSize[1]){
-          this.velocity = [this.velocity[0], this.velocity[1]+this.gravity]
-          
-          const x = this.position[0]+this.velocity[0];
-          const y = this.position[1]+this.velocity[1];
-          this.position = [x,y]
+      update() {
+        if (
+          this.position[0] > 0 &&
+          this.position[0] < this.canvasSize[0] &&
+          this.position[1] > 0 &&
+          this.position[0] < this.canvasSize[1]
+        ) {
+          this.velocity = [this.velocity[0], this.velocity[1] + this.gravity];
+
+          const x = this.position[0] + this.velocity[0];
+          const y = this.position[1] + this.velocity[1];
+          this.position = [x, y];
         }
         // if(this.position[0]<0 || this.position[0]>this.canvasSize[0] || this.position[1]<0 || this.position[0]>this.canvasSize[1]){
         //   this.live=false
@@ -94,22 +97,28 @@ class Visualizer implements IVisualizer {
       }
     }
 
-    if (!this.particleSystem){
-      this.particleSystem = []
+    if (!this.particleSystem) {
+      this.particleSystem = [];
     }
-      for (let i = 0; i < data.length; i+=100){
-        this.particleSystem.push(new particle(data[i], [(Math.random()-0.5)*10,-Math.random()*10], 1))
-      }
-    
 
-    if(this.particleSystem){
-      this.particleSystem.forEach((e)=>{
-        if (e.live===true){
-          e.update()
-          console.log(e.live)
+    for (let i = 0; i < data.length; i += 100) {
+      this.particleSystem.push(
+        new particle(
+          data[i],
+          [(Math.random() - 0.5) * 10, -Math.random() * 10],
+          1
+        )
+      );
+    }
+
+    if (this.particleSystem) {
+      this.particleSystem.forEach((e) => {
+        if (e.live === true) {
+          e.update();
+          console.log(e.live);
         }
-        this.ctx.fillRect(...e.position, 3, 3)
-      })
+        this.ctx.rect(...e.position, 3, 3);
+      });
     }
   }
 
@@ -133,7 +142,6 @@ class Visualizer implements IVisualizer {
     // this.ctx.stroke()
   }
 
-
   //! Still not working correctly
   bars(data) {
     this.ctx.beginPath();
@@ -143,8 +151,7 @@ class Visualizer implements IVisualizer {
     });
   }
 
-
-  //Color tools
+  // Color tools
   randomColor() {
     const r = Math.random() * 255;
     const g = Math.random() * 255;
@@ -169,17 +176,25 @@ class Visualizer implements IVisualizer {
     return gradient;
   }
 
-  radialGradient(){
-    const halfWidth = this.canvas.width/2;
-    const halfHeight = this.canvas.height/2;
-    const gradient = this.ctx.createRadialGradient(halfWidth, halfHeight, 100, halfWidth, halfHeight, 150);
+  radialGradient() {
+    const halfWidth = this.canvas.width / 2;
+    const halfHeight = this.canvas.height / 2;
+    const gradient = this.ctx.createRadialGradient(
+      halfWidth,
+      halfHeight,
+      100,
+      halfWidth,
+      halfHeight,
+      150
+    );
 
     gradient.addColorStop(0, '#E34AB0');
     gradient.addColorStop(1, '#5BC4F9');
 
-    return gradient
+    return gradient;
   }
 
+  // Render methods
   contextManager() {
     const processedData = this.dataPreProcessor('time');
     const data = this.dataToPolar(processedData);
@@ -197,11 +212,11 @@ class Visualizer implements IVisualizer {
     // this.line(data2);
     // this.ctx.stroke();
 
-        // const color = this.radialGradient();
-        this.ctx.fillStyle = color;
-        this.particles(data);
-        // this.ctx.fill();
-
+    this.ctx.beginPath()
+    const color2 = this.radialGradient();
+    this.ctx.fillStyle = color2;
+    this.particles(data);
+    this.ctx.fill();
   }
 
   render() {
@@ -217,14 +232,7 @@ class Visualizer implements IVisualizer {
 
 export default Visualizer;
 
-
-
-
-
-
-
-
-// ---
+//* OLD Methods
 
 // wave(options?) {
 //   // User Style options
@@ -299,4 +307,4 @@ export default Visualizer;
 //   // Re-run draw cycle on next anumation frame
 //   this.renderLoop = requestAnimationFrame(this.bars.bind(this, options));
 // }
-// 
+//
