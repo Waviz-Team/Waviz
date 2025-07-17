@@ -18,6 +18,20 @@ h1 {
   margin: 0;
 }
 
+li{
+  margin:20px;
+}
+
+a{
+  text-decoration: none;
+}
+
+#list{
+  border: 1px solid rgb(76, 85, 88);
+  border-radius: 10px;
+  padding:20px;
+}
+
 .content {
   width: 100vw;
   height: 100%;
