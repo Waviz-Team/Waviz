@@ -42,7 +42,26 @@ The purpose of the Input class is to help initialize an audio analyzer as well a
 * MediaStream input (defined by an await statement of a mediaStream) - Highly recommend only using pre-defined methods if it exists for the mediaStream. This input will not have sanity checks and is here for edge cases/more flexibility and control for the user. 
 
 **Handlers:** We currently have two primary handlers for an audio input.
-* connectToAudioElement() - takes in an audio element as an argument. This will handle local files, htmls, and URL strings/paths to audio 
+* connectToAudioElement() - takes in an audio element as an argument. This will handle local files, htmls, and URL strings/paths to audio.
+* connectToMediaStream() - takes in a stream element as an argument. This will handle all mediaStream connections.
+
+**initializePending():** This method is important for waiting for the async user permissions (for media streams). Without this wait, a connection will be set up without waiting for permission, leading to a permanent suspended audio context. 
+* Make sure to call this method before calling a visualizer function to prevent problem listed above!
+* This method also acts as a middleware router for Microphone and screenAudio!
+
+**Local audio methods. All methods here route to connectToAudioElement**
+* loadAudioFile() - takes in an event from an event handler and routes to the handler. 
+* connectToAudioURL() - takes in a string. String should point to the path of an audio file. 
+* connectToHTMLElement() - takes in an existing HTML audio element to process through WebAudioAPI. It is currently tied to an event listener listening for 'play' to resume audio context. 
+
+**MediaStream methods. All methods here route to connectToMediaStream():**
+* connectToMicrophone() - is routed from initalizePending(). Sets up access to user microphone in the browser. *is supported by most modern browsers (chrome, firefox, safari, edge)*
+* connectToScreenAudio() - is routed from intializePending(). Sets up access to user tab audio via getDisplayMedia(). It is limited to the tab in which the application is contained within. It does this by grabbing video access, and then turning off video while keeping audio from the video feed. Without this, audio cannot be grabbed. This feature is only supported by Chromium Browsers. 
+
+**API Methods:**
+* getSourceNode() - if you want to figure out which sourceNode is being passed in
+* getAudioContext() - to get the current used audioContext
+* cleanup() - this will clear the current audioContext and disconnect the sourceNode. To reaccess features, a re-intialization of the audioContext/sourceNode will be necessary. 
 
 ⸻
 
