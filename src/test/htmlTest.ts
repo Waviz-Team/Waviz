@@ -17,10 +17,10 @@ const wavizTest = new Waviz(canvas, 'screenAudio');
   const optionsWave = { lineWidth: 3, lineColor: 'blue', multipliyer: 3 };
   const optionsBars = { barWidth: 10, fillStyle: 'blue', numBars: 20 };
 
-//Test on play
-audio.addEventListener('play', async () => {
-  await wavizTest.input.initializePending(); //TODO: Figure out how to make this done in the classes
-  wavizTest.visualizer!.bars();
+  //Test on play
+  audio.addEventListener('play', async () => {
+    await wavizTest.input.initializePending(); //TODO: Figure out how to make this done in the classes
+    wavizTest.visualizer!.bars();
 });
 
 
