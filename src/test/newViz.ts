@@ -9,14 +9,32 @@ const viz = new Waviz(canvas, audio);
 
 //Test on play
 audio.addEventListener('play', async () => {
-  viz.render();
+  viz.visualizer.render([
+    {
+      freq: 'time',
+      coord: 'rect',
+      viz: 'line',
+      color: 'linearGradient', 
+    },
+    // {
+    //   freq: 'time',
+    //   coord: 'polar',
+    //   viz: 'line',
+    //   color: 'randomColor',
+    // },
+    // {
+    //   freq: 'time',
+    //   coord: 'polar',
+    //   viz: 'particles',
+    //   color: 'red',
+    // },
+  ]);
 });
 
 // Test on pause
 audio.addEventListener('pause', () => {
   viz.stop();
 });
-
 
 // {
 //     setup:['time', 'polar', 'line'],

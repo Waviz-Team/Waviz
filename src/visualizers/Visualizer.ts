@@ -8,6 +8,7 @@ class Visualizer implements IVisualizer {
   data;
   rectData;
   renderLoop;
+  frame = 0;
 
   constructor(canvas, data) {
     //Inputs check
@@ -29,7 +30,7 @@ class Visualizer implements IVisualizer {
   }
 
   // Data tools
-  dataPreProcessor(dataType: string) {
+  dataPreProcessor(dataType: string, range: number = 100) {
     let data = [];
 
     // Select data type - 'freq' or 'time'
@@ -45,7 +46,7 @@ class Visualizer implements IVisualizer {
     const normalized = Array.from(data).map((e) => e / 255);
 
     // Range Map
-    const processedData = mapArray(normalized, 0, 1, 0, 255);
+    const processedData = mapArray(normalized, 0, 1, range, -range);
 
     return processedData;
   }
@@ -148,27 +149,27 @@ class Visualizer implements IVisualizer {
     }
   }
 
-  dots(data) {
-    data.forEach((e) => {
-      this.ctx.rect(...e, 1, 1);
-    });
+  dots(data, samples = 1024) {
+    const sampling = Math.ceil(data.length / samples);
+    for (let i = 0; i < data.length; i += sampling) {
+      this.ctx.rect(...data[i], 1, 1);
+    }
   }
 
-  line(data) {
+  line(data, samples = 100) {
+    const sampling = Math.ceil(data.length / samples);
     this.ctx.beginPath();
-    data.forEach((e, i) => {
+    for (let i = 0; i < data.length; i += sampling) {
       if (i === 0) {
-        this.ctx.moveTo(...e);
+        this.ctx.moveTo(...data[i]);
       } else {
-        this.ctx.lineTo(...e);
+        this.ctx.lineTo(...data[i]);
       }
-    });
-    // this.ctx.closePath()
-    // this.ctx.stroke()
+    }
   }
 
   bars(data, numBars = 10) {
-    const sampling = Math.round(data.length / numBars);
+    const sampling = Math.ceil(data.length / numBars);
     this.ctx.beginPath();
 
     for (let i = 0; i < data.length; i += sampling) {
@@ -176,7 +177,6 @@ class Visualizer implements IVisualizer {
 
       this.ctx.moveTo(e[0], this.canvas.height);
       this.ctx.lineTo(...e);
-      this.ctx.lineWidth=25
     }
   }
 
@@ -231,8 +231,9 @@ class Visualizer implements IVisualizer {
   // Render methods
 
   layer(options) {
-    // Draw
+    // New Path
     this.ctx.beginPath();
+
     // Data
     const inputData = this.dataPreProcessor(options.freq);
     let data;
@@ -243,9 +244,6 @@ class Visualizer implements IVisualizer {
         break;
       case 'polar':
         data = this.dataToPolar(inputData);
-        break;
-
-      default:
         break;
     }
 
@@ -266,44 +264,48 @@ class Visualizer implements IVisualizer {
     }
 
     // Style
-    switch (options.color) {
+    switch (options.color[0]) {
       case 'linearGradient':
-        this.ctx.strokeStyle = this.linearGradient();
+        this.ctx.strokeStyle = this.linearGradient(options.color[1], options.color[2]);
         break;
       case 'radialGradient':
-        this.ctx.strokeStyle = this.radialGradient();
+        this.ctx.strokeStyle = this.radialGradient(options.color[1], options.color[2]);
         break;
       case 'randomColor':
         this.ctx.strokeStyle = this.randomColor();
         break;
       case 'randomPalette':
-        this.ctx.strokeStyle = this.randomPalette();
+        this.ctx.strokeStyle = this.randomPalette(options.color[1]);
         break;
       default:
         this.ctx.strokeStyle = options.color;
         break;
     }
 
-    // Render
+    // Draw Path
     this.ctx.stroke();
   }
 
   //! RENDER
-  render() {
+  render(options) {
     // Clear Canvas
     this.ctx.reset();
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Draw
-    this.layer({
-      freq: 'time',
-      coord: 'rect',
-      viz: 'bars',
-      color:'linearGradient'
-    });
+    if (Array.isArray(options)) {
+      options.forEach((e) => {
+        this.layer(e);
+      });
+    } else {
+      this.layer(options);
+    }
+
+    // Increment frame counter
+    this.frame++;
 
     // Start Animation Loop
-    this.renderLoop = requestAnimationFrame(this.render.bind(this));
+    this.renderLoop = requestAnimationFrame(this.render.bind(this, options));
   }
 
   stop() {
