@@ -254,10 +254,56 @@ class Visualizer implements IVisualizer {
     this.ctx.strokeStyle = color;
   }
   // Render methods
-  contextManager(options) {
-    Object.keys(options).forEach((e) => {
-      this[e](...options[e]);
-    });
+  
+  layer(){
+        // Draw
+    this.ctx.beginPath()
+      // Data
+      const data = this.dataToPolar(this.dataPreProcessor('time'))
+
+      // Style 
+      this.ctx.strokeStyle = 'white'
+
+      // Vizualizer
+      this.line(data)
+
+      // Render
+      this.ctx.stroke()
+  }
+
+  //! RENDER
+  render() {
+    // Clear Canvas
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    // Draw
+    this.ctx.beginPath()
+      // Data
+      const data = this.dataToRect(this.dataPreProcessor('time'))
+
+      // Style 
+      this.ctx.strokeStyle = 'red'
+
+      // Vizualizer
+      this.line(data)
+
+      // Render
+      this.ctx.stroke()
+
+    this.layer()
+
+
+
+
+
+
+    // Start Animation Loop
+    this.renderLoop = requestAnimationFrame(this.render.bind(this));
+  }
+  
+  
+  // contextManager() {
+
 
     // const processedData = this.dataPreProcessor('time');
     // const data = this.dataToRect(processedData);
@@ -282,13 +328,9 @@ class Visualizer implements IVisualizer {
     // this.ctx.fillStyle = color2;
     // this.particles(data);
     // this.ctx.fill();
-  }
+  // }
 
-  render(options) {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.contextManager(options);
-    this.renderLoop = requestAnimationFrame(this.render.bind(this, options));
-  }
+  
 
   stop() {
     cancelAnimationFrame(this.renderLoop);

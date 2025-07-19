@@ -9,11 +9,7 @@ const viz = new Waviz(canvas, audio);
 
 //Test on play
 audio.addEventListener('play', async () => {
-  viz.render({
-    setup:['time', 'polar', 'line'],
-    color:['white'],
-    stroke:[]
-  });
+  viz.render();
 });
 
 // Test on pause
@@ -22,3 +18,8 @@ audio.addEventListener('pause', () => {
 });
 
 
+// {
+//     setup:['time', 'polar', 'line'],
+//     color:['white'],
+//     stroke:[]
+//   }

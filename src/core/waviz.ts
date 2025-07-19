@@ -65,8 +65,8 @@ class Waviz {
         this.visualizer.bars(options);
     }
 
-    render(options){
-        this.visualizer.render(options)
+    render(){
+        this.visualizer.render()
     }
 
     stop(){
