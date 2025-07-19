@@ -34,7 +34,7 @@ class Visualizer implements IVisualizer {
 
     // Select data type - 'freq' or 'time'
     switch (dataType) {
-      case 'freq':
+      case 'fft':
         data = this.data.freqData;
         break;
       case 'time':
@@ -59,7 +59,7 @@ class Visualizer implements IVisualizer {
 
     data.forEach((e, i) => {
       const x = (i / data.length) * width;
-      const y = height / 2 + (e / 255 - 0.5) * 255;
+      const y = height / 2 + e;
       rectData.push([x, y]);
     });
     return rectData;
@@ -99,10 +99,10 @@ class Visualizer implements IVisualizer {
 
       update() {
         if (
-          this.position[0] > 0 &&
-          this.position[0] < this.canvasSize[0] &&
-          this.position[1] > 0 &&
-          this.position[0] < this.canvasSize[1]
+          this.position[0] >= 0 &&
+          this.position[0] <= this.canvasSize[0] &&
+          this.position[1] >= 0 &&
+          this.position[0] <= this.canvasSize[1]
         ) {
           this.velocity = [this.velocity[0], this.velocity[1] + this.gravity];
 
@@ -143,15 +143,14 @@ class Visualizer implements IVisualizer {
         } else if (e.live === false) {
           this.particleSystem.splice(i, 1);
         }
-        this.ctx.rect(...e.position, 3, 3);
+        this.ctx.rect(...e.position, 1, 1);
       });
     }
   }
 
   dots(data) {
-    this.processedData.forEach((e) => {
-      // this.ctx.fillStyle = this.randomColor();
-      this.ctx.fillRect(...e, 5, 5);
+    data.forEach((e) => {
+      this.ctx.rect(...e, 1, 1);
     });
   }
 
@@ -168,8 +167,7 @@ class Visualizer implements IVisualizer {
     // this.ctx.stroke()
   }
 
-  bars(numBars = 10) {
-    const data = this.processedData;
+  bars(data, numBars = 10) {
     const sampling = Math.round(data.length / numBars);
     this.ctx.beginPath();
 
@@ -178,6 +176,7 @@ class Visualizer implements IVisualizer {
 
       this.ctx.moveTo(e[0], this.canvas.height);
       this.ctx.lineTo(...e);
+      this.ctx.lineWidth=25
     }
   }
 
@@ -190,147 +189,122 @@ class Visualizer implements IVisualizer {
     return `rgb(${r},${g},${b})`;
   }
 
-  linearGradient() {
-    const width = this.canvas.width;
-    const height = this.canvas.height;
+  randomPalette(colorArray = ['#57BBDE', '#9DDE57', '#CC57DE', '#DE9C57']) {
+    return colorArray[Math.round(Math.random() * colorArray.length)];
+  }
+
+  linearGradient(color1 = '#E34AB0', color2 = '#5BC4F9') {
     const gradient = this.ctx.createLinearGradient(
       0,
-      height / 2,
-      width,
-      height / 2
+      this.canvas.height / 2,
+      this.canvas.width,
+      this.canvas.height / 2
     );
 
-    gradient.addColorStop(0, '#E34AB0');
-    gradient.addColorStop(1, '#5BC4F9');
+    gradient.addColorStop(0, color1);
+    gradient.addColorStop(1, color2);
 
     return gradient;
   }
 
-  radialGradient() {
-    const halfWidth = this.canvas.width / 2;
-    const halfHeight = this.canvas.height / 2;
+  radialGradient(
+    color1 = '#E34AB0',
+    color2 = '#5BC4F9',
+    innerRadius = 100,
+    outerRadius = 250
+  ) {
     const gradient = this.ctx.createRadialGradient(
-      halfWidth,
-      halfHeight,
-      100,
-      halfWidth,
-      halfHeight,
-      150
+      this.canvas.width / 2,
+      this.canvas.height / 2,
+      innerRadius,
+      this.canvas.width / 2,
+      this.canvas.height / 2,
+      outerRadius
     );
 
-    gradient.addColorStop(0, '#E34AB0');
-    gradient.addColorStop(1, '#5BC4F9');
+    gradient.addColorStop(0, color1);
+    gradient.addColorStop(1, color2);
 
     return gradient;
   }
 
-  setup(type, coord, vizType) {
-    this.ctx.beginPath();
-    const processedData = this.dataPreProcessor(type);
-    let data = [];
+  // Render methods
 
-    switch (coord) {
+  layer(options) {
+    // Draw
+    this.ctx.beginPath();
+    // Data
+    const inputData = this.dataPreProcessor(options.freq);
+    let data;
+
+    switch (options.coord) {
       case 'rect':
-        data = this.dataToRect(processedData);
+        data = this.dataToRect(inputData);
         break;
       case 'polar':
-        data = this.dataToPolar(processedData);
+        data = this.dataToPolar(inputData);
+        break;
+
+      default:
+        break;
     }
 
-    switch (vizType) {
+    // Vizualizer
+    switch (options.viz) {
       case 'line':
         this.line(data);
         break;
+      case 'bars':
+        this.bars(data);
+        break;
+      case 'dots':
+        this.dots(data);
+        break;
+      case 'particles':
+        this.particles(data);
+        break;
     }
 
-    return data;
-  }
+    // Style
+    switch (options.color) {
+      case 'linearGradient':
+        this.ctx.strokeStyle = this.linearGradient();
+        break;
+      case 'radialGradient':
+        this.ctx.strokeStyle = this.radialGradient();
+        break;
+      case 'randomColor':
+        this.ctx.strokeStyle = this.randomColor();
+        break;
+      case 'randomPalette':
+        this.ctx.strokeStyle = this.randomPalette();
+        break;
+      default:
+        this.ctx.strokeStyle = options.color;
+        break;
+    }
 
-  stroke() {
+    // Render
     this.ctx.stroke();
-  }
-
-  color(color) {
-    this.ctx.strokeStyle = color;
-  }
-  // Render methods
-  
-  layer(){
-        // Draw
-    this.ctx.beginPath()
-      // Data
-      const data = this.dataToPolar(this.dataPreProcessor('time'))
-
-      // Style 
-      this.ctx.strokeStyle = 'white'
-
-      // Vizualizer
-      this.line(data)
-
-      // Render
-      this.ctx.stroke()
   }
 
   //! RENDER
   render() {
     // Clear Canvas
+    this.ctx.reset();
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    
+
     // Draw
-    this.ctx.beginPath()
-      // Data
-      const data = this.dataToRect(this.dataPreProcessor('time'))
-
-      // Style 
-      this.ctx.strokeStyle = 'red'
-
-      // Vizualizer
-      this.line(data)
-
-      // Render
-      this.ctx.stroke()
-
-    this.layer()
-
-
-
-
-
+    this.layer({
+      freq: 'time',
+      coord: 'rect',
+      viz: 'bars',
+      color:'linearGradient'
+    });
 
     // Start Animation Loop
     this.renderLoop = requestAnimationFrame(this.render.bind(this));
   }
-  
-  
-  // contextManager() {
-
-
-    // const processedData = this.dataPreProcessor('time');
-    // const data = this.dataToRect(processedData);
-
-    // this.ctx.beginPath();
-    // const color = this.linearGradient();
-    // this.ctx.lineWidth = 40;
-    // this.ctx.strokeStyle = color;
-    // this.ctx.setLineDash([10, 10]);
-    // this.bars(data);
-    // this.ctx.stroke();
-
-    // const data2 = this.dataToRect(processedData);
-    // const color2 = this.linearGradient();
-    // this.ctx.strokeStyle = color2;
-    // this.ctx.lineWidth = 10;
-    // this.line(data2);
-    // this.ctx.stroke();
-
-    // this.ctx.beginPath();
-    // const color2 = this.radialGradient();
-    // this.ctx.fillStyle = color2;
-    // this.particles(data);
-    // this.ctx.fill();
-  // }
-
-  
 
   stop() {
     cancelAnimationFrame(this.renderLoop);
@@ -338,80 +312,3 @@ class Visualizer implements IVisualizer {
 }
 
 export default Visualizer;
-
-//* OLD Methods
-
-// wave(options?) {
-//   // User Style options
-//   const {
-//     lineWidth = 2,
-//     lineColor = '#E34AB0',
-//     multiplier = 1,
-//   } = options || {};
-
-//   // Get live data
-//   const dataArray = this.analyser.timeData;
-//   const bufferLength = this.analyser.bufferLength;
-//   // console.log(dataArray)
-//   // Setup canvas
-//   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-//   this.ctx.lineWidth = lineWidth;
-//   this.ctx.strokeStyle = lineColor;
-
-//   // Draw waveform
-//   this.ctx.beginPath();
-//   const points = this.canvas.width / bufferLength;
-//   let x = 0;
-
-//   for (let i = 0; i < bufferLength; i++) {
-//     // Normalize values
-//     const v = dataArray[i] / 256;
-//     const y =
-//       this.canvas.height / 2 + (v - 0.5) * this.canvas.height * multiplier;
-
-//     if (i === 0) {
-//       this.ctx.moveTo(x, y);
-//     } else {
-//       this.ctx.lineTo(x, y);
-//     }
-//     x += points;
-//   }
-
-//   this.ctx.stroke();
-
-//   // Re-run draw cycle on next anumation frame
-//   this.renderLoop = requestAnimationFrame(this.wave.bind(this, options));
-// }
-
-// bars(options?) {
-//   // User Style options
-//   const {
-//     barWidth = 20,
-//     fillStyle = '#E34AB0',
-//     numBars = 10,
-//   } = options || {};
-
-//   // Get live data
-//   const dataArray = this.analyser.freqData;
-//   const bufferLength = this.analyser.bufferLength;
-
-//   // Setup canvas
-//   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-//   this.ctx.fillStyle = fillStyle;
-
-//   // Draw bars
-//   const bars = this.canvas.width / numBars;
-//   let x = 0;
-
-//   for (let i = 0; i < bufferLength; i += Math.floor(bufferLength / numBars)) {
-//     // Normalize values
-//     const v = dataArray[i] / 256;
-//     const y = v * this.canvas.height;
-//     this.ctx.fillRect(x, this.canvas.height, barWidth, -y);
-
-//     x += bars;
-//   }
-//   // Re-run draw cycle on next anumation frame
-//   this.renderLoop = requestAnimationFrame(this.bars.bind(this, options));
-// }
-//
