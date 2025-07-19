@@ -1,4 +1,6 @@
+import AudioAnalyzer from '../analysers/analyzer';
 import { IVisualizer } from '../types/types';
+import { mapArray } from '../utils/mathUtils';
 
 class Visualizer implements IVisualizer {
   canvas;
@@ -8,6 +10,18 @@ class Visualizer implements IVisualizer {
   renderLoop;
 
   constructor(canvas, data) {
+    //Inputs check
+    if (!canvas || !(canvas instanceof HTMLCanvasElement)) {
+      console.log('No valid canvas provided');
+      return;
+    }
+
+    if (!data || !(data instanceof AudioAnalyzer)) {
+      console.log('No valid data provided');
+      return;
+    }
+
+    // Class variables
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.data = data;
@@ -16,16 +30,22 @@ class Visualizer implements IVisualizer {
 
   // Data tools
   dataPreProcessor(dataType: string) {
-    let processedData = [];
+    let data = [];
 
+    // Select data type - 'freq' or 'time'
     switch (dataType) {
       case 'freq':
-        processedData = this.data.freqData;
+        data = this.data.freqData;
         break;
       case 'time':
-        processedData = this.data.timeData;
+        data = this.data.timeData;
         break;
     }
+    // Normalize data
+    const normalized = Array.from(data).map((e) => e / 255);
+
+    // Range Map
+    const processedData = mapArray(normalized, 0, 1, 0, 255);
 
     return processedData;
   }
@@ -42,7 +62,6 @@ class Visualizer implements IVisualizer {
       const y = height / 2 + (e / 255 - 0.5) * 255;
       rectData.push([x, y]);
     });
-
     return rectData;
   }
 
@@ -53,7 +72,7 @@ class Visualizer implements IVisualizer {
     const polarData = [];
 
     data.forEach((e, i, a) => {
-      const angle = (i * (Math.PI * 3)) / a.length;
+      const angle = (i * (Math.PI * 2)) / a.length;
       const x = e * Math.cos(angle);
       const y = e * Math.sin(angle);
       polarData.push([x + width / 2, y + height / 2]);
@@ -91,9 +110,14 @@ class Visualizer implements IVisualizer {
           const y = this.position[1] + this.velocity[1];
           this.position = [x, y];
         }
-        // if(this.position[0]<0 || this.position[0]>this.canvasSize[0] || this.position[1]<0 || this.position[0]>this.canvasSize[1]){
-        //   this.live=false
-        // }
+        if (
+          this.position[0] < 0 ||
+          this.position[0] > this.canvasSize[0] ||
+          this.position[1] < 0 ||
+          this.position[1] > this.canvasSize[1]
+        ) {
+          this.live = false;
+        }
       }
     }
 
@@ -112,10 +136,12 @@ class Visualizer implements IVisualizer {
     }
 
     if (this.particleSystem) {
-      this.particleSystem.forEach((e) => {
+      this.particleSystem.forEach((e, i) => {
         if (e.live === true) {
           e.update();
-          console.log(e.live);
+          console.log(this.particleSystem.length);
+        } else if (e.live === false) {
+          this.particleSystem.splice(i, 1);
         }
         this.ctx.rect(...e.position, 3, 3);
       });
@@ -123,7 +149,7 @@ class Visualizer implements IVisualizer {
   }
 
   dots(data) {
-    data.forEach((e) => {
+    this.processedData.forEach((e) => {
       // this.ctx.fillStyle = this.randomColor();
       this.ctx.fillRect(...e, 5, 5);
     });
@@ -142,13 +168,17 @@ class Visualizer implements IVisualizer {
     // this.ctx.stroke()
   }
 
-  //! Still not working correctly
-  bars(data) {
+  bars(numBars = 10) {
+    const data = this.processedData;
+    const sampling = Math.round(data.length / numBars);
     this.ctx.beginPath();
-    data.forEach((e, i) => {
-      this.ctx.moveTo(this.canvas.width / 2, this.canvas.height / 2);
+
+    for (let i = 0; i < data.length; i += sampling) {
+      const e = data[i];
+
+      this.ctx.moveTo(e[0], this.canvas.height);
       this.ctx.lineTo(...e);
-    });
+    }
   }
 
   // Color tools
@@ -194,16 +224,51 @@ class Visualizer implements IVisualizer {
     return gradient;
   }
 
-  // Render methods
-  contextManager() {
-    const processedData = this.dataPreProcessor('time');
-    const data = this.dataToPolar(processedData);
+  setup(type, coord, vizType) {
+    this.ctx.beginPath();
+    const processedData = this.dataPreProcessor(type);
+    let data = [];
 
-    const color = this.radialGradient();
-    this.ctx.lineWidth = 2;
-    this.ctx.strokeStyle = color;
-    this.line(data);
+    switch (coord) {
+      case 'rect':
+        data = this.dataToRect(processedData);
+        break;
+      case 'polar':
+        data = this.dataToPolar(processedData);
+    }
+
+    switch (vizType) {
+      case 'line':
+        this.line(data);
+        break;
+    }
+
+    return data;
+  }
+
+  stroke() {
     this.ctx.stroke();
+  }
+
+  color(color) {
+    this.ctx.strokeStyle = color;
+  }
+  // Render methods
+  contextManager(options) {
+    Object.keys(options).forEach((e) => {
+      this[e](...options[e]);
+    });
+
+    // const processedData = this.dataPreProcessor('time');
+    // const data = this.dataToRect(processedData);
+
+    // this.ctx.beginPath();
+    // const color = this.linearGradient();
+    // this.ctx.lineWidth = 40;
+    // this.ctx.strokeStyle = color;
+    // this.ctx.setLineDash([10, 10]);
+    // this.bars(data);
+    // this.ctx.stroke();
 
     // const data2 = this.dataToRect(processedData);
     // const color2 = this.linearGradient();
@@ -212,17 +277,17 @@ class Visualizer implements IVisualizer {
     // this.line(data2);
     // this.ctx.stroke();
 
-    this.ctx.beginPath()
-    const color2 = this.radialGradient();
-    this.ctx.fillStyle = color2;
-    this.particles(data);
-    this.ctx.fill();
+    // this.ctx.beginPath();
+    // const color2 = this.radialGradient();
+    // this.ctx.fillStyle = color2;
+    // this.particles(data);
+    // this.ctx.fill();
   }
 
-  render() {
+  render(options) {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.contextManager();
-    this.renderLoop = requestAnimationFrame(this.render.bind(this));
+    this.contextManager(options);
+    this.renderLoop = requestAnimationFrame(this.render.bind(this, options));
   }
 
   stop() {
