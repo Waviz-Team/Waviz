@@ -11,23 +11,18 @@ type vizComponentProps = {
 function WaveComponent({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
-  const isPlaying = useRef(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasReady, setCanvasReady] = useState(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
 
   // Use Effect Logic
  useEffect(() => { //Check if canvas is passed in and assign srcCanvas to canvasRef if passed in
-    if (srcCanvas && srcCanvas.current) {
+    if (srcCanvas?.current) { //! Logic shortened with ? operator to throw undefined instead of of error
       canvasRef.current = srcCanvas.current
+      setCanvasReady(true);
+    } else if (canvasRef.current) {
       setCanvasReady(true);
     }
  }, [srcCanvas])
-
- useEffect(() => {
-  if (!srcCanvas && canvasRef.current) {
-    setCanvasReady(true);
-  }
- }, [canvasRef.current, srcCanvas]);
   
   useEffect(() => {
     // Check if canvas exists
@@ -38,34 +33,22 @@ function WaveComponent({ srcAudio, srcCanvas, options, audioContext }: vizCompon
     }
 
     if (srcAudio.current instanceof HTMLAudioElement) {
-      // Start visualizer
-      function playWave() {
-        if (!isPlaying.current) {
-          wavizReference.current.wave(options);
-          isPlaying.current = true;
-        }
-      }
-
-      // Stop visualizer
-      function stopWave() {
-        if (isPlaying.current) {
-          wavizReference.current.visualizer.stop();
-          isPlaying.current = false;
-        }
-      }
-
-      // Event listeners -
+      const playWave = () => wavizReference.current?.wave(options);
+      const stopWave = () => wavizReference.current?.visualizer.stop();
+      
+      // Event Listeners
       srcAudio.current.addEventListener("play", playWave);
       srcAudio.current.addEventListener("pause", stopWave);
-      
-      return () => { // Cleanup Listeners //! Possibly not needed...
-        srcAudio.current.removeEventListener("play", playWave)
-        srcAudio.current.removeEventListener("pause", stopWave)
+
+      return () => { // Cleanup Listeners
+        srcAudio.current.removeEventListener("play", playWave);
+        srcAudio.current.removeEventListener("pause", stopWave);
+        wavizReference.current?.visualizer.stop();
       };
     } else {
       wavizReference.current.wave(options);
     }
-  }, [canvasReady, srcAudio, options, isPlaying, audioContext]);
+  }, [canvasReady, srcAudio, options, audioContext]);
 
   return (
     <div>

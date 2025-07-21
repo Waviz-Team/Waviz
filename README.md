@@ -56,6 +56,7 @@ The purpose of the Input class is to help initialize an audio analyzer as well a
 ### Methods
 **connectAudioSource( ):** A router that takes in an audioSource as an argument. This will route the audio to correct managers that we have pre-defined. The current audio supported are: 
 * HTML Audio elements (defined as a HTML Audio Element)
+* HTML Video elements (defined as a HTML Video Element)
 * Local File inputs 
 * URL/path strings to media files (defined as a string path)
 * Microphone (defined by 'microphone') - This will require user permission for microphone access of the tab.
@@ -73,7 +74,7 @@ The purpose of the Input class is to help initialize an audio analyzer as well a
 **Local audio methods. All methods here route to connectToAudioElement**
 * loadAudioFile( ) - takes in an event from an event handler and routes to the handler. 
 * connectToAudioURL( ) - takes in a string. String should point to the path of an audio file. 
-* connectToHTMLElement( ) - takes in an existing HTML audio element to process through WebAudioAPI. It is currently tied to an event listener listening for 'play' to resume audio context. 
+* connectToHTMLElement( ) - takes in an existing HTML audio/video element to process through WebAudioAPI. It is currently tied to an event listener listening for 'play' to resume audio context. 
 
 **MediaStream methods. All methods here route to connectToMediaStream( ):**
 * connectToMicrophone( ) - is routed from initializePending(). Sets up access to user microphone through the browser. *supported by most modern browsers (chrome, firefox, safari, edge)*
