@@ -9,8 +9,8 @@ export default function App() {
 
   return (
     <div className="content">
-      <img src="/Logo.png" width="200"></img>
-      <img src="/pnpLogo.png" width="150"></img>
+      <img src="/Logo.png" width="200" alt="Waviz Logo"></img>
+      <img src="/pnpLogo.png" width="150" alt="PNP Logo"></img>
 
     <WaveComponent
         srcAudio={audioElement}
