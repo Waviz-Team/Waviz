@@ -11,23 +11,23 @@ const viz = new Waviz(canvas, audio);
 audio.addEventListener('play', async () => {
   viz.visualizer.render([
     {
-      freq: 'time',
+      freq: ['time', 100],
       coord: 'rect',
-      viz: 'line',
-      color: 'linearGradient', 
-    },
-    // {
+      viz: ['particles', [4,4], 0],
+      color: ['linearGradient'],
+    },  
+    //   {
     //   freq: 'time',
     //   coord: 'polar',
-    //   viz: 'line',
+    //   viz: 'polarBars',
     //   color: 'randomColor',
     // },
     // {
     //   freq: 'time',
     //   coord: 'polar',
     //   viz: 'particles',
-    //   color: 'red',
-    // },
+    //   color: 'orange',
+    // }, 
   ]);
 });
 
@@ -35,9 +35,3 @@ audio.addEventListener('play', async () => {
 audio.addEventListener('pause', () => {
   viz.stop();
 });
-
-// {
-//     setup:['time', 'polar', 'line'],
-//     color:['white'],
-//     stroke:[]
-//   }

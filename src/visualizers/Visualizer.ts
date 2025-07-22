@@ -9,6 +9,7 @@ class Visualizer implements IVisualizer {
   rectData;
   renderLoop;
   frame = 0;
+  particleSystem;
 
   constructor(canvas, data) {
     //Inputs check
@@ -66,35 +67,45 @@ class Visualizer implements IVisualizer {
     return rectData;
   }
 
-  dataToPolar(input) {
-    const width = this.canvas.width;
-    const height = this.canvas.height;
+  dataToPolar(input, radius = 100) {
     const data = input;
     const polarData = [];
 
     data.forEach((e, i, a) => {
+      e += radius;
       const angle = (i * (Math.PI * 2)) / a.length;
       const x = e * Math.cos(angle);
       const y = e * Math.sin(angle);
-      polarData.push([x + width / 2, y + height / 2]);
+      polarData.push([x + this.canvas.width / 2, y + this.canvas.height / 2]);
     });
 
     return polarData;
   }
 
   // Drawing tools
-  particles(data, position, velocity, gravity) {
+  particles(
+    data,
+    velocity: number[] = [1, 1],
+    gravity: number = 1,
+    beatSync: boolean = false
+  ) {
+    const frame = this.frame
     class particle {
       canvasSize;
       position;
       velocity;
       gravity;
       live = true;
+      born = frame;
 
       constructor(position, velocity, gravity) {
+        
         this.canvasSize = [500, 500];
         this.position = position;
-        this.velocity = velocity;
+        this.velocity = [
+          (Math.random() - 0.5) * velocity[0],
+          ((Math.random() - 0.5) * velocity[1]),
+        ];
         this.gravity = gravity;
       }
 
@@ -105,18 +116,24 @@ class Visualizer implements IVisualizer {
           this.position[1] >= 0 &&
           this.position[0] <= this.canvasSize[1]
         ) {
+          
           this.velocity = [this.velocity[0], this.velocity[1] + this.gravity];
 
           const x = this.position[0] + this.velocity[0];
           const y = this.position[1] + this.velocity[1];
           this.position = [x, y];
         }
+
         if (
           this.position[0] < 0 ||
           this.position[0] > this.canvasSize[0] ||
           this.position[1] < 0 ||
           this.position[1] > this.canvasSize[1]
         ) {
+          this.live = false;
+        }
+
+        if(frame - this.born > 100){
           this.live = false;
         }
       }
@@ -127,13 +144,7 @@ class Visualizer implements IVisualizer {
     }
 
     for (let i = 0; i < data.length; i += 100) {
-      this.particleSystem.push(
-        new particle(
-          data[i],
-          [(Math.random() - 0.5) * 10, -Math.random() * 10],
-          1
-        )
-      );
+      this.particleSystem.push(new particle(data[i], velocity, gravity));
     }
 
     if (this.particleSystem) {
@@ -149,14 +160,14 @@ class Visualizer implements IVisualizer {
     }
   }
 
-  dots(data, samples = 1024) {
+  dots(data, samples = 100) {
     const sampling = Math.ceil(data.length / samples);
     for (let i = 0; i < data.length; i += sampling) {
       this.ctx.rect(...data[i], 1, 1);
     }
   }
 
-  line(data, samples = 100) {
+  line(data, samples = 1024) {
     const sampling = Math.ceil(data.length / samples);
     this.ctx.beginPath();
     for (let i = 0; i < data.length; i += sampling) {
@@ -177,6 +188,27 @@ class Visualizer implements IVisualizer {
 
       this.ctx.moveTo(e[0], this.canvas.height);
       this.ctx.lineTo(...e);
+    }
+  }
+
+  // TODO polarBars still needs work
+  polarBars(data, radius = 100, numBars = 50) {
+    const innerCircle = [];
+    data.forEach((e, i, a) => {
+      const angle = (i * (Math.PI * 2)) / a.length;
+      const x = radius * Math.cos(angle);
+      const y = radius * Math.sin(angle);
+      innerCircle.push([x + this.canvas.width / 2, y + this.canvas.height / 2]);
+    });
+
+    const sampling = Math.ceil(data.length / numBars);
+
+    this.ctx.beginPath();
+    for (let i = 0; i < data.length; i += sampling) {
+      const e = innerCircle[i];
+      this.ctx.moveTo(...e);
+      const f = data[i];
+      this.ctx.lineTo(...f);
     }
   }
 
@@ -228,6 +260,27 @@ class Visualizer implements IVisualizer {
     return gradient;
   }
 
+  // Line Tools
+  // TODO Style is still WIP
+  style() {
+    // this.ctx.lineTo(this.canvas.width, this.canvas.height)
+    // this.ctx.lineTo(0, this.canvas.height)
+    this.ctx.lineWidth = 30;
+    this.ctx.setLineDash([10, 10]);
+    // this.ctx.lineJoin = 'round';
+    // this.ctx.closePath();
+    // this.ctx.fillStyle = this.linearGradient('yellow', 'red')
+    // this.ctx.fill()
+  }
+
+  // Transforms
+  mirror() {
+    // this.ctx.rotate(Math.PI / 2);
+    // this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height / 2);
+    // this.ctx.translate(this.canvas.width/2, this.canvas.height/2);
+    // this.ctx.translate(-150, -75);
+  }
+
   // Render methods
 
   layer(options) {
@@ -235,8 +288,17 @@ class Visualizer implements IVisualizer {
     this.ctx.beginPath();
 
     // Data
-    const inputData = this.dataPreProcessor(options.freq);
+    let inputData;
     let data;
+
+    switch (Array.isArray(options.freq)) {
+      case true:
+        inputData = this.dataPreProcessor(options.freq[0], options.freq[1]);
+        break;
+      default:
+        inputData = this.dataPreProcessor((options.freq = 'time'));
+        break;
+    }
 
     switch (options.coord) {
       case 'rect':
@@ -245,31 +307,46 @@ class Visualizer implements IVisualizer {
       case 'polar':
         data = this.dataToPolar(inputData);
         break;
+      default:
+        data = this.dataToRect(inputData);
+        break;
     }
 
     // Vizualizer
-    switch (options.viz) {
+    switch (options.viz[0]) {
       case 'line':
         this.line(data);
         break;
       case 'bars':
         this.bars(data);
         break;
+      case 'polarBars':
+        this.polarBars(data);
+        break;
       case 'dots':
         this.dots(data);
         break;
       case 'particles':
-        this.particles(data);
+        this.particles(data, options.viz[1], options.viz[2]);
+        break;
+      default:
+        this.line(data);
         break;
     }
 
-    // Style
+    // Color
     switch (options.color[0]) {
       case 'linearGradient':
-        this.ctx.strokeStyle = this.linearGradient(options.color[1], options.color[2]);
+        this.ctx.strokeStyle = this.linearGradient(
+          options.color[1],
+          options.color[2]
+        );
         break;
       case 'radialGradient':
-        this.ctx.strokeStyle = this.radialGradient(options.color[1], options.color[2]);
+        this.ctx.strokeStyle = this.radialGradient(
+          options.color[1],
+          options.color[2]
+        );
         break;
       case 'randomColor':
         this.ctx.strokeStyle = this.randomColor();
@@ -282,15 +359,25 @@ class Visualizer implements IVisualizer {
         break;
     }
 
+    // Style
+    // TODO WIP
+    // this.style();
+
+    // Transforms
+    // TODO WIP
+    // this.mirror();
+
     // Draw Path
+    this.ctx.lineWidth=5
+    // this.ctx.closePath()
     this.ctx.stroke();
   }
 
   //! RENDER
+
   render(options) {
     // Clear Canvas
     this.ctx.reset();
-    // this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Draw
     if (Array.isArray(options)) {
