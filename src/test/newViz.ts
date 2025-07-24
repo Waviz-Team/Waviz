@@ -12,18 +12,18 @@ audio.addEventListener('play', async () => {
   viz.visualizer.render([
     {
       freq: ['time', 100],
-      coord: ['polar', 100],
-      viz: ['line'],
-      color: [],
-      style: [5],
+      coord: ['rect', 100],
+      viz: ['bars'],
+      color: ['linearGradient'],
+      style: [30],
     },
-    {
-      freq: ['time', 100],
-      coord: ['polar', 100],
-      viz: ['particles', [1, 1], 0.3],
-      color: [],
-      style: [2],
-    },
+    // {
+    //   freq: ['time', 100],
+    //   coord: ['polar', 100],
+    //   viz: ['particles', [1, 1], 0.3, 30, 10, 15],
+    //   color: [],
+    //   style: [20],
+    // },
   ]);
 });
 
