@@ -31,7 +31,11 @@ class Visualizer implements IVisualizer {
   }
 
   // Data tools
-  dataPreProcessor(dataType: string = 'time', range: number = 100) {
+  dataPreProcessor(
+    dataType: string = 'time',
+    amplitude: number = 100,
+    range: number = 1024
+  ) {
     let data = [];
 
     // Select data type - 'freq' or 'time'
@@ -47,7 +51,13 @@ class Visualizer implements IVisualizer {
     const normalized = Array.from(data).map((e) => e / 255);
 
     // Range Map
-    const processedData = mapArray(normalized, 0, 1, range, -range);
+    const processedData = mapArray(
+      normalized,
+      0,
+      1,
+      amplitude,
+      -amplitude
+    ).slice(0, range);
 
     return processedData;
   }
@@ -87,6 +97,8 @@ class Visualizer implements IVisualizer {
     data,
     velocity: number[] = [1, 1],
     gravity: number = 1,
+    lifespan: number = Infinity,
+    birthrate: number = 10,
     beatSync: boolean = false
   ) {
     const frame = this.frame;
@@ -109,18 +121,13 @@ class Visualizer implements IVisualizer {
       }
 
       update() {
-        if (
-          this.position[0] >= 0 &&
-          this.position[0] <= this.canvasSize[0] &&
-          this.position[1] >= 0 &&
-          this.position[0] <= this.canvasSize[1]
-        ) {
+
           this.velocity = [this.velocity[0], this.velocity[1] + this.gravity];
 
           const x = this.position[0] + this.velocity[0];
           const y = this.position[1] + this.velocity[1];
           this.position = [x, y];
-        }
+        
 
         if (
           this.position[0] < 0 ||
@@ -130,29 +137,32 @@ class Visualizer implements IVisualizer {
         ) {
           this.live = false;
         }
-
-        if (frame - this.born > 100) {
-          this.live = false;
-        }
       }
     }
 
     if (!this.particleSystem) {
       this.particleSystem = [];
     }
-
-    for (let i = 0; i < data.length; i += 100) {
-      this.particleSystem.push(new particle(data[i], velocity, gravity));
+    if (this.frame % birthrate === 0) {
+      for (let i = 0; i < data.length; i += 10) {
+        this.particleSystem.push(new particle(data[i], velocity, gravity));
+      }
     }
 
     if (this.particleSystem) {
       this.particleSystem.forEach((e, i) => {
+        if (frame - e.born > lifespan) {
+          e.live = false;
+        }
+
         if (e.live === true) {
           e.update();
+          
           console.log(this.particleSystem.length);
-        } else if (e.live === false) {
+        } else if (e.live === false || this.frame - e.born > 1) {
           this.particleSystem.splice(i, 1);
         }
+
         this.ctx.rect(...e.position, 1, 1);
       });
     }
@@ -178,14 +188,16 @@ class Visualizer implements IVisualizer {
   }
 
   bars(data, numBars = 10) {
-    const sampling = Math.ceil(data.length / numBars);
+    const sampling = Math.round(data.length / numBars);
+    const offset = this.canvas.width / numBars / 2;
+
     this.ctx.beginPath();
 
     for (let i = 0; i < data.length; i += sampling) {
       const e = data[i];
 
-      this.ctx.moveTo(e[0], this.canvas.height);
-      this.ctx.lineTo(...e);
+      this.ctx.moveTo(e[0] + offset, this.canvas.height);
+      this.ctx.lineTo(e[0] + offset, e[1]);
     }
   }
 
@@ -219,17 +231,33 @@ class Visualizer implements IVisualizer {
     return `rgb(${r},${g},${b})`;
   }
 
-  randomPalette(colorArray = ['#57BBDE', '#9DDE57', '#CC57DE', '#DE9C57']) {
+  randomPalette(
+    colorArray: string[] = ['#57BBDE', '#9DDE57', '#CC57DE', '#DE9C57']
+  ) {
     return colorArray[Math.round(Math.random() * colorArray.length)];
   }
 
-  linearGradient(color1 = '#E34AB0', color2 = '#5BC4F9') {
-    const gradient = this.ctx.createLinearGradient(
-      0,
-      this.canvas.height / 2,
-      this.canvas.width,
-      this.canvas.height / 2
-    );
+  linearGradient(
+    color1 = '#E34AB0',
+    color2 = '#5BC4F9',
+    flip: string = 'flip'
+  ) {
+    let gradient;
+    if (flip === 'flip') {
+      gradient = this.ctx.createLinearGradient(
+        this.canvas.width / 2,
+        0,
+        this.canvas.width / 2,
+        this.canvas.height
+      );
+    } else {
+      gradient = this.ctx.createLinearGradient(
+        0,
+        this.canvas.height / 2,
+        this.canvas.width,
+        this.canvas.height / 2
+      );
+    }
 
     gradient.addColorStop(0, color1);
     gradient.addColorStop(1, color2);
@@ -258,8 +286,7 @@ class Visualizer implements IVisualizer {
     return gradient;
   }
 
-  // Line Tools
-  // TODO Style is still WIP
+  // Style Tools
   style(lineWidth: number = 2, fill: string = '', color = '#E34AB0') {
     this.ctx.lineWidth = lineWidth;
 
@@ -294,21 +321,20 @@ class Visualizer implements IVisualizer {
     }
 
     // Fill Dashes
-    if (fill === 'dashes'){
-            if (typeof color === 'string') {
+    if (fill === 'dashes') {
+      if (typeof color === 'string') {
         this.ctx.fillStyle = color;
       }
       if (Array.isArray(color)) {
         this.ctx.fillStyle = this.ctx.strokeStyle = this.linearGradient(
           color[0],
-          color[1]
+          color[1],
+          'flip'
         );
       }
       this.ctx.fill();
       this.ctx.setLineDash([10, 10]);
     }
-    
-
   }
 
   // Transforms
@@ -332,10 +358,18 @@ class Visualizer implements IVisualizer {
     // Frequency switch
     switch (options.freq[0]) {
       case 'fft':
-        inputData = this.dataPreProcessor('fft', options.freq[1]);
+        inputData = this.dataPreProcessor(
+          'fft',
+          options.freq[1],
+          options.freq[2]
+        );
         break;
       case 'time':
-        inputData = this.dataPreProcessor('time', options.freq[1]);
+        inputData = this.dataPreProcessor(
+          'time',
+          options.freq[1],
+          options.freq[2]
+        );
         break;
       default:
         inputData = this.dataPreProcessor('time');
