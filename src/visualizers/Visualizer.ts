@@ -31,7 +31,7 @@ class Visualizer implements IVisualizer {
   }
 
   // Data tools
-  dataPreProcessor(dataType: string, range: number = 100) {
+  dataPreProcessor(dataType: string = 'time', range: number = 100) {
     let data = [];
 
     // Select data type - 'freq' or 'time'
@@ -67,7 +67,7 @@ class Visualizer implements IVisualizer {
     return rectData;
   }
 
-  dataToPolar(input, radius = 100) {
+  dataToPolar(input, radius: number = 100) {
     const data = input;
     const polarData = [];
 
@@ -89,7 +89,7 @@ class Visualizer implements IVisualizer {
     gravity: number = 1,
     beatSync: boolean = false
   ) {
-    const frame = this.frame
+    const frame = this.frame;
     class particle {
       canvasSize;
       position;
@@ -99,12 +99,11 @@ class Visualizer implements IVisualizer {
       born = frame;
 
       constructor(position, velocity, gravity) {
-        
         this.canvasSize = [500, 500];
         this.position = position;
         this.velocity = [
           (Math.random() - 0.5) * velocity[0],
-          ((Math.random() - 0.5) * velocity[1]),
+          (Math.random() - 0.5) * velocity[1],
         ];
         this.gravity = gravity;
       }
@@ -116,7 +115,6 @@ class Visualizer implements IVisualizer {
           this.position[1] >= 0 &&
           this.position[0] <= this.canvasSize[1]
         ) {
-          
           this.velocity = [this.velocity[0], this.velocity[1] + this.gravity];
 
           const x = this.position[0] + this.velocity[0];
@@ -133,7 +131,7 @@ class Visualizer implements IVisualizer {
           this.live = false;
         }
 
-        if(frame - this.born > 100){
+        if (frame - this.born > 100) {
           this.live = false;
         }
       }
@@ -242,7 +240,7 @@ class Visualizer implements IVisualizer {
   radialGradient(
     color1 = '#E34AB0',
     color2 = '#5BC4F9',
-    innerRadius = 100,
+    innerRadius = 0,
     outerRadius = 250
   ) {
     const gradient = this.ctx.createRadialGradient(
@@ -262,15 +260,55 @@ class Visualizer implements IVisualizer {
 
   // Line Tools
   // TODO Style is still WIP
-  style() {
-    // this.ctx.lineTo(this.canvas.width, this.canvas.height)
-    // this.ctx.lineTo(0, this.canvas.height)
-    this.ctx.lineWidth = 30;
-    this.ctx.setLineDash([10, 10]);
-    // this.ctx.lineJoin = 'round';
-    // this.ctx.closePath();
-    // this.ctx.fillStyle = this.linearGradient('yellow', 'red')
-    // this.ctx.fill()
+  style(lineWidth: number = 2, fill: string = '', color = '#E34AB0') {
+    this.ctx.lineWidth = lineWidth;
+
+    // Fill Rect
+    if (fill === 'fillRect') {
+      this.ctx.lineTo(this.canvas.width, this.canvas.height);
+      this.ctx.lineTo(0, this.canvas.height);
+      if (typeof color === 'string') {
+        this.ctx.fillStyle = color;
+      }
+      if (Array.isArray(color)) {
+        this.ctx.fillStyle = this.ctx.strokeStyle = this.linearGradient(
+          color[0],
+          color[1]
+        );
+      }
+      this.ctx.fill();
+    }
+
+    // Fill Polar
+    if (fill === 'fillPolar') {
+      if (typeof color === 'string') {
+        this.ctx.fillStyle = color;
+      }
+      if (Array.isArray(color)) {
+        this.ctx.fillStyle = this.ctx.strokeStyle = this.radialGradient(
+          color[0],
+          color[1]
+        );
+      }
+      this.ctx.fill();
+    }
+
+    // Fill Dashes
+    if (fill === 'dashes'){
+            if (typeof color === 'string') {
+        this.ctx.fillStyle = color;
+      }
+      if (Array.isArray(color)) {
+        this.ctx.fillStyle = this.ctx.strokeStyle = this.linearGradient(
+          color[0],
+          color[1]
+        );
+      }
+      this.ctx.fill();
+      this.ctx.setLineDash([10, 10]);
+    }
+    
+
   }
 
   // Transforms
@@ -291,40 +329,45 @@ class Visualizer implements IVisualizer {
     let inputData;
     let data;
 
-    switch (Array.isArray(options.freq)) {
-      case true:
-        inputData = this.dataPreProcessor(options.freq[0], options.freq[1]);
+    // Frequency switch
+    switch (options.freq[0]) {
+      case 'fft':
+        inputData = this.dataPreProcessor('fft', options.freq[1]);
+        break;
+      case 'time':
+        inputData = this.dataPreProcessor('time', options.freq[1]);
         break;
       default:
-        inputData = this.dataPreProcessor((options.freq = 'time'));
+        inputData = this.dataPreProcessor('time');
         break;
     }
 
-    switch (options.coord) {
+    // Coordinates switch
+    switch (options.coord[0]) {
       case 'rect':
         data = this.dataToRect(inputData);
         break;
       case 'polar':
-        data = this.dataToPolar(inputData);
+        data = this.dataToPolar(inputData, options.coord[1]);
         break;
       default:
         data = this.dataToRect(inputData);
         break;
     }
 
-    // Vizualizer
+    // Vizualizer switch //TODO Check Polar Bars
     switch (options.viz[0]) {
       case 'line':
-        this.line(data);
+        this.line(data, options.viz[1]);
         break;
       case 'bars':
-        this.bars(data);
+        this.bars(data, options.viz[1]);
         break;
       case 'polarBars':
         this.polarBars(data);
         break;
       case 'dots':
-        this.dots(data);
+        this.dots(data, options.viz[1]);
         break;
       case 'particles':
         this.particles(data, options.viz[1], options.viz[2]);
@@ -334,7 +377,7 @@ class Visualizer implements IVisualizer {
         break;
     }
 
-    // Color
+    // Color switch //TODO Random per item instead of per frame
     switch (options.color[0]) {
       case 'linearGradient':
         this.ctx.strokeStyle = this.linearGradient(
@@ -355,20 +398,19 @@ class Visualizer implements IVisualizer {
         this.ctx.strokeStyle = this.randomPalette(options.color[1]);
         break;
       default:
-        this.ctx.strokeStyle = options.color;
+        this.ctx.strokeStyle = '#E34AB0';
         break;
     }
 
     // Style
-    // TODO WIP
-    // this.style();
+    this.style(...options.style);
 
     // Transforms
     // TODO WIP
     // this.mirror();
 
     // Draw Path
-    this.ctx.lineWidth=5
+    // this.ctx.lineWidth = 5;
     // this.ctx.closePath()
     this.ctx.stroke();
   }
