@@ -7,7 +7,7 @@ declare global { // Needed to extend global scope of 'DisplayMediaStreamOptions'
     }
 }
 
-type AudioSourceType = HTMLAudioElement | MediaStream | 'microphone' | 'screenAudio' | string;
+type AudioSourceType = HTMLAudioElement | HTMLVideoElement | MediaStream | 'microphone' | 'screenAudio' | string;
 
 class Input {
     file: File | null;
@@ -17,9 +17,9 @@ class Input {
     pendingAudioSrc: AudioSourceType | null = null;
     isWaitingForUser: boolean = false;
     
-    constructor(onAudioReady?: (source: AudioNode) => void) {
+    constructor(onAudioReady?: (source: AudioNode) => void, audioContext?: AudioContext) {
         this.file = null;
-        this.audioContext = null;
+        this.audioContext = audioContext || null;
         this.onAudioReady = onAudioReady || null; // Needed to store callback function we'll pass in
     }
 
@@ -43,6 +43,7 @@ class Input {
                     return; // Since all cases here should break out of the switch, all cases changed to return instead of breaks
 
                 case audioSource instanceof HTMLAudioElement:
+                case audioSource instanceof HTMLVideoElement: //! Could combine these two to be an HTMLMediaElement but I'm worried about edge cases. Could also separate these two into independent but not as DRY.
                     this.connectToHTMLElement(audioSource);
                     return;
 
@@ -64,12 +65,12 @@ class Input {
     }
 
     //* Local Audio (HTML/Files/URLS) handler
-    private connectToAudioElement = (audioEl) => {
-        if (!audioEl) return;
+    private connectToAudioElement = (mediaEl) => { // Can handle both audio and video audio!
+        if (!mediaEl) return;
         
         try { // Start with Web Audio Context to set up processing environment
             this.audioContext = this.manageAudioContext();
-            this.sourceNode = this.audioContext.createMediaElementSource(audioEl); // Source node to bridge between html and WebAudioAPI
+            this.sourceNode = this.audioContext.createMediaElementSource(mediaEl); // Source node to bridge between html and WebAudioAPI
  
             if (this.onAudioReady) { // Indicate audio source is ready for analysis
                 this.onAudioReady(this.sourceNode) // If callback function exists, will pass sourceNode to analyser
@@ -104,7 +105,7 @@ class Input {
         //TODO: include validation for mp3 here maybe? or in <input type="file" accept = ".mp3">
         if (!file)  return;
 
-        const validType = ['audio/mp3', 'audio/mpeg', 'audio/wav', 'audio/ogg']   
+        const validType = ['audio/mp3', 'audio/mpeg', 'audio/wav', 'audio/ogg'];   
 
         if(!validType.includes(file.type)) {
           alert('Pls select an MP3 file!');
@@ -131,12 +132,12 @@ class Input {
     }
 
     // HTML elements input (connects to an existing HTML audio element on WebAudioAPI)
-    connectToHTMLElement = (audioEl) => {
-        if (!audioEl) return;
+    connectToHTMLElement = (mediaEl: HTMLAudioElement | HTMLVideoElement) => {
+        if (!mediaEl) return;
 
-        audioEl.crossOrigin = "anonymous";
+        mediaEl.crossOrigin = "anonymous";
 
-        audioEl.addEventListener('play', () => { // Auto-resume audio context
+        mediaEl.addEventListener('play', () => { // Auto-resume audio context
             if (this.audioContext.state === 'suspended') {
                 this.audioContext.resume().then(() => {
                     console.log('Input.connectToHTML has resumed play');
@@ -144,7 +145,7 @@ class Input {
             }
         })
 
-        this.connectToAudioElement(audioEl);
+        this.connectToAudioElement(mediaEl);
     }
 
     //* MediaStream methods
@@ -153,23 +154,23 @@ class Input {
     async initializePending() { // Needed because user Gesture is needed by CORS before connecting Vis with audioContext
         if (!this.isWaitingForUser || !this.pendingAudioSrc) return;
 
+        const src = this.pendingAudioSrc;
+        this.pendingAudioSrc = null; // moved to the top instead of within the Try to avoid duplicate prompts for permission
+        this.isWaitingForUser = false;
+
         try {
-            if (this.pendingAudioSrc === 'microphone') {
+            if (src === 'microphone') {
                 await this.connectToMicrophone();
-            } else if (this.pendingAudioSrc === 'screenAudio') {
+            } else if (src === 'screenAudio') {
                 await this.connectToScreenAudio();
-            } else if (this.pendingAudioSrc instanceof MediaStream) {
+            } else if (src instanceof MediaStream) {
                 try {
-                    const stream = this.pendingAudioSrc;
-                    this.connectToMediaStream(stream);
+                    this.connectToMediaStream(src);
                 } catch (error) {
                     console.error('Error connecting MediaStream Element: ', error);
                     throw error;
                 }
             }
-
-            this.pendingAudioSrc = null;
-            this.isWaitingForUser = false;
         } catch (error) {
             console.error('Failed to initialize pending audio source: ', error);
             throw error;

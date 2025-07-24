@@ -1,0 +1,13 @@
+src/
+docs/
+.git/
+.gitignore
+*.log
+node_modules/
+.DS_Store
+*.tgz
+tsconfig*.json
+vite.config.*
+.env*
+index.html
+styles.css
