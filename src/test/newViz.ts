@@ -9,7 +9,7 @@ const viz = new Waviz(canvas, audio);
 
 //Test on play
 audio.addEventListener('play', async () => {
-  viz.simplePolarBars();
+  viz.render();
 });
 
 // Test on pause

@@ -229,7 +229,7 @@ class Visualizer {
   }
 
   // TODO polarBars still needs work
-  polarBars(data, radius = 100, numBars = 50) {
+  polarBars(data, radius = 100, numBars = 24) {
     const innerCircle = [];
     data.forEach((e, i, a) => {
       const angle = (i * (Math.PI * 2)) / a.length;
@@ -551,3 +551,4 @@ class Visualizer {
 }
 
 export default Visualizer;
+  

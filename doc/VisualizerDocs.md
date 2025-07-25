@@ -255,3 +255,48 @@ viz.visualizer.render([
 Each object in the array defines one **layer**, and Waviz will render them in order from bottom to top.
 
 > ✅ Tip: You can mix coordinate systems, visualizer types, and color schemes across layers for dynamic, complex effects.
+
+
+---
+
+## 🛠️ Convenience Methods
+
+Waviz also includes a few built-in shorthand methods for common visualizations. These methods can quickly generate preset visualizations and allow for color customization.
+
+#### .simpleLine(\<color>)
+
+Renders a basic line visualization in rectangular coordinates with a single color.
+
+```ts
+viz.visualizer.simpleLine('#E34AB0');
+```
+
+---
+
+#### .simpleBars(\<color>)
+
+Renders vertical bars using TimeDomain data with increased amplitude and thick strokes.
+
+```ts
+viz.visualizer.simpleBars('#E34AB0');
+```
+
+---
+
+#### .simplePolarLine(\<color>)
+
+Renders a circular line visualization using polar coordinates.
+
+```ts
+viz.visualizer.simplePolarLine('#E34AB0');
+```
+
+---
+
+#### .simplePolarBars(\<color>)
+
+Renders radial bars in a circular layout.
+
+```ts
+viz.visualizer.simplePolarBars('#E34AB0');
+```
