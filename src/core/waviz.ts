@@ -23,6 +23,7 @@ class Waviz {
         if (audioSource) {
             this.input.connectAudioSource(audioSource);
         }
+        
     }
 
     //* WAVIZ setup methods
@@ -62,6 +63,14 @@ class Waviz {
     async bar(options?) {
         await this.input.initializePending();
         this.visualizer.bars(options);
+    }
+
+    render(){
+        this.visualizer.render()
+    }
+
+    stop(){
+        this.visualizer.stop()
     }
 }
 
