@@ -6,16 +6,17 @@ const audio = document.getElementById('audio') as HTMLAudioElement;
 
 // Waviz Instance
 const viz = new Waviz(canvas, audio);
-512512512;
 //Test on play
 audio.addEventListener('play', async () => {
   viz.visualizer.render([
     {
       domain: ['time'],
-      coord: ['rect'],
+      coord: ['polar'],
       viz: ['line'],
       color: ['linearGradient'],
-      style: [20],
+      style: [],
+      periodic: true,
+      window: 'hanning'
     },
   ]);
 });

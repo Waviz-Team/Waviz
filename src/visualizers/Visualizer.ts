@@ -1,5 +1,7 @@
 import AudioAnalyzer from '../analysers/analyzer';
 import { mapArray } from '../utils/mathUtils';
+import { hanWindow } from '../utils/mathUtils';
+import { makePeriodic } from '../utils/mathUtils';
 
 // Interfaces and custom types
 interface IParticle {
@@ -14,10 +16,12 @@ interface IParticle {
 
 interface IOptions {
   domain?: [string?, number?, number?];
-  coord?: [number?, number?];
+  coord?: [string?, number?, number?];
   viz?: [string?, number[] | number?, number?, number?, number?, number?];
   color?: [string | string[], string?, string | number, number?];
   style?: [number?, string?, string?];
+  periodic?: boolean;
+  window?: string;
 }
 
 // Visualizer class
@@ -407,13 +411,25 @@ class Visualizer {
         break;
     }
 
+    if (options.window && options.window.toLowerCase() === 'hanning') { //! Sample Windowing Code. Can remove if determined unecessary or want to stretch it (using switch)
+      inputData = hanWindow(inputData)
+    }
+
+    // Periodic Checker //! This will allow smoothing at the end if needed by applying linear tilt
+    if (options.periodic) { 
+      inputData = makePeriodic(inputData);
+    }
+
     // Coordinates switch
     switch (options.coord[0]) {
       case 'rect':
         data = this.dataToRect(inputData);
         break;
       case 'polar':
-        data = this.dataToPolar(inputData, options.coord[1]);
+        data = this.dataToPolar(
+          inputData, 
+          options.coord[1], // radius modifier
+        );
         break;
       default:
         data = this.dataToRect(inputData);
