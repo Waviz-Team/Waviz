@@ -13,7 +13,7 @@ interface IParticle {
 }
 
 interface IOptions {
-  freq?: [string?, number?, number?];
+  domain?: [string?, number?, number?];
   coord?: [number?, number?];
   viz?: [string?, number[] | number?, number?, number?, number?, number?];
   color?: [string | string[], string?, string | number, number?];
@@ -45,7 +45,6 @@ class Visualizer {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.data = data;
-    this.renderLoop;
   }
 
   // Data tools
@@ -58,7 +57,7 @@ class Visualizer {
 
     // Select data type - 'fft' or 'time'
     switch (dataType) {
-      case 'fft':
+      case 'freq':
         data = this.data.freqData;
         break;
       case 'time':
@@ -387,20 +386,20 @@ class Visualizer {
     let inputData;
     let data;
 
-    // Frequency switch
-    switch (options.freq[0]) {
-      case 'fft':
+    // Domain switch
+    switch (options.domain[0]) {
+      case 'freq':
         inputData = this.dataPreProcessor(
-          'fft',
-          options.freq[1],
-          options.freq[2]
+          'freq',
+          options.domain[1],
+          options.domain[2]
         );
         break;
       case 'time':
         inputData = this.dataPreProcessor(
           'time',
-          options.freq[1],
-          options.freq[2]
+          options.domain[1],
+          options.domain[2]
         );
         break;
       default:
