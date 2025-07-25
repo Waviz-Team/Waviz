@@ -20,7 +20,17 @@ h1 {
 }
 
 li{
-  margin: 20px 0;
+  margin:20px;
+}
+
+a{
+  text-decoration: none;
+}
+
+#list{
+  border: 1px solid rgb(76, 85, 88);
+  border-radius: 10px;
+  padding:20px;
 }
 
 .content {

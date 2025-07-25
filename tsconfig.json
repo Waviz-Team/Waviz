@@ -13,5 +13,10 @@
     "esModuleInterop": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "src/test", "src/App.tsx", "src/main.tsx"]
+  "exclude": [
+    "node_modules",
+    "src/test",
+    "src/test/App.tsx",
+    "src/test/main.tsx"
+  ]
 }

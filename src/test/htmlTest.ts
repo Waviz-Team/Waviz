@@ -2,15 +2,17 @@ import Waviz from '../core/waviz';
 
 const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 const audio = document.getElementById('audio') as HTMLAudioElement;
+const video = document.getElementById('video') as HTMLVideoElement;
 // const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 // const stream = await navigator.mediaDevices.getDisplayMedia({
 //   video: true,
 //   audio: true,
 //   preferCurrentTab: true
 // });
-// const wavizTest = new Waviz(canvas, audio);
+const wavizTest = new Waviz(canvas, audio);
 // const wavizTest = new Waviz(canvas, 'microphone');
-const wavizTest = new Waviz(canvas, 'screenAudio');
+// const wavizTest = new Waviz(canvas, video);
+// const wavizTest = new Waviz(canvas, 'screenAudio');
 // const wavizTest = new Waviz(canvas, stream);
 
 // Testing option objects
@@ -19,12 +21,22 @@ const wavizTest = new Waviz(canvas, 'screenAudio');
 
 //Test on play
 audio.addEventListener('play', async () => {
-  await wavizTest.input.initializePending(); //TODO: Figure out how to make this done in the classes
-  wavizTest.visualizer!.bars();
+    await wavizTest.input.initializePending(); //TODO: Figure out how to make this done in the classes
+    wavizTest.visualizer!.bars();
 });
 
 
 // Test on pause
 audio.addEventListener('pause', () => {
+  wavizTest.visualizer!.stop();
+});
+
+// Video Test
+video.addEventListener('play', async () => {
+  await wavizTest.input.initializePending();
+  wavizTest.visualizer!.bars();
+});
+
+video.addEventListener('pause', () => {
   wavizTest.visualizer!.stop();
 });
