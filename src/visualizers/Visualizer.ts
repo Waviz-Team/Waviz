@@ -14,7 +14,7 @@ interface IParticle {
 
 interface IOptions {
   domain?: [string?, number?, number?];
-  coord?: [number?, number?];
+  coord?: [string?, number?, number?];
   viz?: [string?, number[] | number?, number?, number?, number?, number?];
   color?: [string | string[], string?, string | number, number?];
   style?: [number?, string?, string?];
@@ -67,14 +67,12 @@ class Visualizer {
     // Normalize data
     const normalized: number[] = Array.from(data).map((e) => e / 255);
 
-    // Range Map
-    const processedData: number[] = mapArray(
-      normalized,
-      0,
-      1,
-      amplitude,
-      -amplitude
-    ).slice(0, range);
+    // Amplitude and range control
+    const processedData = normalized
+      .map((e) => {
+        return (e - 0.5) * amplitude;
+      })
+      .slice(0, range);
 
     return processedData;
   }
@@ -269,7 +267,7 @@ class Visualizer {
   linearGradient(
     color1: string = '#E34AB0',
     color2: string = '#5BC4F9',
-    flip: string = 'flip'
+    flip: string = ''
   ) {
     let gradient: CanvasGradient;
 
@@ -454,7 +452,8 @@ class Visualizer {
       case 'linearGradient':
         this.ctx.strokeStyle = this.linearGradient(
           options.color[1],
-          options.color[2]
+          options.color[2],
+          options.color[3]
         );
         break;
       case 'radialGradient':
@@ -489,11 +488,11 @@ class Visualizer {
 
   render(options: IOptions | IOptions[]) {
     // Clear Canvas
-    this.ctx.reset();
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Default options
-    const defaults = {
-      freq: ['time'],
+    const defaults: IOptions = {
+      domain: ['time'],
       coord: ['rect'],
       viz: ['line'],
       color: ['#E34AB0'],
@@ -501,12 +500,14 @@ class Visualizer {
     };
 
     // Draw
-    if (Array.isArray(options)) {
+    if (!options) {
+      this.layer(defaults);
+    } else if (Array.isArray(options)) {
       options.forEach((e) => {
-        this.layer(e);
+        this.layer(Object.assign(defaults, e));
       });
     } else {
-      this.layer(options);
+      this.layer(Object.assign(defaults, options));
     }
 
     // Increment frame counter
@@ -518,6 +519,34 @@ class Visualizer {
 
   stop() {
     cancelAnimationFrame(this.renderLoop);
+  }
+
+  // Conveniency Methods
+  simpleLine(options = '#E34AB0') {
+    this.render({ color: [options] });
+  }
+
+  simpleBars(options = '#E34AB0') {
+    this.render({
+      domain: ['time', 300],
+      viz: ['bars'],
+      color: [options],
+      style: [30],
+    });
+  }
+
+  simplePolarLine(options = '#E34AB0') {
+    this.render({ coord: ['polar'], color: [options] });
+  }
+
+  simplePolarBars(options = '#E34AB0') {
+    this.render({
+      domain: ['time', 200],
+      coord: ['polar'],
+      viz: ['polarBars'],
+      color: [options],
+      style: [10],
+    });
   }
 }
 
