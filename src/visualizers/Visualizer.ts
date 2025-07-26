@@ -246,39 +246,43 @@ class Visualizer {
       }
     }
   }
-
-  bars(data: number[][], numBars: number = 10) {
+  bars(data: number[][], numBars: number = 20, mode: 'rect' | 'polar' = 'rect', innerRadius: number = 100) {
+    const centerX = this.canvas.width / 2;
+    const centerY = this.canvas.height / 2;
     const sampling = Math.round(data.length / numBars);
-    const offset = this.canvas.width / numBars / 2;
 
     this.ctx.beginPath();
 
-    for (let i = 0; i < data.length; i += sampling) {
-      const e = data[i];
-      this.ctx.strokeStyle = 'blue';
-      this.ctx.moveTo(e[0] + offset, this.canvas.height);
-      this.ctx.lineTo(e[0] + offset, e[1]);
-    }
-  }
+    if (mode === 'polar') {
+      for (let i = 0; i < data.length; i += sampling) {
+        // Calculate angle for this bar
+        const angle = (i * 2 * Math.PI) / data.length;
+        // Inner Circle start
+        const x0 = centerX + innerRadius * Math.cos(angle);
+        const y0 = centerY + innerRadius * Math.sin(angle);
+        // End point (outerCircle End) based on data
+        let [x1, y1] = data[i];
 
-  // TODO polarBars still needs work
-  polarBars(data, radius = 20, numBars = 24) {
-    const innerCircle = [];
-    data.forEach((e, i, a) => {
-      const angle = (i * (Math.PI * 2)) / a.length;
-      const x = radius * Math.cos(angle);
-      const y = radius * Math.sin(angle);
-      innerCircle.push([x + this.canvas.width / 2, y + this.canvas.height / 2]);
-    });
+        // Distance calculations
+        const dx = x1 - centerX;
+        const dy = y1 - centerY;
+        let dist = Math.sqrt(dx * dx + dy * dy);
 
-    const sampling = Math.ceil(data.length / numBars);
+        const magnitude = Math.abs(dist - innerRadius) + innerRadius;
 
-    this.ctx.beginPath();
-    for (let i = 0; i < data.length; i += sampling) {
-      const e = innerCircle[i];
-      this.ctx.moveTo(...e);
-      const f = data[i];
-      this.ctx.lineTo(...f);
+        x1 = centerX + magnitude * Math.cos(angle);
+        y1 = centerY + magnitude * Math.sin(angle);
+
+        this.ctx.moveTo(x0, y0);
+        this.ctx.lineTo(x1, y1);
+      }
+    } else {
+      const offset = this.canvas.width / numBars / 2;
+      for (let i = 0; i < data.length; i += sampling) {
+        const [x, y] = data[i];
+        this.ctx.moveTo(x + offset, this.canvas.height);
+        this.ctx.lineTo(x + offset, y);
+      }
     }
   }
 
@@ -461,10 +465,7 @@ class Visualizer {
         this.line(data, options.viz[1]);
         break;
       case 'bars':
-        this.bars(data, options.viz[1]);
-        break;
-      case 'polarBars':
-        this.polarBars(data);
+        this.bars(data, options.viz[1], options.coord[0]);
         break;
       case 'dots':
         this.dots(data, options.viz[1]);
