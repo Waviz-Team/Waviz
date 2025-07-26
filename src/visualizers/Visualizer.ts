@@ -54,7 +54,7 @@ class Visualizer {
     dataType: string = 'time',
     amplitude: number = 100,
     range: number = 1024,
-    windowName?: string, //? Q mark added here since windowName shouldn't be in freq
+    windowName?: string //? Q mark added here since windowName shouldn't be in freq
   ) {
     let data: Uint8Array;
 
@@ -70,14 +70,12 @@ class Visualizer {
     // Normalize data
     const normalized: number[] = Array.from(data).map((e) => e / 255);
 
-    // Range Map
-    let processedData: number[] = mapArray( //! Changed to let to allow reassignment in 82
-      normalized,
-      0,
-      1,
-      amplitude,
-      -amplitude
-    ).slice(0, range);
+    // Amplitude and range control
+    let processedData = normalized
+      .map((e) => {
+        return (e - 0.5) * amplitude;
+      })
+      .slice(0, range);
 
     if (dataType === 'time' && windowName) {
       switch (windowName.toLowerCase()) {
@@ -85,7 +83,7 @@ class Visualizer {
         case 'hann':
           processedData = windowFunc.hann(processedData);
           break;
-        case 'hamming': 
+        case 'hamming':
           processedData = windowFunc.hamming(processedData);
           break;
         case 'exponential':
@@ -258,7 +256,7 @@ class Visualizer {
   }
 
   // TODO polarBars still needs work
-  polarBars(data, radius = 100, numBars = 24) {
+  polarBars(data, radius = 20, numBars = 24) {
     const innerCircle = [];
     data.forEach((e, i, a) => {
       const angle = (i * (Math.PI * 2)) / a.length;
@@ -419,7 +417,7 @@ class Visualizer {
         inputData = this.dataPreProcessor(
           'freq',
           options.domain[1],
-          options.domain[2],
+          options.domain[2]
         );
         break;
       case 'time':
@@ -442,8 +440,8 @@ class Visualizer {
         break;
       case 'polar':
         data = this.dataToPolar(
-          inputData, 
-          options.coord[1], // radius modifier
+          inputData,
+          options.coord[1] // radius modifier
         );
         break;
       default:
@@ -510,8 +508,14 @@ class Visualizer {
     this.style(...options.style);
 
     // Transforms
+
     // TODO WIP
     // this.mirror();
+
+    // Close path if polar
+    if (options.coord[0] === 'polar') {
+      this.ctx.closePath();
+    }
 
     // Draw Path
     this.ctx.stroke();
@@ -584,4 +588,3 @@ class Visualizer {
 }
 
 export default Visualizer;
-  
