@@ -117,15 +117,21 @@ class Visualizer {
     return rectData;
   }
 
-  dataToPolar(input: number[], radius: number = 100) {
+  dataToPolar(
+    input: number[],
+    radius: number = 100,
+    angle: number = 0,
+    autoRotate: number = 0
+  ) {
+    const rotation = (angle * Math.PI) / 180 + (this.frame * autoRotate) / 100;
     const polarData: number[][] = [];
     const periodicData = makePeriodic(input); // this can be moved into an option later if needed. Right now, forces linear tilt on polar to smooth out end/beginning seam
 
     periodicData.forEach((e, i, a) => {
       e += radius;
-      const angle = (i * (Math.PI * 2)) / a.length;
-      const x = e * Math.cos(angle);
-      const y = e * Math.sin(angle);
+      const angle = -(i * (Math.PI * 2)) / a.length;
+      const x = e * Math.cos(angle + rotation);
+      const y = e * Math.sin(angle + rotation);
       polarData.push([x + this.canvas.width / 2, y + this.canvas.height / 2]);
     });
 
@@ -249,7 +255,7 @@ class Visualizer {
 
     for (let i = 0; i < data.length; i += sampling) {
       const e = data[i];
-
+      this.ctx.strokeStyle = 'blue';
       this.ctx.moveTo(e[0] + offset, this.canvas.height);
       this.ctx.lineTo(e[0] + offset, e[1]);
     }
@@ -341,54 +347,52 @@ class Visualizer {
 
     return gradient;
   }
-
   // Style Tools
-  style(lineWidth: number = 2, fill: string = '', color: string = '#E34AB0') {
+  fill(vizType, fillType, fillColor) {
+    switch (vizType) {
+      case 'rect':
+        //Close path
+        this.ctx.lineTo(this.canvas.width, this.canvas.height);
+        this.ctx.lineTo(0, this.canvas.height);
+        this.ctx.closePath();
+
+        //Color
+        switch (fillType) {
+          case 'solid':
+            this.ctx.fillStyle = fillColor;
+            break;
+          case 'linearGradient':
+            this.ctx.fillStyle = this.linearGradient(
+              fillColor[0],
+              fillColor[1]
+            );
+            break;
+        }
+      case 'polar':
+        switch (fillType) {
+          case 'solid':
+            this.ctx.fillStyle = fillColor;
+            break;
+          case 'linearGradient':
+            this.ctx.fillStyle = this.radialGradient(
+              fillColor[0],
+              fillColor[1]
+            );
+            break;
+        }
+        this.ctx.fill();
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  stroke(lineWidth: number = 2, style: string = '') {
     this.ctx.lineWidth = lineWidth;
 
-    // Fill Rect
-    if (fill === 'fillRect') {
-      this.ctx.lineTo(this.canvas.width, this.canvas.height);
-      this.ctx.lineTo(0, this.canvas.height);
-      if (typeof color === 'string') {
-        this.ctx.fillStyle = color;
-      }
-      if (Array.isArray(color)) {
-        this.ctx.fillStyle = this.ctx.strokeStyle = this.linearGradient(
-          color[0],
-          color[1]
-        );
-      }
-      this.ctx.fill();
-    }
-
-    // Fill Polar
-    if (fill === 'fillPolar') {
-      if (typeof color === 'string') {
-        this.ctx.fillStyle = color;
-      }
-      if (Array.isArray(color)) {
-        this.ctx.fillStyle = this.ctx.strokeStyle = this.radialGradient(
-          color[0],
-          color[1]
-        );
-      }
-      this.ctx.fill();
-    }
-
     // Fill Dashes
-    if (fill === 'dashes') {
-      if (typeof color === 'string') {
-        this.ctx.fillStyle = color;
-      }
-      if (Array.isArray(color)) {
-        this.ctx.fillStyle = this.ctx.strokeStyle = this.linearGradient(
-          color[0],
-          color[1],
-          'flip'
-        );
-      }
-      this.ctx.fill();
+    if (style === 'dashes') {
       this.ctx.setLineDash([10, 10]);
     }
   }
@@ -441,7 +445,9 @@ class Visualizer {
       case 'polar':
         data = this.dataToPolar(
           inputData,
-          options.coord[1] // radius modifier
+          options.coord[1],
+          options.coord[2],
+          options.coord[3]
         );
         break;
       default:
@@ -504,15 +510,20 @@ class Visualizer {
         break;
     }
 
-    // Style
-    this.style(...options.style);
+    // Fill
+    if (options.fill) {
+      this.fill(options.coord[0], options.fill[0], options.fill[1]);
+    }
+
+    // Stroke
+    this.stroke(options.stroke[0], options.stroke[1]);
 
     // Transforms
-
     // TODO WIP
     // this.mirror();
 
     // Close path if polar
+    // TODO Integrate this check into line method
     if (options.coord[0] === 'polar') {
       this.ctx.closePath();
     }
@@ -522,7 +533,6 @@ class Visualizer {
   }
 
   //! RENDER
-
   render(options: IOptions | IOptions[]) {
     // Clear Canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -533,7 +543,7 @@ class Visualizer {
       coord: ['rect'],
       viz: ['line'],
       color: ['#E34AB0'],
-      style: [2],
+      stroke: [2],
     };
 
     // Draw
@@ -558,7 +568,7 @@ class Visualizer {
     cancelAnimationFrame(this.renderLoop);
   }
 
-  // Conveniency Methods
+  //* Conveniency Methods
   simpleLine(options = '#E34AB0') {
     this.render({ color: [options] });
   }
