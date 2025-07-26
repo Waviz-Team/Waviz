@@ -1,5 +1,7 @@
 import AudioAnalyzer from '../analysers/analyzer';
 import { mapArray } from '../utils/mathUtils';
+import { windowFunc } from '../utils/mathUtils';
+import { makePeriodic } from '../utils/mathUtils';
 
 // Interfaces and custom types
 interface IParticle {
@@ -13,8 +15,8 @@ interface IParticle {
 }
 
 interface IOptions {
-  domain?: [string?, number?, number?];
-  coord?: [number?, number?];
+  domain?: [string?, number?, number?, string?];
+  coord?: [string?, number?, number?];
   viz?: [string?, number[] | number?, number?, number?, number?, number?];
   color?: [string | string[], string?, string | number, number?];
   style?: [number?, string?, string?];
@@ -51,7 +53,8 @@ class Visualizer {
   dataPreProcessor(
     dataType: string = 'time',
     amplitude: number = 100,
-    range: number = 1024
+    range: number = 1024,
+    windowName?: string, //? Q mark added here since windowName shouldn't be in freq
   ) {
     let data: Uint8Array;
 
@@ -68,13 +71,36 @@ class Visualizer {
     const normalized: number[] = Array.from(data).map((e) => e / 255);
 
     // Range Map
-    const processedData: number[] = mapArray(
+    let processedData: number[] = mapArray( //! Changed to let to allow reassignment in 82
       normalized,
       0,
       1,
       amplitude,
       -amplitude
     ).slice(0, range);
+
+    if (dataType === 'time' && windowName) {
+      switch (windowName.toLowerCase()) {
+        case 'hanning':
+        case 'hann':
+          processedData = windowFunc.hann(processedData);
+          break;
+        case 'hamming': 
+          processedData = windowFunc.hamming(processedData);
+          break;
+        case 'exponential':
+        case 'exp':
+          processedData = windowFunc.exponential(processedData);
+          break;
+        case 'blackman-harris':
+        case 'bharris':
+        case 'blackmanh':
+          processedData = windowFunc.bHarris(processedData);
+          break;
+        default:
+          break;
+      }
+    }
 
     return processedData;
   }
@@ -95,8 +121,9 @@ class Visualizer {
 
   dataToPolar(input: number[], radius: number = 100) {
     const polarData: number[][] = [];
+    const periodicData = makePeriodic(input); // this can be moved into an option later if needed. Right now, forces linear tilt on polar to smooth out end/beginning seam
 
-    input.forEach((e, i, a) => {
+    periodicData.forEach((e, i, a) => {
       e += radius;
       const angle = (i * (Math.PI * 2)) / a.length;
       const x = e * Math.cos(angle);
@@ -392,14 +419,15 @@ class Visualizer {
         inputData = this.dataPreProcessor(
           'freq',
           options.domain[1],
-          options.domain[2]
+          options.domain[2],
         );
         break;
       case 'time':
         inputData = this.dataPreProcessor(
           'time',
           options.domain[1],
-          options.domain[2]
+          options.domain[2],
+          options.domain[3]
         );
         break;
       default:
@@ -413,7 +441,10 @@ class Visualizer {
         data = this.dataToRect(inputData);
         break;
       case 'polar':
-        data = this.dataToPolar(inputData, options.coord[1]);
+        data = this.dataToPolar(
+          inputData, 
+          options.coord[1], // radius modifier
+        );
         break;
       default:
         data = this.dataToRect(inputData);
