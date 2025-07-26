@@ -54,7 +54,7 @@ class Visualizer {
     dataType: string = 'time',
     amplitude: number = 100,
     range: number = 1024,
-    windowName?: string, //? Q mark added here since windowName shouldn't be in freq
+    windowName?: string //? Q mark added here since windowName shouldn't be in freq
   ) {
     let data: Uint8Array;
 
@@ -70,14 +70,12 @@ class Visualizer {
     // Normalize data
     const normalized: number[] = Array.from(data).map((e) => e / 255);
 
-    // Range Map
-    let processedData: number[] = mapArray( //! Changed to let to allow reassignment in 82
-      normalized,
-      0,
-      1,
-      amplitude,
-      -amplitude
-    ).slice(0, range);
+    // Amplitude and range control
+    let processedData = normalized
+      .map((e) => {
+        return (e - 0.5) * amplitude;
+      })
+      .slice(0, range);
 
     if (dataType === 'time' && windowName) {
       switch (windowName.toLowerCase()) {
@@ -85,7 +83,7 @@ class Visualizer {
         case 'hann':
           processedData = windowFunc.hann(processedData);
           break;
-        case 'hamming': 
+        case 'hamming':
           processedData = windowFunc.hamming(processedData);
           break;
         case 'exponential':
@@ -119,15 +117,21 @@ class Visualizer {
     return rectData;
   }
 
-  dataToPolar(input: number[], radius: number = 100) {
+  dataToPolar(
+    input: number[],
+    radius: number = 100,
+    angle: number = 0,
+    autoRotate: number = 0
+  ) {
+    const rotation = (angle * Math.PI) / 180 + (this.frame * autoRotate) / 100;
     const polarData: number[][] = [];
     const periodicData = makePeriodic(input); // this can be moved into an option later if needed. Right now, forces linear tilt on polar to smooth out end/beginning seam
 
     periodicData.forEach((e, i, a) => {
       e += radius;
-      const angle = (i * (Math.PI * 2)) / a.length;
-      const x = e * Math.cos(angle);
-      const y = e * Math.sin(angle);
+      const angle = -(i * (Math.PI * 2)) / a.length;
+      const x = e * Math.cos(angle + rotation);
+      const y = e * Math.sin(angle + rotation);
       polarData.push([x + this.canvas.width / 2, y + this.canvas.height / 2]);
     });
 
@@ -300,7 +304,7 @@ class Visualizer {
   linearGradient(
     color1: string = '#E34AB0',
     color2: string = '#5BC4F9',
-    flip: string = 'flip'
+    flip: string = ''
   ) {
     let gradient: CanvasGradient;
 
@@ -347,54 +351,52 @@ class Visualizer {
 
     return gradient;
   }
-
   // Style Tools
-  style(lineWidth: number = 2, fill: string = '', color: string = '#E34AB0') {
+  fill(vizType, fillType, fillColor) {
+    switch (vizType) {
+      case 'rect':
+        //Close path
+        this.ctx.lineTo(this.canvas.width, this.canvas.height);
+        this.ctx.lineTo(0, this.canvas.height);
+        this.ctx.closePath();
+
+        //Color
+        switch (fillType) {
+          case 'solid':
+            this.ctx.fillStyle = fillColor;
+            break;
+          case 'linearGradient':
+            this.ctx.fillStyle = this.linearGradient(
+              fillColor[0],
+              fillColor[1]
+            );
+            break;
+        }
+      case 'polar':
+        switch (fillType) {
+          case 'solid':
+            this.ctx.fillStyle = fillColor;
+            break;
+          case 'linearGradient':
+            this.ctx.fillStyle = this.radialGradient(
+              fillColor[0],
+              fillColor[1]
+            );
+            break;
+        }
+        this.ctx.fill();
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  stroke(lineWidth: number = 2, style: string = '') {
     this.ctx.lineWidth = lineWidth;
 
-    // Fill Rect
-    if (fill === 'fillRect') {
-      this.ctx.lineTo(this.canvas.width, this.canvas.height);
-      this.ctx.lineTo(0, this.canvas.height);
-      if (typeof color === 'string') {
-        this.ctx.fillStyle = color;
-      }
-      if (Array.isArray(color)) {
-        this.ctx.fillStyle = this.ctx.strokeStyle = this.linearGradient(
-          color[0],
-          color[1]
-        );
-      }
-      this.ctx.fill();
-    }
-
-    // Fill Polar
-    if (fill === 'fillPolar') {
-      if (typeof color === 'string') {
-        this.ctx.fillStyle = color;
-      }
-      if (Array.isArray(color)) {
-        this.ctx.fillStyle = this.ctx.strokeStyle = this.radialGradient(
-          color[0],
-          color[1]
-        );
-      }
-      this.ctx.fill();
-    }
-
     // Fill Dashes
-    if (fill === 'dashes') {
-      if (typeof color === 'string') {
-        this.ctx.fillStyle = color;
-      }
-      if (Array.isArray(color)) {
-        this.ctx.fillStyle = this.ctx.strokeStyle = this.linearGradient(
-          color[0],
-          color[1],
-          'flip'
-        );
-      }
-      this.ctx.fill();
+    if (style === 'dashes') {
       this.ctx.setLineDash([10, 10]);
     }
   }
@@ -423,7 +425,7 @@ class Visualizer {
         inputData = this.dataPreProcessor(
           'freq',
           options.domain[1],
-          options.domain[2],
+          options.domain[2]
         );
         break;
       case 'time':
@@ -446,8 +448,10 @@ class Visualizer {
         break;
       case 'polar':
         data = this.dataToPolar(
-          inputData, 
-          options.coord[1], // radius modifier
+          inputData,
+          options.coord[1],
+          options.coord[2],
+          options.coord[3]
         );
         break;
       default:
@@ -486,7 +490,8 @@ class Visualizer {
       case 'linearGradient':
         this.ctx.strokeStyle = this.linearGradient(
           options.color[1],
-          options.color[2]
+          options.color[2],
+          options.color[3]
         );
         break;
       case 'radialGradient':
@@ -506,39 +511,51 @@ class Visualizer {
         break;
     }
 
-    // Style
-    this.style(...options.style);
+    // Fill
+    if (options.fill) {
+      this.fill(options.coord[0], options.fill[0], options.fill[1]);
+    }
+
+    // Stroke
+    this.stroke(options.stroke[0], options.stroke[1]);
 
     // Transforms
     // TODO WIP
     // this.mirror();
+
+    // Close path if polar
+    // TODO Integrate this check into line method
+    if (options.coord[0] === 'polar') {
+      this.ctx.closePath();
+    }
 
     // Draw Path
     this.ctx.stroke();
   }
 
   //! RENDER
-
   render(options: IOptions | IOptions[]) {
     // Clear Canvas
-    this.ctx.reset();
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Default options
-    const defaults = {
-      freq: ['time'],
+    const defaults: IOptions = {
+      domain: ['time'],
       coord: ['rect'],
       viz: ['line'],
       color: ['#E34AB0'],
-      style: [2],
+      stroke: [2],
     };
 
     // Draw
-    if (Array.isArray(options)) {
+    if (!options) {
+      this.layer(defaults);
+    } else if (Array.isArray(options)) {
       options.forEach((e) => {
-        this.layer(e);
+        this.layer(Object.assign(defaults, e));
       });
     } else {
-      this.layer(options);
+      this.layer(Object.assign(defaults, options));
     }
 
     // Increment frame counter
@@ -550,6 +567,34 @@ class Visualizer {
 
   stop() {
     cancelAnimationFrame(this.renderLoop);
+  }
+
+  //* Conveniency Methods
+  simpleLine(options = '#E34AB0') {
+    this.render({ color: [options] });
+  }
+
+  simpleBars(options = '#E34AB0') {
+    this.render({
+      domain: ['time', 300],
+      viz: ['bars'],
+      color: [options],
+      style: [30],
+    });
+  }
+
+  simplePolarLine(options = '#E34AB0') {
+    this.render({ coord: ['polar'], color: [options] });
+  }
+
+  simplePolarBars(options = '#E34AB0') {
+    this.render({
+      domain: ['time', 200],
+      coord: ['polar'],
+      viz: ['polarBars'],
+      color: [options],
+      style: [10],
+    });
   }
 }
 
