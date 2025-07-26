@@ -12,7 +12,7 @@ audio.addEventListener('play', async () => {
     {
       domain: ['time'],
       coord: ['polar'],
-      viz: ['line'],
+      viz: ['bars', 40],
       color: ['linearGradient'],
       style: [],
     },
