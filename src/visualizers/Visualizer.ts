@@ -405,14 +405,13 @@ class Visualizer {
           options.domain[1],
           options.domain[2]
         );
+        if (options.window && options.window.toLowerCase() === 'hanning') { //! Sample Windowing Code. Can remove if determined unecessary or want to stretch it (using switch)
+          inputData = hanWindow(inputData)
+        }
         break;
       default:
         inputData = this.dataPreProcessor('time');
         break;
-    }
-
-    if (options.window && options.window.toLowerCase() === 'hanning') { //! Sample Windowing Code. Can remove if determined unecessary or want to stretch it (using switch)
-      inputData = hanWindow(inputData)
     }
 
     // Periodic Checker //! This will allow smoothing at the end if needed by applying linear tilt

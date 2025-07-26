@@ -15,7 +15,7 @@ audio.addEventListener('play', async () => {
       viz: ['line'],
       color: ['linearGradient'],
       style: [],
-      periodic: true,
+      periodic: false,
       window: 'hanning'
     },
   ]);
