@@ -12,10 +12,10 @@ audio.addEventListener('play', async () => {
   viz.render({
     domain: ['time',500,,'hamming'],
     coord: ['polar',,90,5],
-    // viz:['bars'],
+    viz:['bars'],
     // color:['randomColor'],
     // fill: ['linearGradient', ['red', 'blue']],
-    stroke: [3,],
+    stroke: [25,],
   });
 });
 
