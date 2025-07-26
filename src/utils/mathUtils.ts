@@ -1,3 +1,5 @@
+import Input from "../input/input";
+
 // Maps value to new range
 export function mapRange(value, inMin, inMax, outMin, outMax) {
   if (inMax === inMin) {
@@ -50,4 +52,30 @@ export function hammingWindow(input: number[]): number[] { // Hamming window (si
 
 export function exponentialWindow(input: number[], a: number = 0.01): number[] { // Exponential Window (used in modal impact testing+ where emphaisis on beginning of signal is important. Good for analyzing transient signals)
   return input.map((v, n) => v * Math.exp(-a * n));
+}
+
+export function blackmanHarrisWindow(input: number[]): number[] { // General purpose Window good for suppressing sidelobes
+  const N = input.length;
+  // Default Values taken from https://www.mathworks.com/help/signal/ref/blackmanharris.html
+  const a0 = 0.35875;
+  const a1 = 0.48829;
+  const a2 = 0.14128;
+  const a3 = 0.01168;
+
+  return input.map((v, n) =>
+    v *
+    (
+      a0
+      - a1 * Math.cos((2 * Math.PI * n) / (N - 1))
+      + a2 * Math.cos((4 * Math.PI * n) / (N - 1))
+      - a3 * Math.cos((6 * Math.PI * n) / (N - 1))
+    )
+  );
+}
+
+export const windowFunc = {
+  hann: hanWindow,
+  hamming: hammingWindow,
+  exponential: exponentialWindow,
+  bHarris: blackmanHarrisWindow
 }
