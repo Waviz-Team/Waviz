@@ -11,7 +11,7 @@ const viz = new Waviz(canvas, audio);
 audio.addEventListener('play', async () => {
   viz.render({
     domain: ['time',500,,'hamming'],
-    coord: ['polar',,90,5],
+    coord: ['polar',100,90,5],
     viz:['bars'],
     // color:['randomColor'],
     // fill: ['linearGradient', ['red', 'blue']],

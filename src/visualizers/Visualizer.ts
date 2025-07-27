@@ -465,7 +465,12 @@ class Visualizer {
         this.line(data, options.viz[1]);
         break;
       case 'bars':
-        this.bars(data, options.viz[1], options.coord[0]);
+        this.bars(
+          data, 
+          options.viz[1], //numbars feature
+          options.coord[0], // mode ('rect' or 'polar') from coord
+          options.coord[1] // innerRadius from coord
+        );
         break;
       case 'dots':
         this.dots(data, options.viz[1]);
