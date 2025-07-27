@@ -25,7 +25,6 @@ class Input {
 
     //* Audio Source Router
     async connectAudioSource(audioSource: AudioSourceType) {
-        console.log("The audioSource in input is : ",audioSource)
         try { //? Current iteration is better for if-else. However, switch will be better for the future maybe...
             switch (true) { 
                 case audioSource === 'microphone' || audioSource === 'screenAudio':
