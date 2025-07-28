@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../core/waviz";
-//* User props: ['color', num: # of bars]
+//* Desc: polar hanned wave that defaults to look like fire
+//* User props: ['color1', 'color2', num: radius size, num: rotation angle]
 
 type vizComponentProps = {
   srcAudio: any;
@@ -9,18 +10,18 @@ type vizComponentProps = {
   audioContext?: AudioContext;
 };
 
-function Bar1({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
+function Wave3({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasReady, setCanvasReady] = useState(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
-  
+
   let userOptions = {}
-  if(options){
-    userOptions = {color:[options[0]], viz:['bars', options[1]]}
+  if (options) {
+    userOptions = {coord: ['polar', options[2], options[3]],color:['linearGradient', options[0], options[1]]}
   }
   
-  const defaults={viz:['bars', 10], stroke:[25]}
+  const defaults={domain: ['time', 150, , 'hann'], coord: ['polar', , 90], color: ['linearGradient', 'red', 'orange']}
   const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic
@@ -65,4 +66,4 @@ function Bar1({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps)
     </div>
   );
 }
-export default Bar1;
+export default Wave3;
