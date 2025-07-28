@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
-import Bar1 from "../components/Bar1";
-import Wave1 from "../components/Wave1";
+import Bar1 from "../components/Bar2-st";
+import Wave1 from "../components/Wave5-st";
 
 
 export default function App() {
@@ -13,10 +13,10 @@ export default function App() {
       <img src="/Logo.png" width="200" alt="Waviz Logo"></img>
       <img src="/pnpLogo.png" width="150" alt="PNP Logo"></img>
 
-    <Bar1
+    <Wave1
         srcAudio={audioElement}
         srcCanvas={canvasElement}
-        options={['red',5]}
+        options={['red', 'blue']}
       /> 
 
 

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../core/waviz";
-//* User props: ['color', num: # of bars]
+//* Desc: 'simple' bars with linear gradient - windowed hamming to normalize on center
+//* User props: ['color1', 'color2', number: bars]
 
 type vizComponentProps = {
   srcAudio: any;
@@ -9,7 +10,7 @@ type vizComponentProps = {
   audioContext?: AudioContext;
 };
 
-function Bar1({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
+function Bar4({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -17,10 +18,10 @@ function Bar1({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps)
   
   let userOptions = {}
   if(options){
-    userOptions = {color:[options[0]], viz:['bars', options[1]]}
+    userOptions = {color: ['linearGradient', options[0], options[1]], viz: ['bars', options[2]]}
   }
   
-  const defaults={viz:['bars', 10], stroke:[25]}
+  const defaults={domain:['time', 300, , 'hamming'], viz:['bars', 11], coord: ['rect'], color: ['linearGradient', '#E93EB7', '#24B9F7'], stroke: [25]}
   const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic
@@ -65,4 +66,4 @@ function Bar1({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps)
     </div>
   );
 }
-export default Bar1;
+export default Bar4;
