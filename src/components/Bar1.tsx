@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../core/waviz";
+//* User props: ['color', num: # of bars]
 
 type vizComponentProps = {
   srcAudio: any;
@@ -8,11 +9,19 @@ type vizComponentProps = {
   audioContext?: AudioContext;
 };
 
-function WaveComponent({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
+function Wave1({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasReady, setCanvasReady] = useState(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
+  
+  let userOptions = {}
+  if(options){
+    userOptions = {color:[options[0]], viz:['bars', options[1]]}
+  }
+  
+  const defaults={viz:['bars', 10], stroke:[25]}
+  const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic
  useEffect(() => { //Check if canvas is passed in and assign srcCanvas to canvasRef if passed in
@@ -33,7 +42,7 @@ function WaveComponent({ srcAudio, srcCanvas, options, audioContext }: vizCompon
     }
 
     if (srcAudio.current instanceof HTMLAudioElement) {
-      const playWave = () => wavizReference.current?.wave(options);
+      const playWave = () => wavizReference.current?.render(optionsObject);
       const stopWave = () => wavizReference.current?.visualizer.stop();
       
       // Event Listeners
@@ -46,7 +55,7 @@ function WaveComponent({ srcAudio, srcCanvas, options, audioContext }: vizCompon
         wavizReference.current?.visualizer.stop();
       };
     } else {
-      wavizReference.current.wave(options);
+      wavizReference.current.render();
     }
   }, [canvasReady, srcAudio, options, audioContext]);
 
@@ -56,4 +65,4 @@ function WaveComponent({ srcAudio, srcCanvas, options, audioContext }: vizCompon
     </div>
   );
 }
-export default WaveComponent;
+export default Wave1;

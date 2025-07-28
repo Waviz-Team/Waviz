@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
-import WaveComponent from "../components/WaveComponent";
-import BarComponent from "../components/BarComponent";
+import Bar1 from "../components/Bar1";
+import Wave1 from "../components/Wave1";
+
 
 export default function App() {
   // audio element can take an HTMLAudioElement, microphone, or screenAudio
@@ -12,18 +13,12 @@ export default function App() {
       <img src="/Logo.png" width="200" alt="Waviz Logo"></img>
       <img src="/pnpLogo.png" width="150" alt="PNP Logo"></img>
 
-    <WaveComponent
+    <Bar1
         srcAudio={audioElement}
         srcCanvas={canvasElement}
-        options={{ lineColor: "#E34AB0", lineWidth: 2, multiplier: 1 }}
+        options={['red',5]}
       /> 
-{/* 
-      <BarComponent
-        srcAudio={audioElement}
-        srcCanvas={canvasElement}
-        options={{barWidth: 20, fillStyle:"green", numBars: 10}}
-      
-      /> */}
+
 
 
       {/* Don't forget to comment out the audio tag if using microphone or screenAudio */}
