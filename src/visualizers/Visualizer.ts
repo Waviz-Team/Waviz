@@ -16,11 +16,23 @@ interface IParticle {
 
 interface IOptions {
   domain?: [string?, number?, number?, string?];
-  coord?: [string?, number?, number?];
-  viz?: [string?, number[] | number?, number?, number?, number?, number?];
-  color?: [string | string[], string?, string | number, number?];
-  stroke?: [number?, string?];
-  fill?: [string?, string[]?, string?];
+
+  coord?: [('rect' | 'polar')?, number?, number?, number?];
+  viz?: 
+    | ['line', number?] // type, # of samples
+    | ['bars', number?, ('rect' | 'polar')?, number?] // type, # of bars, 'mode', innerRadius
+    | ['dots', number?] // type, # of samples
+    | ['particles', number[]?, number?, number?, number?, number?, number?] // type, velocity array, gravity, lifespan, birthrate, samples
+    | [string, ...any[]]; // fallback for other visualizations just in case
+  color?: 
+    | ['linearGradient', string?, string?, string?] // type, 'color1', 'color2', 'flip'
+    | ['radialGradient', string?, string?, number?, number?] // type, 'color1', 'color2', 'inner radius', 'outer radius'
+    | ['randomPalette', string[]]
+    | ['randomColor']
+    | [string]; // fallback for simple color
+  style?: [number?, string?, string?]; 
+  stroke?: [number?, string?]; // number: width, string: style
+  fill?: ['solid' | 'linearGradient', string | [string, string]]; // fill type, style (i.e dashes)
 }
 
 // Visualizer class
@@ -157,12 +169,14 @@ class Visualizer {
       live: boolean = true;
       born: number = frame;
 
+
       constructor(
         position: number[],
         velocity: number[],
         gravity: number,
         canvas: HTMLCanvasElement
       ) {
+
         this.canvasSize = [canvas.width, canvas.height];
         this.position = position;
         this.velocity = [
@@ -202,9 +216,9 @@ class Visualizer {
     // Set birthrate
     if (this.frame % birthrate === 0) {
       for (let i = 0; i < data.length; i += Math.round(data.length / samples)) {
-        this.particleSystem.push(
-          new particle(data[i], velocity, gravity, this.canvas)
-        );
+
+        this.particleSystem.push(new particle(data[i], velocity, gravity, this.canvas));
+
       }
     }
 
@@ -473,15 +487,17 @@ class Visualizer {
         break;
     }
 
-    // Vizualizer switch //TODO Check Polar Bars
+    // Vizualizer switch
     switch (options.viz[0]) {
       case 'line':
         this.line(data, options.viz[1]);
         break;
       case 'bars':
         this.bars(
+
           data,
           options.viz[1], //numbars feature
+
           options.coord[0], // mode ('rect' or 'polar') from coord
           options.coord[1] // innerRadius from coord
         );
@@ -517,8 +533,10 @@ class Visualizer {
         this.ctx.strokeStyle = this.radialGradient(
           options.color[1],
           options.color[2],
-          options.color[3],
-          options.color[4]
+
+          options.color[3], // inner radius number
+          options.color[4] // outer radius number
+
         );
         break;
       case 'randomColor':
@@ -528,7 +546,7 @@ class Visualizer {
         this.ctx.strokeStyle = this.randomPalette(options.color[1]);
         break;
       default:
-        this.ctx.strokeStyle = options.color;
+        this.ctx.strokeStyle = options.color[0]; // Default is now the string passed in
         break;
     }
 
@@ -568,7 +586,7 @@ class Visualizer {
     const defaults: IOptions = {
       domain: ['time'],
       coord: ['rect'],
-      viz: ['line'],
+      viz: ['line',  undefined, undefined, undefined, undefined, undefined],
       color: ['#E34AB0'],
       stroke: [2],
     };
@@ -581,7 +599,7 @@ class Visualizer {
         this.layer(Object.assign({}, defaults, e));
       });
     } else {
-      this.layer(Object.assign(defaults, options));
+      this.layer(Object.assign({}, defaults, options)); 
     }
 
     // Increment frame counter
@@ -603,7 +621,7 @@ class Visualizer {
   simpleBars(options = '#E34AB0') {
     this.render({
       domain: ['time', 300],
-      viz: ['bars'],
+      viz: ['bars', undefined, undefined, undefined, undefined, undefined],
       color: [options],
       style: [30],
     });
