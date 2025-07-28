@@ -16,6 +16,7 @@ interface IParticle {
 
 interface IOptions {
   domain?: [string?, number?, number?, string?];
+
   coord?: [('rect' | 'polar')?, number?, number?, number?];
   viz?: 
     | ['line', number?] // type, # of samples
@@ -168,7 +169,14 @@ class Visualizer {
       live: boolean = true;
       born: number = frame;
 
-      constructor(position: number[], velocity: number[], gravity: number, canvas:HTMLCanvasElement) {
+
+      constructor(
+        position: number[],
+        velocity: number[],
+        gravity: number,
+        canvas: HTMLCanvasElement
+      ) {
+
         this.canvasSize = [canvas.width, canvas.height];
         this.position = position;
         this.velocity = [
@@ -208,7 +216,9 @@ class Visualizer {
     // Set birthrate
     if (this.frame % birthrate === 0) {
       for (let i = 0; i < data.length; i += Math.round(data.length / samples)) {
+
         this.particleSystem.push(new particle(data[i], velocity, gravity, this.canvas));
+
       }
     }
 
@@ -258,10 +268,15 @@ class Visualizer {
       }
     }
   }
-  bars(data: number[][], numBars: number = 20, mode: 'rect' | 'polar' = 'rect', innerRadius: number = 100) {
+  bars(
+    data: number[][],
+    numBars: number = 20,
+    mode: 'rect' | 'polar' = 'rect',
+    innerRadius: number = 100
+  ) {
     const centerX = this.canvas.width / 2;
     const centerY = this.canvas.height / 2;
-    const sampling = Math.round(data.length / numBars);
+    const sampling = Math.ceil(data.length / numBars);
 
     this.ctx.beginPath();
 
@@ -364,7 +379,7 @@ class Visualizer {
     return gradient;
   }
   // Style Tools
-  fill(vizType, fillType, fillColor) {
+  fill(vizType, fillType, fillColor, flip) {
     switch (vizType) {
       case 'rect':
         //Close path
@@ -380,7 +395,8 @@ class Visualizer {
           case 'linearGradient':
             this.ctx.fillStyle = this.linearGradient(
               fillColor[0],
-              fillColor[1]
+              fillColor[1],
+              flip
             );
             break;
         }
@@ -389,7 +405,7 @@ class Visualizer {
           case 'solid':
             this.ctx.fillStyle = fillColor;
             break;
-          case 'linearGradient':
+          case 'radialGradient':
             this.ctx.fillStyle = this.radialGradient(
               fillColor[0],
               fillColor[1]
@@ -478,8 +494,10 @@ class Visualizer {
         break;
       case 'bars':
         this.bars(
-          data, 
-          options.viz[1], // numbars feature
+
+          data,
+          options.viz[1], //numbars feature
+
           options.coord[0], // mode ('rect' or 'polar') from coord
           options.coord[1] // innerRadius from coord
         );
@@ -515,8 +533,10 @@ class Visualizer {
         this.ctx.strokeStyle = this.radialGradient(
           options.color[1],
           options.color[2],
+
           options.color[3], // inner radius number
           options.color[4] // outer radius number
+
         );
         break;
       case 'randomColor':
@@ -532,7 +552,12 @@ class Visualizer {
 
     // Fill
     if (options.fill) {
-      this.fill(options.coord[0], options.fill[0], options.fill[1]);
+      this.fill(
+        options.coord[0],
+        options.fill[0],
+        options.fill[1],
+        options.fill[2]
+      );
     }
 
     // Stroke

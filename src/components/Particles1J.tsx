@@ -19,10 +19,22 @@ function Wave1({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps
   // User options
   let userOptions = {}
   if(options){
-    userOptions = {color:[options[0]], domain:['time', options[1]]}
+    userOptions = {
+    domain:['time',300],
+    coord:['polar'],
+    viz:['particles',[2,2],0,15,3],
+    color:['radialGradient',options[0],options[1]],
+    stroke:[5]
+  }
   }
   
-  const defaults={}
+  const defaults={
+    domain:['time',300],
+    coord:['polar'],
+    viz:['particles',[2,2],0,15,3],
+    color:['radialGradient'],
+    stroke:[5]
+  }
   const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic
