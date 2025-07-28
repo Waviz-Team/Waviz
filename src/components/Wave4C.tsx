@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../core/waviz";
-//* User props: ['color', num: # of bars]
+
+//* User props: ['color', number]
 
 type vizComponentProps = {
   srcAudio: any;
@@ -9,18 +10,50 @@ type vizComponentProps = {
   audioContext?: AudioContext;
 };
 
-function Bar1({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
+function Wave4C({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasReady, setCanvasReady] = useState(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
-  
+
   let userOptions = {}
   if(options){
-    userOptions = {color:[options[0]], viz:['bars', options[1]]}
+    userOptions = {color:[options[0]], domain:['time', options[1]]}
   }
   
-  const defaults={viz:['bars', 10], stroke:[25]}
+  const defaults=[
+{
+  domain: ['time',250],
+  coord: ['polar', 120],         
+  viz: ['line'],            
+  color: ['linearGradient', '#6BB818', '#139133'],
+  stroke: [3],
+},
+{
+  domain: ['time',350],
+  coord: ['polar', 130],         
+  viz: ['line'],            
+  color: ['linearGradient', '#D91CE6', '#D022E3'],
+  stroke: [2],
+},
+{
+  domain: ['time',450],
+  coord: ['polar', 130],         
+  viz: ['line'],            
+  color: ['linearGradient', '#1882C4', '#163AC9'],
+  stroke: [2],
+},
+{
+  domain: ['time', 250],
+  coord: ['polar', 120],         
+  viz: ['particles'],           
+  color: ['linearGradient', '#E322A6', '#139133'],
+  stroke: [2],
+},
+];
+
+
+
   const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic
@@ -65,4 +98,4 @@ function Bar1({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps)
     </div>
   );
 }
-export default Bar1;
+export default Wave4C;
