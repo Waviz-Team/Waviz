@@ -6,27 +6,20 @@ const audio = document.getElementById('audio') as HTMLAudioElement;
 
 // Waviz Instance
 const viz = new Waviz(canvas, audio);
-512512512;
+
 //Test on play
 audio.addEventListener('play', async () => {
-  viz.visualizer.render([
-    {
-      domain: ['time'],
-      coord: ['rect'],
-      viz: ['line'],
-      color: ['linearGradient'],
-      style: [20],
-    },
-  ]);
+  viz.render({
+    domain: ['time',500,,'hamming'],
+    coord: ['polar',100,90,5],
+    viz:['bars'],
+    // color:['randomColor'],
+    // fill: ['linearGradient', ['red', 'blue']],
+    stroke: [25,],
+  });
 });
 
 // Test on pause
 audio.addEventListener('pause', () => {
   viz.stop();
 });
-
-//    velocity: number[] = [1, 1],
-// gravity: number = 1,
-// lifespan: number = Infinity,
-// birthrate: number = 1,
-// samples: number = 100
