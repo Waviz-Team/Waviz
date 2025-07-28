@@ -20,27 +20,24 @@ function Bar3({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps)
     userOptions = {color:[options[0]], viz:['bars', options[1]]}
   }
   
- const defaults = [{
-  domain: ['time', 300],              
-  coord: ['rect'],                    
-  viz: ['bars', 20],                   
-  color: ['linearGradient', '#00bcd4', '#3f51b5'], 
-  stroke: [18],                        
-}, 
-{
-  domain: ['time', 500],              
-  coord: ['rect'],                     
-  viz: ['particles', [1, 1], 0.2, 100, 2, 100],                   
-  color: ['linearGradient', '#00bcd4', '#6D109C'], 
-  stroke: [3],                        
-},
-{
-  // domain: ['time', 20],              
-  // coord: ['rect'],                    
-  // viz: ['bars', 20],                   
-  // color: ['linearGradient', '#10539C', '#7F1B8F'], 
-  // stroke: [16],                        
-}, ];
+const defaults = [
+  {
+    domain: ['time', 250],                       
+    coord: ['rect'],                            
+    viz: ['bars', 40],                            
+    color: ['randomPalette', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#00BCD4'  
+],
+    stroke: [16, 'dashes'],                       
+    
+  },
+  {
+    domain: ['time', 500],
+    coord: ['rect'],
+    viz: ['particles', [1, 1], 0.1, 120, 2, 100],
+    color: ['linearGradient', '#00bcd4', '#6D109C'],
+    stroke: [3],
+  },
+];
   const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic

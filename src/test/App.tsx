@@ -20,7 +20,7 @@ export default function App() {
       <img src="/Logo.png" width="200" alt="Waviz Logo"></img>
       <img src="/pnpLogo.png" width="150" alt="PNP Logo"></img>
 
-    <Bar3
+    <Bar2Cate
         srcAudio={audioElement}
         srcCanvas={canvasElement}
         // options={['red',5]}

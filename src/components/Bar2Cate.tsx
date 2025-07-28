@@ -20,20 +20,31 @@ function Bar2Cate({ srcAudio, srcCanvas, options, audioContext }: vizComponentPr
     userOptions = {color:[options[0]], viz:['bars', options[1]]}
   }
   
- const defaults = [{
-  domain: ['time', 300],              
-  coord: ['polar'],                    
-  viz: ['bars', 20],                   
-  color: ['linearGradient', '#00bcd4', '#3f51b5'], 
-  stroke: [15],                        
-}, 
-{
-  domain: ['time', 300],              
-  coord: ['rect'],                     
-  viz: ['dots'],                   
-  color: ['linearGradient', '#00bcd4', '#3f51b5'], 
-  stroke: [3],                        
-}];
+const defaults = [
+  {
+    domain: ['freq', 200],              
+    coord: ['polar', 110],    
+    viz: ['bars', 200],                
+    color: ['randomPalette', ['#00BFFF', '#1E90FF', '#40E0D0', '#5AC8FA','#0096FF', 
+]],
+    stroke: [2, 'dashes'],           
+    
+  }, 
+  {
+    domain: ['time', 100],              
+    coord: ['polar'],                     
+    viz: ['particles',[1, 1], 0.1, 90, 1, 100],                 
+    color: ['randomPalette', ['#00BCD4', '#3F51B5', '#8E24AA', '#E91E63']], 
+    stroke: [2],
+  },
+  // {
+  //   domain: ['time', 300],              
+  //   coord: ['rect'],                     
+  //   viz: ['bars'], 
+  //   color: ['randomPalette', '#3F51B5', '#00BCD4', '#8E24AA'], 
+  //   stroke: [3],
+  // }
+];
   const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic
