@@ -13,7 +13,7 @@ audio.addEventListener('play', async () => {
     domain: ['time',500,,'hamming'],
     coord: ['polar',100,90,5],
     viz:['bars'],
-    // color:['randomColor'],
+    color:['randomcolor'],
     // fill: ['linearGradient', ['red', 'blue']],
     stroke: [25,],
   });
