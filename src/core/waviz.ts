@@ -1,6 +1,6 @@
 import Input from '../input/input';
 import AudioAnalyzer from '../analysers/analyzer';
-import Visualizer from '../visualizers/Visualizer';
+import Visualizer from '../visualizers/visualizer';
 
 type AudioSourceType =
   | HTMLAudioElement
