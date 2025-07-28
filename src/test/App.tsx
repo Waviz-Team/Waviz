@@ -1,6 +1,13 @@
 import React, { useRef, useEffect, useState } from "react";
 import Bar1 from "../components/Bar1";
-import Wave1 from "../components/Wave1";
+import Wave2 from "../components/Wave2";
+import Wave3 from "../components/Wave3"
+import Wave4 from "../components/Wave4"
+import Bar2Cate from "../components/Bar2Cate"
+import Bar3 from "../components/Bar3";
+import Bar4 from "../components/Bar4";
+import Bar5 from "../components/Bar5";
+
 
 
 export default function App() {
@@ -13,10 +20,10 @@ export default function App() {
       <img src="/Logo.png" width="200" alt="Waviz Logo"></img>
       <img src="/pnpLogo.png" width="150" alt="PNP Logo"></img>
 
-    <Bar1
+    <Bar3
         srcAudio={audioElement}
         srcCanvas={canvasElement}
-        options={['red',5]}
+        // options={['red',5]}
       /> 
 
 
