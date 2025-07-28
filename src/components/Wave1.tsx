@@ -16,6 +16,7 @@ function Wave1({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasReady, setCanvasReady] = useState(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
 
+  // User options
   let userOptions = {}
   if(options){
     userOptions = {color:[options[0]], domain:['time', options[1]]}
