@@ -168,8 +168,8 @@ class Visualizer {
       live: boolean = true;
       born: number = frame;
 
-      constructor(position: number[], velocity: number[], gravity: number) {
-        this.canvasSize = [500, 500];
+      constructor(position: number[], velocity: number[], gravity: number, canvas:HTMLCanvasElement) {
+        this.canvasSize = [canvas.width, canvas.height];
         this.position = position;
         this.velocity = [
           (Math.random() - 0.5) * velocity[0],
@@ -208,7 +208,7 @@ class Visualizer {
     // Set birthrate
     if (this.frame % birthrate === 0) {
       for (let i = 0; i < data.length; i += Math.round(data.length / samples)) {
-        this.particleSystem.push(new particle(data[i], velocity, gravity));
+        this.particleSystem.push(new particle(data[i], velocity, gravity, this.canvas));
       }
     }
 
