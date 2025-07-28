@@ -20,6 +20,7 @@ interface IOptions {
   viz?: [string?, number[] | number?, number?, number?, number?, number?];
   color?: [string | string[], string?, string | number, number?];
   style?: [number?, string?, string?];
+  colorCache: string[];
 }
 
 // Visualizer class
@@ -30,6 +31,7 @@ class Visualizer {
   renderLoop: number;
   frame: number = 0;
   particleSystem: IParticle[];
+  colorCache: string[];
 
   constructor(canvas: HTMLCanvasElement, data: Uint8Array) {
     //Inputs check
@@ -167,7 +169,9 @@ class Visualizer {
       }
 
       // Particle update method
+      
       update(): void {
+        
         // Update velocity
         this.velocity = [this.velocity[0], this.velocity[1] + this.gravity];
 
@@ -216,7 +220,10 @@ class Visualizer {
         }
 
         // Draw Particle
+
+        
         this.ctx.roundRect(e.position[0], e.position[1], 1, 1, 1000);
+        this.ctx.stroke
       });
     }
   }
@@ -226,8 +233,20 @@ class Visualizer {
     const sampling = Math.ceil(data.length / samples);
 
     // Draw dots
+    let colorIndex = 0;
+    const offset = this.canvas.width / samples / 2;
     for (let i = 0; i < data.length; i += sampling) {
-      this.ctx.roundRect(data[i][0], data[i][1], 1, 1, 1000);
+      // Set color to colorCache
+      if (this.colorCache) {
+        this.ctx.strokeStyle = this.colorCache[colorIndex];
+        colorIndex++;
+        if (colorIndex === this.colorCache.length) {
+          colorIndex = 0;
+        }
+      }
+      this.ctx.beginPath();
+      this.ctx.roundRect(data[i][0] + offset, data[i][1], 1, 1, 1000);
+      this.ctx.stroke();
     }
   }
 
@@ -246,14 +265,20 @@ class Visualizer {
       }
     }
   }
-  bars(data: number[][], numBars: number = 20, mode: 'rect' | 'polar' = 'rect', innerRadius: number = 100) {
+  bars(
+    data: number[][],
+    numBars: number = 10,
+    mode: 'rect' | 'polar' = 'rect',
+    innerRadius: number = 100
+  ) {
     const centerX = this.canvas.width / 2;
     const centerY = this.canvas.height / 2;
-    const sampling = Math.round(data.length / numBars);
-
-    this.ctx.beginPath();
+    const sampling = Math.ceil(data.length / numBars);
 
     if (mode === 'polar') {
+      //ColorIndex for colorCache
+      let colorIndex = 0;
+
       for (let i = 0; i < data.length; i += sampling) {
         // Calculate angle for this bar
         const angle = (i * 2 * Math.PI) / data.length;
@@ -273,32 +298,62 @@ class Visualizer {
         x1 = centerX + magnitude * Math.cos(angle);
         y1 = centerY + magnitude * Math.sin(angle);
 
+        // Set color to colorCache
+        if (this.colorCache) {
+          this.ctx.strokeStyle = this.colorCache[colorIndex];
+          colorIndex++;
+          if (colorIndex === this.colorCache.length) {
+            colorIndex = 0;
+          }
+        }
+
+        // Draw
+        this.ctx.beginPath();
         this.ctx.moveTo(x0, y0);
         this.ctx.lineTo(x1, y1);
+        this.ctx.stroke();
       }
     } else {
+      let colorIndex = 0;
       const offset = this.canvas.width / numBars / 2;
       for (let i = 0; i < data.length; i += sampling) {
         const [x, y] = data[i];
+
+        // Set color to colorCache
+        if (this.colorCache) {
+          this.ctx.strokeStyle = this.colorCache[colorIndex];
+          colorIndex++;
+          if (colorIndex === this.colorCache.length) {
+            colorIndex = 0;
+          }
+        }
+
+        // Draw
+        this.ctx.beginPath();
         this.ctx.moveTo(x + offset, this.canvas.height);
         this.ctx.lineTo(x + offset, y);
+        this.ctx.stroke();
       }
     }
   }
 
   // Color tools
-  randomColor() {
-    const r: number = Math.random() * 255;
-    const g: number = Math.random() * 255;
-    const b: number = Math.random() * 255;
 
-    return `rgb(${r},${g},${b})`;
+  randomColor() {
+    if (!this.colorCache) {
+      this.colorCache = [];
+      while (this.colorCache.length < 100) {
+        const r: number = Math.round(Math.random() * 255);
+        const g: number = Math.round(Math.random() * 255);
+        const b: number = Math.round(Math.random() * 255);
+
+        this.colorCache.push(`rgb(${r},${g},${b})`);
+      }
+    }
   }
 
-  randomPalette(
-    colorArray: string[] = ['#57BBDE', '#9DDE57', '#CC57DE', '#DE9C57']
-  ) {
-    return colorArray[Math.round(Math.random() * colorArray.length)];
+  palette(colorArray: string[] = ['#57BBDE', '#9DDE57', '#CC57DE', '#DE9C57']) {
+    this.colorCache = colorArray;
   }
 
   linearGradient(
@@ -459,6 +514,32 @@ class Visualizer {
         break;
     }
 
+    // Color switch //TODO Random per item instead of per frame
+    switch (options.color[0]) {
+      case 'linearGradient':
+        this.ctx.strokeStyle = this.linearGradient(
+          options.color[1],
+          options.color[2],
+          options.color[3]
+        );
+        break;
+      case 'radialGradient':
+        this.ctx.strokeStyle = this.radialGradient(
+          options.color[1],
+          options.color[2]
+        );
+        break;
+      case 'randomColor':
+        this.randomColor();
+        break;
+      case 'palette':
+        this.ctx.strokeStyle = this.palette(options.color[1]);
+        break;
+      default:
+        this.ctx.strokeStyle = options.color;
+        break;
+    }
+
     // Vizualizer switch //TODO Check Polar Bars
     switch (options.viz[0]) {
       case 'line':
@@ -482,32 +563,6 @@ class Visualizer {
         break;
       default:
         this.line(data);
-        break;
-    }
-
-    // Color switch //TODO Random per item instead of per frame
-    switch (options.color[0]) {
-      case 'linearGradient':
-        this.ctx.strokeStyle = this.linearGradient(
-          options.color[1],
-          options.color[2],
-          options.color[3]
-        );
-        break;
-      case 'radialGradient':
-        this.ctx.strokeStyle = this.radialGradient(
-          options.color[1],
-          options.color[2]
-        );
-        break;
-      case 'randomColor':
-        this.ctx.strokeStyle = this.randomColor();
-        break;
-      case 'randomPalette':
-        this.ctx.strokeStyle = this.randomPalette(options.color[1]);
-        break;
-      default:
-        this.ctx.strokeStyle = options.color;
         break;
     }
 
