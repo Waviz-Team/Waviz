@@ -10,7 +10,7 @@ type vizComponentProps = {
   audioContext?: AudioContext;
 };
 
-function Wave3({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
+function Wave4C({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -22,28 +22,36 @@ function Wave3({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps
   }
   
   const defaults=[
-  {
-    domain: ['time', 500], 
-    color: ['linearGradient', '#00FFFF', '#8A2BE2'], 
-    stroke: [5],
-  },
-  {
-    domain: ['time', 400],
-    color: ['linearGradient', '#20B2AA', '#8A2BE2'], 
-    stroke: [4],
-  },
-  {
-    domain: ['time', 300],
-    color: ['linearGradient', '#7FFFD4', '#6A5ACD'], 
-    stroke: [3],
-  },
-   {
-    domain: ['time', 400],
-    viz: ['particles', [1, 1], 0.2, 100, 2, 100],  // velocity, gravity, lifespan, birthrate, samples
-    color: ['linearGradient', '#7FFFD4'],
-    stroke: [2],
-  }
+{
+  domain: ['time',250],
+  coord: ['polar', 120],         
+  viz: ['line'],            
+  color: ['linearGradient', '#6BB818', '#139133'],
+  stroke: [3],
+},
+{
+  domain: ['time',350],
+  coord: ['polar', 130],         
+  viz: ['line'],            
+  color: ['linearGradient', '#D91CE6', '#D022E3'],
+  stroke: [2],
+},
+{
+  domain: ['time',450],
+  coord: ['polar', 130],         
+  viz: ['line'],            
+  color: ['linearGradient', '#1882C4', '#163AC9'],
+  stroke: [2],
+},
+{
+  domain: ['time', 250],
+  coord: ['polar', 120],         
+  viz: ['particles'],           
+  color: ['linearGradient', '#E322A6', '#139133'],
+  stroke: [2],
+},
 ];
+
 
 
   const optionsObject = Object.assign(defaults, userOptions)
@@ -90,10 +98,4 @@ function Wave3({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps
     </div>
   );
 }
-export default Wave3;
-
-
-
-
-
-
+export default Wave4C;

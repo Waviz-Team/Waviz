@@ -1,7 +1,8 @@
+
+
 import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../core/waviz";
-
-//* User props: ['color', number]
+//* User props: ['color', num: # of bars]
 
 type vizComponentProps = {
   srcAudio: any;
@@ -10,35 +11,40 @@ type vizComponentProps = {
   audioContext?: AudioContext;
 };
 
-function Wave4({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
+function Bar5C({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasReady, setCanvasReady] = useState(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
-
+  
   let userOptions = {}
   if(options){
-    userOptions = {color:[options[0]], domain:['time', options[1]]}
+    userOptions = {color:[options[0]], viz:['bars', options[1]]}
   }
   
-  const defaults=[
-{
-  domain: ['time',250],
-  coord: ['polar'],         
-  viz: ['line'],            
-  color: ['linearGradient', '#D91CE6', '#D022E3'],
-  stroke: [3],
-},
-{
-  domain: ['time', 250],
-  coord: ['polar'],         
-  viz: ['particles'],           
-  color: ['linearGradient', '#E322A6', '#4B204D'],
-  stroke: [3],
-},
+ const defaults = [
+  {
+    domain: ['time', 500],
+    coord: ['polar', 100],         
+    viz: ['bars', 64],             
+    color: ['linearGradient', '#B50E7A', '#C41A62'],
+    stroke: [6],
+  },
+  {
+    domain: ['time', 500],
+    coord: ['polar', 100], 
+    viz: ['line'],
+    color: ['linearGradient', '#1A97C4', '#1893B8'],
+    stroke: [4],
+  },
+  {
+    domain: ['time', 250],
+    coord: ['polar', 0, 0, 0.1],   // center particles with slight auto-rotation
+    viz: ['particles', [1, 1], 0, 200, 4, 80], 
+    color: ['randomPalette', ['#ffffff', '#ff00cc', '#00ffff', '#f5f5f5', '#99ccff']],
+    stroke: [0.7],
+  },
 ];
-
-
   const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic
@@ -83,4 +89,14 @@ function Wave4({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps
     </div>
   );
 }
-export default Wave4;
+export default Bar5C;
+
+
+
+
+
+
+
+
+
+

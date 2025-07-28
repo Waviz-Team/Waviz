@@ -9,7 +9,7 @@ type vizComponentProps = {
   audioContext?: AudioContext;
 };
 
-function Bar3({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
+function Bar4C({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -20,24 +20,28 @@ function Bar3({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps)
     userOptions = {color:[options[0]], viz:['bars', options[1]]}
   }
   
-const defaults = [
-  {
-    domain: ['time', 250],                       
-    coord: ['rect'],                            
-    viz: ['bars', 40],                            
-    color: ['randomPalette', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#00BCD4'  
-],
-    stroke: [16, 'dashes'],                       
-    
+ const defaults = [{
+  domain: ['time', 400],              
+  coord: ['polar', 90],                    
+  viz: ['bars', 30],                   
+  color: ['randomPalette', ['#57BBDE', '#9DDE57', '#CC57DE', '#DE9C57', '#FDB813']], 
+  stroke: [10],                        
+}, 
+{
+    domain: ['time', 300],              
+    coord: ['rect'],                     
+    viz: ['dots', 300],                   
+    color: ['randomPalette', ['#57BBDE', '#9DDE57', '#CC57DE', '#DE9C57', '#FDB813']], 
+    stroke: [3],                        
   },
-  {
-    domain: ['time', 500],
-    coord: ['rect'],
-    viz: ['particles', [1, 1], 0.1, 120, 2, 100],
-    color: ['linearGradient', '#00bcd4', '#6D109C'],
-    stroke: [3],
+    {
+    domain: ['freq', 400],
+    coord: ['polar', 140],   
+    viz: ['particles', [1, 1], 0.2, 200, 6, 80], 
+    color: ['randomPalette', ['#ffffff', '#ff00cc', '#00ffff', '#f5f5f5', '#99ccff']],
+    stroke: [0.7],
   },
-];
+ ];
   const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic
@@ -82,4 +86,4 @@ const defaults = [
     </div>
   );
 }
-export default Bar3;
+export default Bar4C;

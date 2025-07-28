@@ -1,12 +1,12 @@
 import React, { useRef, useEffect, useState } from "react";
 import Bar1 from "../components/Bar1";
-import Wave2 from "../components/Wave2";
-import Wave3 from "../components/Wave3"
-import Wave4 from "../components/Wave4"
+import Wave2 from "../components/Wave2C";
+import Wave3 from "../components/Wave3C"
+import Wave4 from "../components/Wave4C"
 import Bar2Cate from "../components/Bar2Cate"
-import Bar3 from "../components/Bar3";
-import Bar4 from "../components/Bar4";
-import Bar5 from "../components/Bar5";
+import Bar3 from "../components/Bar3C";
+import Bar4 from "../components/Bar4C";
+import Bar5 from "../components/Bar5C";
 
 
 

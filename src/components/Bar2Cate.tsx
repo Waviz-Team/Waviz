@@ -23,9 +23,9 @@ function Bar2Cate({ srcAudio, srcCanvas, options, audioContext }: vizComponentPr
 const defaults = [
   {
     domain: ['freq', 200],              
-    coord: ['polar', 110],    
+    coord: ['polar', 120],    
     viz: ['bars', 200],                
-    color: ['randomPalette', ['#00BFFF', '#1E90FF', '#40E0D0', '#5AC8FA','#0096FF', 
+    color: ['randomPalette', ['#00BFFF', '#40E0D0', '#5AC8FA','#0096FF', 
 ]],
     stroke: [2, 'dashes'],           
     
@@ -33,7 +33,7 @@ const defaults = [
   {
     domain: ['time', 100],              
     coord: ['polar'],                     
-    viz: ['particles',[1, 1], 0.1, 90, 1, 100],                 
+    viz: ['particles',[1, 1], 0, 90, 3, 100],                 
     color: ['randomPalette', ['#00BCD4', '#3F51B5', '#8E24AA', '#E91E63']], 
     stroke: [2],
   },

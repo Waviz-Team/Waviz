@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../core/waviz";
-
-//* User props: ['color', number]
+//* User props: ['color', num: # of bars]
 
 type vizComponentProps = {
   srcAudio: any;
@@ -10,42 +9,35 @@ type vizComponentProps = {
   audioContext?: AudioContext;
 };
 
-function Wave2({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
+function Bar3C({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasReady, setCanvasReady] = useState(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
-
+  
   let userOptions = {}
   if(options){
-    userOptions = {color:[options[0]], domain:['time', options[1]]}
+    userOptions = {color:[options[0]], viz:['bars', options[1]]}
   }
   
-  const defaults=[
+const defaults = [
+  {
+    domain: ['time', 250],                       
+    coord: ['rect'],                            
+    viz: ['bars', 40],                            
+    color: ['randomPalette', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#00BCD4'  
+],
+    stroke: [16, 'dashes'],                       
+    
+  },
   {
     domain: ['time', 500],
-    coord: ["rect"],
-    viz: ["line"],
-    color: ['#2F4FC4'],
-    stroke: [3]
-  },
-  {
-    domain: ['time', 300],
-     coord: ["rect"],
-    viz: ["line"],
-    color: ['#DED414'],
-     stroke: [2],
-  },
-  {
-    domain: ['time', 200],
-     coord: ["rect"],
-    viz: ["line"],
-    color: ['#DE3914'],
-     stroke: [1],
+    coord: ['rect'],
+    viz: ['particles', [1, 1], 0.1, 120, 2, 100],
+    color: ['linearGradient', '#00bcd4', '#6D109C'],
+    stroke: [3],
   },
 ];
-
-
   const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic
@@ -90,4 +82,4 @@ function Wave2({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps
     </div>
   );
 }
-export default Wave2;
+export default Bar3C;

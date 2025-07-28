@@ -1,8 +1,7 @@
-
-
 import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../core/waviz";
-//* User props: ['color', num: # of bars]
+
+//* User props: ['color', number]
 
 type vizComponentProps = {
   srcAudio: any;
@@ -11,40 +10,42 @@ type vizComponentProps = {
   audioContext?: AudioContext;
 };
 
-function Bar4({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
+function Wave3C({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasReady, setCanvasReady] = useState(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
-  
+
   let userOptions = {}
   if(options){
-    userOptions = {color:[options[0]], viz:['bars', options[1]]}
+    userOptions = {color:[options[0]], domain:['time', options[1]]}
   }
   
- const defaults = [
+  const defaults=[
   {
-    domain: ['time', 500],
-    coord: ['polar', 100],         
-    viz: ['bars', 64],             
-    color: ['linearGradient', '#B50E7A', '#C41A62'],
-    stroke: [6],
+    domain: ['time', 500], 
+    color: ['linearGradient', '#00FFFF', '#8A2BE2'], 
+    stroke: [5],
   },
   {
-    domain: ['time', 500],
-    coord: ['polar', 100], 
-    viz: ['line'],
-    color: ['linearGradient', '#1A97C4', '#1893B8'],
+    domain: ['time', 400],
+    color: ['linearGradient', '#20B2AA', '#8A2BE2'], 
     stroke: [4],
   },
   {
-    domain: ['time', 250],
-    coord: ['polar', 0, 0, 0.1],   // center particles with slight auto-rotation
-    viz: ['particles', [1, 1], 0.2, 200, 4, 80], 
-    color: ['randomPalette', ['#ffffff', '#ff00cc', '#00ffff', '#f5f5f5', '#99ccff']],
-    stroke: [0.7],
+    domain: ['time', 300],
+    color: ['linearGradient', '#7FFFD4', '#6A5ACD'], 
+    stroke: [3],
   },
+   {
+    domain: ['time', 400],
+    viz: ['particles', [1, 1], 0.2, 100, 2, 100],  // velocity, gravity, lifespan, birthrate, samples
+    color: ['linearGradient', '#7FFFD4'],
+    stroke: [2],
+  }
 ];
+
+
   const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic
@@ -89,11 +90,7 @@ function Bar4({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps)
     </div>
   );
 }
-export default Bar4;
-
-
-
-
+export default Wave3C;
 
 
 
