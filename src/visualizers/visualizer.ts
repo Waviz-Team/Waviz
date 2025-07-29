@@ -1,5 +1,4 @@
 import AudioAnalyzer from '../analysers/analyzer';
-import { mapArray } from '../utils/mathUtils';
 import { windowFunc } from '../utils/mathUtils';
 import { makePeriodic } from '../utils/mathUtils';
 
@@ -32,7 +31,7 @@ interface IOptions {
     | [string]; // fallback for simple color
   style?: [number?, string?, string?]; 
   stroke?: [number?, string?]; // number: width, string: style
-  fill?: ['solid' | 'linearGradient', string | [string, string]]; // fill type, style (i.e dashes)
+  fill?: ['solid' | 'linearGradient', string | [string, string], string?]; // fill type, style (i.e dashes)
 }
 
 // Visualizer class
@@ -44,7 +43,7 @@ class Visualizer {
   frame: number = 0;
   particleSystem: IParticle[];
 
-  constructor(canvas: HTMLCanvasElement, data: Uint8Array) {
+  constructor(canvas: HTMLCanvasElement, data: AudioAnalyzer | Uint8Array) {
     //Inputs check
     if (!canvas || !(canvas instanceof HTMLCanvasElement)) {
       console.log('No valid canvas provided');
