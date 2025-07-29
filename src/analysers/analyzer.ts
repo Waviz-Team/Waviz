@@ -74,11 +74,6 @@ class AudioAnalyzer {
     get freqData() {
         return this.getFrequencyData() || new Uint8Array(0);
     }
-
-    //! This is creating typescript errors. I can't figure out how to fix this atm. Users can directly call the prop for now
-    // get bufferLength() {
-    //     return this.bufferLength || 0;
-    // }
 }
 
 export default AudioAnalyzer;
