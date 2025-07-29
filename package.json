@@ -1,6 +1,6 @@
 {
   "name": "waviz",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.3",
   "description": "Modern, modular React library for audio and signal visualization.",
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
@@ -40,7 +40,27 @@
     "web audio API",
     "canvas"
   ],
-  "author": "",
+  "author": {
+    "name": "Waviz Team"
+  },
+  "contributors": [
+    {
+      "name": "Seung-Taek Oh",
+      "email": "seungtaekoh5@gmail.com"
+    },
+    {
+      "name": "Joao Morgado",
+      "email": "jmrmorgado@gmail.com"
+    },
+    {
+      "name": "Cate Profir",
+      "email": "cate.profir@gmail.com"
+    },
+    {
+      "name": "Victor Sangmu Kim",
+      "email": "Sangmu.kim@gmail.com"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/OSP1-CSVJ/Waviz/issues"

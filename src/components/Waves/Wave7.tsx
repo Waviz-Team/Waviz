@@ -45,7 +45,7 @@ function Wave7({
   ];
 
   defaults.forEach((e, i) => {
-    if (!options) {
+    if (!options || typeof options !== 'string') {
       return;
     } else {
       let hsl;

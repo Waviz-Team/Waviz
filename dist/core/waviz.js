@@ -5,17 +5,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const input_1 = __importDefault(require("../input/input"));
 const analyzer_1 = __importDefault(require("../analysers/analyzer"));
-const Visualizer_1 = __importDefault(require("../visualizers/Visualizer"));
+const visualizer_1 = __importDefault(require("../visualizers/visualizer"));
 class Waviz {
     constructor(canvas, audioSource, audioContext) {
         this.visualizer = null;
         this.isInitialized = false;
+        // Optional canvas passthrough for params
         this.audioAnalyzer = new analyzer_1.default();
         this.input = new input_1.default((sourceNode) => {
+            // needed because setupAudioAnalysis needs to wait for async audio source
             this.setupAudioAnalysis(sourceNode);
         }, audioContext);
         if (canvas) {
-            this.visualizer = new Visualizer_1.default(canvas, this.audioAnalyzer);
+            this.visualizer = new visualizer_1.default(canvas, this.audioAnalyzer);
         }
         if (audioSource) {
             this.input.connectAudioSource(audioSource);
@@ -23,6 +25,7 @@ class Waviz {
     }
     //* WAVIZ setup methods
     setupAudioAnalysis(sourceNode) {
+        // Method to setup the Waviz audio analysis. Needed here because of async calls expected in Input. If moved up, sourceNode won't exist in time since constructor runs first.
         const audioContext = this.input.getAudioContext();
         // Analysis start
         this.audioAnalyzer.startAnalysis(audioContext, sourceNode);
@@ -45,14 +48,30 @@ class Waviz {
         this.isInitialized = false;
     }
     //* Visualizer Delegator
-    //* Convenience Methods
-    async wave(options) {
+    //* Convenience Methods Main
+    async render(options) {
         await this.input.initializePending();
-        this.visualizer.wave(options);
+        this.visualizer.render(options);
     }
-    async bar(options) {
+    stop() {
+        this.visualizer.stop();
+    }
+    //* Conveninence Methods Presets
+    async simpleLine(options) {
         await this.input.initializePending();
-        this.visualizer.bars(options);
+        this.visualizer.simpleLine(options);
+    }
+    async simpleBars(options) {
+        await this.input.initializePending();
+        this.visualizer.simpleBars(options);
+    }
+    async simplePolarLine(options) {
+        await this.input.initializePending();
+        this.visualizer.simplePolarLine(options);
+    }
+    async simplePolarBars(options) {
+        await this.input.initializePending();
+        this.visualizer.simplePolarBars(options);
     }
 }
 exports.default = Waviz;

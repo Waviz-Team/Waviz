@@ -1,6 +1,6 @@
-import Input from "../input/input";
-import AudioAnalyzer from "../analysers/analyzer";
-import Visualizer from "../visualizers/Visualizer";
+import Input from '../input/input';
+import AudioAnalyzer from '../analysers/analyzer';
+import Visualizer from '../visualizers/visualizer';
 type AudioSourceType = HTMLAudioElement | MediaStream | 'microphone' | 'screenAudio' | string;
 declare class Waviz {
     input: Input;
@@ -12,7 +12,11 @@ declare class Waviz {
     getFrequencyData(): Uint8Array<ArrayBuffer>;
     getTimeDomainData(): Uint8Array<ArrayBuffer>;
     cleanup(): void;
-    wave(options?: any): Promise<void>;
-    bar(options?: any): Promise<void>;
+    render(options?: any): Promise<void>;
+    stop(): void;
+    simpleLine(options?: any): Promise<void>;
+    simpleBars(options?: any): Promise<void>;
+    simplePolarLine(options?: any): Promise<void>;
+    simplePolarBars(options?: any): Promise<void>;
 }
 export default Waviz;
