@@ -36,6 +36,9 @@ export { default as Wave6 } from './components/Waves/Wave6';
 export { default as Wave7 } from './components/Waves/Wave7';
 
 export { default as Dots1 } from './components/Dots/Dots1';
+export { default as Dots2 } from './components/Dots/Dots2';
+export { default as Dots3 } from './components/Dots/Dots3';
+export { default as Dots4 } from './components/Dots/Dots4';
 
 export { default as Particles1 } from './components/Particles/Particles1';
 
