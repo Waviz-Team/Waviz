@@ -38,7 +38,7 @@ function Mixed9({
       domain: ['time', 300, 512],
       color: ['#7afff2ff'],
     },
-    { domain: ['time', 600], viz: ['dots'], color: ['#e5fffbff'], stroke:[3]},
+    { domain: ['time', 100,200], viz: ['dots',80], color: ['#e5fffbff'], stroke: [2] },
   ];
   const optionsObject = [
     Object.assign(defaults[0], userOptions[0]),

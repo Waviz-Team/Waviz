@@ -26,18 +26,10 @@ function Mixed7({
   if (options) {
     userOptions = [
       {
-        domain: ['time', 300, 100],
-        coord: ['rect', 100],
-        viz: ['particles', [1, 3], 0.1],
         color: ['linearGradient', options[0], options[1], 'flip'],
-        stroke: [4],
       },
       {
-        domain: ['time', 300, 100],
-        coord: ['rect', 100],
-        viz: ['line'],
         color: [options[0]],
-        stroke: [5],
       },
     ];
   }
@@ -46,16 +38,16 @@ function Mixed7({
     {
       domain: ['time', 300, 100],
       coord: ['rect', 100],
-      viz: ['particles', [1, 3], 0.1],
+      viz: ['particles', [1, 3], 0.1, , 6, 40],
       color: ['linearGradient', 'white', 'teal', 'flip'],
-      stroke: [4],
+      stroke: [2],
     },
     {
       domain: ['time', 300, 100],
       coord: ['rect', 100],
       viz: ['line'],
       color: ['snow'],
-      stroke: [5],
+      stroke: [3],
     },
   ];
   const optionsObject = [

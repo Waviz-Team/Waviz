@@ -10,7 +10,7 @@ type vizComponentProps = {
   audioContext?: AudioContext;
 };
 
-function Bar4({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
+function Bar5({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -21,7 +21,7 @@ function Bar4({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps)
     userOptions = {color: ['linearGradient', options[0], options[1]], viz: ['bars', options[2]]}
   }
   
-  const defaults={domain:['time', 300, , 'hamming'], viz:['bars', 25], coord: ['rect'], color: ['linearGradient', '#E93EB7', '#24B9F7'], stroke: [25]}
+  const defaults={domain:['time', 500, , 'hamming'], viz:['bars', 15], coord: ['rect'], color: ['linearGradient', '#E93EB7', '#24B9F7'], stroke: [25]}
   const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic
@@ -66,4 +66,4 @@ function Bar4({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps)
     </div>
   );
 }
-export default Bar4;
+export default Bar5;
