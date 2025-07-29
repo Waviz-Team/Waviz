@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import Viz from '../components/Mixed/Mixed12';
+import Viz from '../components/Waves/Wave7';
 
 export default function App() {
   // audio element can take an HTMLAudioElement, microphone, or screenAudio
@@ -14,11 +14,15 @@ export default function App() {
       <Viz
         srcAudio={audioElement}
         srcCanvas={canvasElement}
-        // options={['#ffb6c1',10]}
+        // options={['red','blue']}
       />
 
       {/* Don't forget to comment out the audio tag if using microphone or screenAudio */}
-      <canvas ref={canvasElement} width='800' height='400'></canvas>
+      <canvas
+        ref={canvasElement}
+        width='400
+      '
+        height='400'></canvas>
       <audio ref={audioElement} src='/FreshFocus.mp3' controls></audio>
     </div>
   );

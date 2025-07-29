@@ -8,7 +8,7 @@ type VizComponentProps = {
   audioContext?: AudioContext;
 };
 
-function Dots1({
+function Dots({
   srcAudio,
   srcCanvas,
   options,
@@ -21,22 +21,61 @@ function Dots1({
   // User-provided options
   let userOptions = {};
   if (options && Array.isArray(options)) {
-    userOptions = {
-      viz: ['dots', options[1]], // or try "dots", "polarBars", etc.
-      color: [options[0]], // e.g., '#ff00ff' or gradient string
-      stroke: [6], // thicker stroke for flashy style
-    };
+    userOptions = [
+      { color: ['radialGradient',,,50,120, options[0], options[1]] },
+      { color: ['radialGradient',,,50,120, options[0], options[1]] },
+      { color: ['radialGradient',,,50,120, options[0], options[1]] },
+      { color: ['radialGradient',,,50,120, options[0], options[1]] },
+      { color: ['radialGradient',,,50,120, options[0], options[1]] },
+    ];
   }
 
   // Default fallback options
-  const defaults = {
-    domain: ['time', 200],
-    viz: ['dots', 32],
-    color: ['#ff00ff'], // vibrant pink
-    stroke: [4],
-  };
+  const defaults = [
+    {
+      domain: ['time',100],
+      coord: ['polar',70],
+      viz: ['line'],
+      color: ['radialGradient',,,50,120],
+      stroke: [1],
+    },
+    {
+      domain: ['time', 120],
+      coord: ['rect',70],
+      viz: ['dots',200],
+      color: ['radialGradient',,,50,120],
+      stroke: [2],
+    },
+    {
+      domain: ['time', 140],
+      coord: ['polar',70],
+      viz: ['dots',200],
+      color: ['radialGradient',,,50,120],
+      stroke: [2],
+    },
+    {
+      domain: ['time', 160],
+      coord: ['polar',70],
+      viz: ['dots',200],
+      color: ['radialGradient',,,50,120],
+      stroke: [2],
+    },
+    {
+      domain: ['time', 180],
+      coord: ['polar',70],
+      viz: ['dots',200],
+      color: ['radialGradient',,,50,120],
+      stroke: [2],
+    },
+  ];
 
-  const optionsObject = Object.assign({}, defaults, userOptions);
+  const optionsObject = [
+    Object.assign({}, defaults[0], userOptions[0]),
+    Object.assign({}, defaults[1], userOptions[1]),
+    Object.assign({}, defaults[2], userOptions[2]),
+    Object.assign({}, defaults[3], userOptions[3]),
+    Object.assign({}, defaults[4], userOptions[4]),
+  ];
 
   useEffect(() => {
     if (srcCanvas?.current) {
@@ -88,4 +127,4 @@ function Dots1({
   );
 }
 
-export default Dots1;
+export default Dots;
