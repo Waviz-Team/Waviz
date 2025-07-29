@@ -5,12 +5,12 @@ class Input {
         this.pendingAudioSrc = null;
         this.isWaitingForUser = false;
         //* Local Audio (HTML/Files/URLS) handler
-        this.connectToAudioElement = (audioEl) => {
-            if (!audioEl)
+        this.connectToAudioElement = (mediaEl) => {
+            if (!mediaEl)
                 return;
             try { // Start with Web Audio Context to set up processing environment
                 this.audioContext = this.manageAudioContext();
-                this.sourceNode = this.audioContext.createMediaElementSource(audioEl); // Source node to bridge between html and WebAudioAPI
+                this.sourceNode = this.audioContext.createMediaElementSource(mediaEl); // Source node to bridge between html and WebAudioAPI
                 if (this.onAudioReady) { // Indicate audio source is ready for analysis
                     this.onAudioReady(this.sourceNode); // If callback function exists, will pass sourceNode to analyser
                     this.sourceNode.connect(this.audioContext.destination);
@@ -57,18 +57,18 @@ class Input {
             this.connectToAudioElement(audio);
         };
         // HTML elements input (connects to an existing HTML audio element on WebAudioAPI)
-        this.connectToHTMLElement = (audioEl) => {
-            if (!audioEl)
+        this.connectToHTMLElement = (mediaEl) => {
+            if (!mediaEl)
                 return;
-            audioEl.crossOrigin = "anonymous";
-            audioEl.addEventListener('play', () => {
+            mediaEl.crossOrigin = "anonymous";
+            mediaEl.addEventListener('play', () => {
                 if (this.audioContext.state === 'suspended') {
                     this.audioContext.resume().then(() => {
                         console.log('Input.connectToHTML has resumed play');
                     });
                 }
             });
-            this.connectToAudioElement(audioEl);
+            this.connectToAudioElement(mediaEl);
         };
         this.file = null;
         this.audioContext = audioContext || null;
@@ -91,6 +91,7 @@ class Input {
                     this.connectToAudioURL(audioSource);
                     return; // Since all cases here should break out of the switch, all cases changed to return instead of breaks
                 case audioSource instanceof HTMLAudioElement:
+                case audioSource instanceof HTMLVideoElement: //! Could combine these two to be an HTMLMediaElement but I'm worried about edge cases. Could also separate these two into independent but not as DRY.
                     this.connectToHTMLElement(audioSource);
                     return;
                 default:

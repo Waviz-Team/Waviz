@@ -19,7 +19,6 @@ export { default as Mixed8 } from './components/Mixed/Mixed8';
 export { default as Mixed9 } from './components/Mixed/Mixed9';
 export { default as Mixed10 } from './components/Mixed/Mixed10';
 export { default as Mixed11 } from './components/Mixed/Mixed11';
-export { default as Mixed12 } from './components/Mixed/Mixed12';
 
 export { default as Bar1 } from './components/Bars/Bar1';
 export { default as Bar2 } from './components/Bars/Bar2';

@@ -4,7 +4,7 @@ declare global {
         preferCurrentTab?: boolean;
     }
 }
-type AudioSourceType = HTMLAudioElement | MediaStream | 'microphone' | 'screenAudio' | string;
+type AudioSourceType = HTMLAudioElement | HTMLVideoElement | MediaStream | 'microphone' | 'screenAudio' | string;
 declare class Input {
     file: File | null;
     audioContext: AudioContext | null;
@@ -19,7 +19,7 @@ declare class Input {
     private connectToMediaStream;
     loadAudioFile: (event: ChangeEvent<HTMLInputElement>) => void;
     private connectToAudioURL;
-    connectToHTMLElement: (audioEl: any) => void;
+    connectToHTMLElement: (mediaEl: HTMLAudioElement | HTMLVideoElement) => void;
     initializePending(): Promise<void>;
     private connectToMicrophone;
     private connectToScreenAudio;
