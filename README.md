@@ -48,6 +48,13 @@ For a more in-depth documentation, visit our website: [www.wavizJS.com](www.wavi
 
 ## Waviz Core
 
+Waviz core is designed to work with vanilla JS. If you have already installed waviz from npm, you can directly import waviz to use at the top of whatever file you choose. We have support for both commonJS and ESM!
+```
+import Waviz from 'waviz/core'
+```
+
+However, this initialization will only work if you are using existing build tools/compilers. If you want to run your file on a browser directly, there are some extra steps. Please refer to our [waviz core documentation](#waviz-core-usage-notes) for more info. 
+
 Waviz Core has 3 primitive classes: 
 * [Input](#input-class)
 * [Analyzer](#analyzer-class)
@@ -191,6 +198,8 @@ export default function App() {
 }
 ```
 
+*Note: Make sure the imported React component is wrapped in {brackets}. If not, the component will not render properly.*
+
 Just like from the Input class, you can also initialize the visualizer using mediaStream inputs instead. You would set the useRef directly at the top instead of assigning it to the audio. 
 
 ```ts
@@ -215,7 +224,56 @@ import { Dots4 } from 'waviz';
 
 For advanced configuration and customization, check out the [components documentation](./components/README.md).
 
+## Waviz Core usage notes
+If you want to run Waviz Core directly in a browser, you need to configure your file structure to read a UMD file. **These notes assume you are using a Linux terminal and nodeJS.** After NPM installation, on your terminal, you will run:
+```
+mkdir -p libs
+```
+This will make a parent directly for the library in which the umd file will be stored. If you already have a libs folder, you can skip this step. 
 
+Next, you will run:
+```
+cp node_modules/waviz/dist/waviz.umd.js libs/
+```
+This will move the UMD file into the libs folder. 
+
+That's it! You can then import waviz core from this UMD file! Below is an example of how this import would look like for native browser running.
+
+**HTML File:**
+```tsx
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WavizHTMLTest</title>
+  </head>
+  <body>
+      <canvas id="canvas" width="800" height="400"></canvas>
+      <audio id="audio" src="/CoolMusic.mp3" controls></audio>
+      <script src="libs/waviz.umd.js"></script>
+      <script type="module" src="index.js"></script>
+  </body>
+</html>
+
+```
+**Index.js script file:**
+```tsx
+const Waviz = window.Waviz.default;
+
+const canvas = document.getElementById('canvas')
+const audio = document.getElementById('audio')
+
+const wavizTest = new Waviz(canvas, audio);
+
+audio.addEventListener('play', async () => {
+    wavizTest.visualizer.simpleBars();
+});
+
+audio.addEventListener('pause', () => {
+  wavizTest.visualizer.stop();
+});
+```
 
 ## 🤝 Contributing
 
