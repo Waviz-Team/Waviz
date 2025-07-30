@@ -28,3 +28,9 @@ export interface IOptions {
   stroke?: [number?, string?]; // number: width, string: style
   fill?: ['solid' | 'linearGradient', string | [string, string], string?]; // fill type, style (i.e dashes)
 }
+
+declare global { // Needed to extend global scope of 'DisplayMediaStreamOptions' with the currentTab that is only supported in Chromium
+    interface DisplayMediaStreamOptions {
+        preferCurrentTab?: boolean;
+    }
+}
