@@ -98,7 +98,7 @@ class Input {
     //* Local Audio methods
 
     // Local File input (Create new AudioElement from user upload)
-    loadAudioFile = (event: ChangeEvent<HTMLInputElement>) => { //! Test local files
+    loadAudioFile = (event: Event & { target: HTMLInputElement }) => { //! Test local files
         const file = event.target.files?.[0];
         //TODO: include validation for mp3 here maybe? or in <input type="file" accept = ".mp3">
         if (!file)  return;
