@@ -6,7 +6,7 @@ import Waviz from '../../core/waviz';
 type vizComponentProps = {
   srcAudio: React.RefObject<HTMLAudioElement>;
   srcCanvas?: React.RefObject<HTMLCanvasElement | null>;
-  options?: {};
+  options?: object;
   audioContext?: AudioContext;
 };
 
@@ -37,7 +37,7 @@ function Particles1({
     domain: ['time', 300],
     coord: ['polar'],
     viz: ['particles', [2, 2], 0, 15, 3],
-    color: ['radialGradient',,,100,150],
+    color: ['radialGradient',undefined, undefined,100,150],
     stroke: [10],
   };
   const optionsObject = Object.assign(defaults, userOptions);

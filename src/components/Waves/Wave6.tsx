@@ -6,7 +6,7 @@ import Waviz from "../../core/waviz";
 type vizComponentProps = {
   srcAudio: React.RefObject<HTMLAudioElement>;
   srcCanvas?: React.RefObject<HTMLCanvasElement | null>;
-  options?: {};
+  options?: object;
   audioContext?: AudioContext;
 };
 
@@ -18,10 +18,10 @@ function Wave6({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps
 
   let userOptions = {}
   if (options) {
-    userOptions = {coord: ['polar', options[2], , 100],color:['linearGradient', options[0], options[1]]}
+    userOptions = {coord: ['polar', options[2], undefined, 100],color:['linearGradient', options[0], options[1]]}
   }
   
-  const defaults={domain: ['time', 250, ,'exponential'], coord: ['polar', , , 100], color: ['linearGradient', 'white', '#00BFFF']}
+  const defaults={domain: ['time', 250, undefined ,'exponential'], coord: ['polar',undefined , undefined, 100], color: ['linearGradient', 'white', '#00BFFF']}
   const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic

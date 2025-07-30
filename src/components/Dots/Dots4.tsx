@@ -4,7 +4,7 @@ import Waviz from '../../core/waviz';
 type VizComponentProps = {
   srcAudio: React.RefObject<HTMLAudioElement>;
   srcCanvas?: React.RefObject<HTMLCanvasElement | null>;
-  options?: {};
+  options?: object;
   audioContext?: AudioContext;
 };
 
@@ -22,11 +22,11 @@ function Dots({
   let userOptions = {};
   if (options && Array.isArray(options)) {
     userOptions = [
-      { color: ['radialGradient',,,50,120, options[0], options[1]] },
-      { color: ['radialGradient',,,50,120, options[0], options[1]] },
-      { color: ['radialGradient',,,50,120, options[0], options[1]] },
-      { color: ['radialGradient',,,50,120, options[0], options[1]] },
-      { color: ['radialGradient',,,50,120, options[0], options[1]] },
+      { color: ['radialGradient',undefined,undefined,50,120, options[0], options[1]] },
+      { color: ['radialGradient',undefined,undefined,50,120, options[0], options[1]] },
+      { color: ['radialGradient',undefined,undefined,50,120, options[0], options[1]] },
+      { color: ['radialGradient',undefined,undefined,50,120, options[0], options[1]] },
+      { color: ['radialGradient',undefined,undefined,50,120, options[0], options[1]] },
     ];
   }
 
@@ -36,35 +36,35 @@ function Dots({
       domain: ['time',100],
       coord: ['polar',70],
       viz: ['line'],
-      color: ['radialGradient',,,50,120],
+      color: ['radialGradient',undefined,undefined,50,120],
       stroke: [1],
     },
     {
       domain: ['time', 120],
       coord: ['rect',70],
       viz: ['dots',200],
-      color: ['radialGradient',,,50,120],
+      color: ['radialGradient',undefined,undefined,50,120],
       stroke: [2],
     },
     {
       domain: ['time', 140],
       coord: ['polar',70],
       viz: ['dots',200],
-      color: ['radialGradient',,,50,120],
+      color: ['radialGradient',undefined,undefined,50,120],
       stroke: [2],
     },
     {
       domain: ['time', 160],
       coord: ['polar',70],
       viz: ['dots',200],
-      color: ['radialGradient',,,50,120],
+      color: ['radialGradient',undefined,undefined,50,120],
       stroke: [2],
     },
     {
       domain: ['time', 180],
       coord: ['polar',70],
       viz: ['dots',200],
-      color: ['radialGradient',,,50,120],
+      color: ['radialGradient',undefined,undefined,50,120],
       stroke: [2],
     },
   ];

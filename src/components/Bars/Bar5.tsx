@@ -21,7 +21,7 @@ function Bar5({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps)
     userOptions = {color: ['linearGradient', options[0], options[1]], viz: ['bars', options[2]]}
   }
   
-  const defaults={domain:['time', 500, , 'hamming'], viz:['bars', 15], coord: ['rect'], color: ['linearGradient', '#E93EB7', '#24B9F7'], stroke: [25]}
+  const defaults={domain:['time', 500, undefined , 'hamming'], viz:['bars', 15], coord: ['rect'], color: ['linearGradient', '#E93EB7', '#24B9F7'], stroke: [25]}
   const optionsObject = Object.assign(defaults, userOptions)
 
   // Use Effect Logic

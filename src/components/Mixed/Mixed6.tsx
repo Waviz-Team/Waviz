@@ -6,7 +6,7 @@ import Waviz from '../../core/waviz';
 type vizComponentProps = {
   srcAudio: React.RefObject<HTMLAudioElement>;
   srcCanvas?: React.RefObject<HTMLCanvasElement | null>;
-  options?: {};
+  options?: object;
   audioContext?: AudioContext;
 };
 
@@ -28,7 +28,7 @@ function Mixed6({
       {
         domain: ['time', 300, 100, 'hann'],
         coord: ['polar', 100, 90],
-        viz: ['particles', [0.5, 0.5], -0.01, , 5, 20],
+        viz: ['particles', [0.5, 0.5], -0.01, undefined, 5, 20],
         color: ['linearGradient', options[0], options[1], 'flip'],
         stroke: [4],
       },
@@ -46,7 +46,7 @@ function Mixed6({
     {
       domain: ['time', 300, 100, 'hann'],
       coord: ['polar', 100, 90],
-      viz: ['particles', [0.5, 0.5], -0.01, , 5, 20],
+      viz: ['particles', [0.5, 0.5], -0.01, undefined , 5, 20],
       color: ['linearGradient', 'yellow', 'red', 'flip'],
       stroke: [4],
     },

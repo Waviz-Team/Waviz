@@ -27,7 +27,7 @@ function Bar2({
   }
 
   const defaults = {
-    domain: ['time', 750, , 'hann'],
+    domain: ['time', 750, undefined, 'hann'],
     viz: ['bars', 40],
     coord: ['rect'],
     color: ['#E93EB7'],
