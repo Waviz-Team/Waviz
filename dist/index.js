@@ -3,12 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Particles1 = exports.Dots1 = exports.Wave7 = exports.Wave6 = exports.Wave5 = exports.Wave4 = exports.Wave3 = exports.Wave2 = exports.Wave1 = exports.Bar6 = exports.Bar5 = exports.Bar4 = exports.Bar3 = exports.Bar2 = exports.Bar1 = exports.Mixed12 = exports.Mixed11 = exports.Mixed10 = exports.Mixed9 = exports.Mixed8 = exports.Mixed7 = exports.Mixed6 = exports.Mixed5 = exports.Mixed4 = exports.Mixed3 = exports.Mixed2 = exports.Mixed1 = exports.Visualizer = exports.AudioAnalyzer = exports.Input = exports.Waviz = void 0;
-const waviz_1 = __importDefault(require("./core/waviz"));
-exports.default = waviz_1.default;
+exports.Particles1 = exports.Dots4 = exports.Dots3 = exports.Dots2 = exports.Dots1 = exports.Wave7 = exports.Wave6 = exports.Wave5 = exports.Wave4 = exports.Wave3 = exports.Wave2 = exports.Wave1 = exports.Bar6 = exports.Bar5 = exports.Bar4 = exports.Bar3 = exports.Bar2 = exports.Bar1 = exports.Mixed11 = exports.Mixed10 = exports.Mixed9 = exports.Mixed8 = exports.Mixed7 = exports.Mixed6 = exports.Mixed5 = exports.Mixed4 = exports.Mixed3 = exports.Mixed2 = exports.Mixed1 = exports.Visualizer = exports.AudioAnalyzer = exports.Input = exports.Waviz = void 0;
 // Core Library exports for Waviz library
-var waviz_2 = require("./core/waviz");
-Object.defineProperty(exports, "Waviz", { enumerable: true, get: function () { return __importDefault(waviz_2).default; } });
+var waviz_1 = require("./core/waviz");
+Object.defineProperty(exports, "Waviz", { enumerable: true, get: function () { return __importDefault(waviz_1).default; } });
 var input_1 = require("./input/input");
 Object.defineProperty(exports, "Input", { enumerable: true, get: function () { return __importDefault(input_1).default; } });
 var analyzer_1 = require("./analysers/analyzer");
@@ -38,8 +36,6 @@ var Mixed10_1 = require("./components/Mixed/Mixed10");
 Object.defineProperty(exports, "Mixed10", { enumerable: true, get: function () { return __importDefault(Mixed10_1).default; } });
 var Mixed11_1 = require("./components/Mixed/Mixed11");
 Object.defineProperty(exports, "Mixed11", { enumerable: true, get: function () { return __importDefault(Mixed11_1).default; } });
-var Mixed12_1 = require("./components/Mixed/Mixed12");
-Object.defineProperty(exports, "Mixed12", { enumerable: true, get: function () { return __importDefault(Mixed12_1).default; } });
 var Bar1_1 = require("./components/Bars/Bar1");
 Object.defineProperty(exports, "Bar1", { enumerable: true, get: function () { return __importDefault(Bar1_1).default; } });
 var Bar2_1 = require("./components/Bars/Bar2");
@@ -68,6 +64,12 @@ var Wave7_1 = require("./components/Waves/Wave7");
 Object.defineProperty(exports, "Wave7", { enumerable: true, get: function () { return __importDefault(Wave7_1).default; } });
 var Dots1_1 = require("./components/Dots/Dots1");
 Object.defineProperty(exports, "Dots1", { enumerable: true, get: function () { return __importDefault(Dots1_1).default; } });
+var Dots2_1 = require("./components/Dots/Dots2");
+Object.defineProperty(exports, "Dots2", { enumerable: true, get: function () { return __importDefault(Dots2_1).default; } });
+var Dots3_1 = require("./components/Dots/Dots3");
+Object.defineProperty(exports, "Dots3", { enumerable: true, get: function () { return __importDefault(Dots3_1).default; } });
+var Dots4_1 = require("./components/Dots/Dots4");
+Object.defineProperty(exports, "Dots4", { enumerable: true, get: function () { return __importDefault(Dots4_1).default; } });
 var Particles1_1 = require("./components/Particles/Particles1");
 Object.defineProperty(exports, "Particles1", { enumerable: true, get: function () { return __importDefault(Particles1_1).default; } });
 //# sourceMappingURL=index.js.map

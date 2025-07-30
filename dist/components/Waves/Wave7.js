@@ -17,14 +17,14 @@ function Wave7({ srcAudio, srcCanvas, options, audioContext, }) {
     //   userOptions = {color}
     // }
     let defaults = [
-        { domain: ['time', 400], coord: ['polar', 150], color: ['#eb1b00ff'] },
-        { domain: ['time', 350], coord: ['polar', 150], color: ['#eb4300ff'] },
-        { domain: ['time', 300], coord: ['polar', 150], color: ['#ff6715ff'] },
-        { domain: ['time', 250], coord: ['polar', 150], color: ['#ff9320ff'] },
-        { domain: ['time', 200], coord: ['polar', 150], color: ['#ffb836ff'] },
-        { domain: ['time', 150], coord: ['polar', 150], color: ['#ffca68ff'] },
-        { domain: ['time', 100], coord: ['polar', 150], color: ['#ffdd9dff'] },
-        { domain: ['time', 50], coord: ['polar', 150], color: ['#ffeeceff'] },
+        { domain: ['time', 400], coord: ['polar', 100], color: ['#eb1b00ff'] },
+        { domain: ['time', 350], coord: ['polar', 100], color: ['#eb4300ff'] },
+        { domain: ['time', 300], coord: ['polar', 100], color: ['#ff6715ff'] },
+        { domain: ['time', 250], coord: ['polar', 100], color: ['#ff9320ff'] },
+        { domain: ['time', 200], coord: ['polar', 100], color: ['#ffb836ff'] },
+        { domain: ['time', 150], coord: ['polar', 100], color: ['#ffca68ff'] },
+        { domain: ['time', 100], coord: ['polar', 100], color: ['#ffdd9dff'] },
+        { domain: ['time', 50], coord: ['polar', 100], color: ['#ffeeceff'] },
     ];
     defaults.forEach((e, i) => {
         if (!options || typeof options !== 'string') {

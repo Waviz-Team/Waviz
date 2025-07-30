@@ -17,7 +17,7 @@ function Mixed9({ srcAudio, srcCanvas, options, audioContext, }) {
         userOptions = [
             {
                 domain: ['time', 300, 512],
-                color: [options],
+                color: [options[0]],
             },
             { domain: ['time', 600], color: ['ghostwhite'] },
         ];
@@ -27,7 +27,7 @@ function Mixed9({ srcAudio, srcCanvas, options, audioContext, }) {
             domain: ['time', 300, 512],
             color: ['#7afff2ff'],
         },
-        { domain: ['time', 600], viz: ['dots'], color: ['#e5fffbff'], stroke: [3] },
+        { domain: ['time', 100, 200], viz: ['dots', 80], color: ['#e5fffbff'], stroke: [2] },
     ];
     const optionsObject = [
         Object.assign(defaults[0], userOptions[0]),

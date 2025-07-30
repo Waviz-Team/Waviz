@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsx_runtime_1 = require("react/jsx-runtime");
 const react_1 = require("react");
 const waviz_1 = __importDefault(require("../../core/waviz"));
-function Bar4({ srcAudio, srcCanvas, options, audioContext }) {
+function Bar5({ srcAudio, srcCanvas, options, audioContext }) {
     // References
     const wavizReference = (0, react_1.useRef)(null);
     const canvasRef = (0, react_1.useRef)(null);
@@ -15,7 +15,7 @@ function Bar4({ srcAudio, srcCanvas, options, audioContext }) {
     if (options) {
         userOptions = { color: ['linearGradient', options[0], options[1]], viz: ['bars', options[2]] };
     }
-    const defaults = { domain: ['time', 300, , 'hamming'], viz: ['bars', 25], coord: ['rect'], color: ['linearGradient', '#E93EB7', '#24B9F7'], stroke: [25] };
+    const defaults = { domain: ['time', 500, , 'hamming'], viz: ['bars', 15], coord: ['rect'], color: ['linearGradient', '#E93EB7', '#24B9F7'], stroke: [25] };
     const optionsObject = Object.assign(defaults, userOptions);
     // Use Effect Logic
     (0, react_1.useEffect)(() => {
@@ -53,5 +53,5 @@ function Bar4({ srcAudio, srcCanvas, options, audioContext }) {
     }, [canvasReady, srcAudio, options, audioContext]);
     return ((0, jsx_runtime_1.jsx)("div", { children: !srcCanvas && (0, jsx_runtime_1.jsx)("canvas", { ref: canvasRef, width: 500, height: 300 }) }));
 }
-exports.default = Bar4;
+exports.default = Bar5;
 //# sourceMappingURL=Bar5.js.map

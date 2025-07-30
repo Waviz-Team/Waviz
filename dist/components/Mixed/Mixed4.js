@@ -6,42 +6,52 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsx_runtime_1 = require("react/jsx-runtime");
 const react_1 = require("react");
 const waviz_1 = __importDefault(require("../../core/waviz"));
-function Mixed4({ srcAudio, srcCanvas, options, audioContext }) {
+function Mixed4({ srcAudio, srcCanvas, options, audioContext, }) {
     // References
     const wavizReference = (0, react_1.useRef)(null);
     const canvasRef = (0, react_1.useRef)(null);
     const [canvasReady, setCanvasReady] = (0, react_1.useState)(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
     let userOptions = {};
     if (options) {
-        userOptions = { color: [options[0]], viz: ['bars', options[1]] };
+        userOptions = [
+            { color: ['linearGradient', options[0], options[1]] },
+            { color: ['linearGradient', options[0], options[1]] },
+            { color: ['linearGradient', options[0], options[1]] },
+        ];
     }
     const defaults = [
         {
-            domain: ['time', 500],
+            domain: ['time', 400],
             coord: ['polar', 100],
             viz: ['bars', 64],
-            color: ['linearGradient', '#B50E7A', '#C41A62'],
+            color: ['radialGradient', '#70044aff', '#f84791ff', 100, 120],
             stroke: [6],
         },
         {
-            domain: ['time', 500],
+            domain: ['time', 300],
             coord: ['polar', 100],
             viz: ['line'],
-            color: ['linearGradient', '#1A97C4', '#1893B8'],
+            color: ['radialGradient', '#003bdcff', '#1893B8', 100, 150],
             stroke: [4],
         },
         {
             domain: ['time', 250],
             coord: ['polar', 0, 0, 0.1], // center particles with slight auto-rotation
-            viz: ['particles', [1, 1], 0, 200, 4, 80],
-            color: ['randomPalette', ['#ffffff', '#ff00cc', '#00ffff', '#f5f5f5', '#99ccff']],
-            stroke: [0.7],
+            viz: ['particles', [3, 3], 0, 35, 5, 50],
+            color: ['radialGradient', '#002f41ff', '#02bff8ff', 10, 50],
+            stroke: [1],
         },
     ];
-    const optionsObject = Object.assign(defaults, userOptions);
+    const optionsObject = [
+        Object.assign({}, defaults[0], userOptions[0]),
+        Object.assign({}, defaults[1], userOptions[1]),
+        Object.assign({}, defaults[2], userOptions[2]),
+    ];
     // Use Effect Logic
     (0, react_1.useEffect)(() => {
-        if (srcCanvas === null || srcCanvas === void 0 ? void 0 : srcCanvas.current) { //! Logic shortened with ? operator to throw undefined instead of of error
+        //Check if canvas is passed in and assign srcCanvas to canvasRef if passed in
+        if (srcCanvas === null || srcCanvas === void 0 ? void 0 : srcCanvas.current) {
+            //! Logic shortened with ? operator to throw undefined instead of of error
             canvasRef.current = srcCanvas.current;
             setCanvasReady(true);
         }
@@ -60,12 +70,13 @@ function Mixed4({ srcAudio, srcCanvas, options, audioContext }) {
             const playWave = () => { var _a; return (_a = wavizReference.current) === null || _a === void 0 ? void 0 : _a.render(optionsObject); };
             const stopWave = () => { var _a; return (_a = wavizReference.current) === null || _a === void 0 ? void 0 : _a.visualizer.stop(); };
             // Event Listeners
-            srcAudio.current.addEventListener("play", playWave);
-            srcAudio.current.addEventListener("pause", stopWave);
+            srcAudio.current.addEventListener('play', playWave);
+            srcAudio.current.addEventListener('pause', stopWave);
             return () => {
                 var _a;
-                srcAudio.current.removeEventListener("play", playWave);
-                srcAudio.current.removeEventListener("pause", stopWave);
+                // Cleanup Listeners
+                srcAudio.current.removeEventListener('play', playWave);
+                srcAudio.current.removeEventListener('pause', stopWave);
                 (_a = wavizReference.current) === null || _a === void 0 ? void 0 : _a.visualizer.stop();
             };
         }

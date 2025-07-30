@@ -17,14 +17,14 @@ function Bar3({ srcAudio, srcCanvas, options, audioContext, }) {
             domain: ['freq', -200, 100],
             viz: ['bars', 12],
             color: ['linearGradient', options[0], options[1], 'flip'],
-            stroke: [50, 'dashes'],
+            stroke: [30, 'dashes'],
         };
     }
     const defaults = {
         domain: ['freq', -200, 100],
-        viz: ['bars', 12],
+        viz: ['bars', 10],
         color: ['linearGradient', '#0088ffff', '#00ffd5ff', 'flip'],
-        stroke: [50, 'dashes'],
+        stroke: [30, 'dashes'],
     };
     const optionsObject = Object.assign(defaults, userOptions);
     // Use Effect Logic
