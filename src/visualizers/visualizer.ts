@@ -368,6 +368,7 @@ class Visualizer {
             );
             break;
         }
+        break;
       case 'polar':
         switch (fillType) {
           case 'solid':

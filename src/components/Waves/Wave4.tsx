@@ -11,7 +11,7 @@ import {
 //* User props: ['color', number]
 
 type vizComponentProps = {
-  srcAudio: React.RefObject<HTMLAudioElement>;
+  srcAudio: React.RefObject<HTMLAudioElement | null>;
   srcCanvas?: React.RefObject<HTMLCanvasElement | null>;
   options?: object;
   audioContext?: AudioContext;

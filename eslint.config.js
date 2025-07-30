@@ -19,7 +19,7 @@ export default [
     },
     rules: {
       "no-unused-vars": "warn",
-      "react/react-in-jsx-scope": "off", // if using React 17+
+      "react/react-in-jsx-scope": "off", 
     },
   },
   {

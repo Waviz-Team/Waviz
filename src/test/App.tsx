@@ -1,10 +1,10 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef} from 'react';
 import Viz from '../components/Waves/Wave7';
 
 export default function App() {
   // audio element can take an HTMLAudioElement, microphone, or screenAudio
-  const audioElement = useRef(null);
-  const canvasElement = useRef(null);
+  const audioElement = useRef<HTMLAudioElement>(null);
+  const canvasElement = useRef<HTMLCanvasElement>(null);
 
   return (
     <div className='content'>

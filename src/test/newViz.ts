@@ -16,7 +16,7 @@ audio.addEventListener('play', async () => {
     viz:['bars'],
     color:['randomcolor'],
 
-    // fill: ['linearGradient', ['red', 'blue']],
+    fill: ['linearGradient', ['red', 'blue']],
     stroke: [25,],
   });
 });

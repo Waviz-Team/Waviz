@@ -1,4 +1,3 @@
-import Input from '../input/input';
 
 // Maps value to new range
 export function mapRange(value, inMin, inMax, outMin, outMax) {

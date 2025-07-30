@@ -1,5 +1,3 @@
-import * as React from 'react';
-import type { ChangeEvent } from 'react';
 
 declare global { // Needed to extend global scope of 'DisplayMediaStreamOptions' with the currentTab that is only supported in Chromium
     interface DisplayMediaStreamOptions {
@@ -65,7 +63,7 @@ class Input {
     }
 
     //* Local Audio (HTML/Files/URLS) handler
-    private connectToAudioElement = (mediaEl) => { // Can handle both audio and video audio!
+    private connectToAudioElement = (mediaEl: HTMLMediaElement) => { // Can handle both audio and video audio!
         if (!mediaEl) return;
         
         try { // Start with Web Audio Context to set up processing environment
