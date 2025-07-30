@@ -3,9 +3,9 @@ import Waviz from "../../core/waviz";
 //* User props: ['color', num: # of bars]
 
 type vizComponentProps = {
-  srcAudio: any;
+  srcAudio: React.RefObject<HTMLAudioElement>;
   srcCanvas?: React.RefObject<HTMLCanvasElement | null>;
-  options?: {};
+  options?: object;
   audioContext?: AudioContext;
 };
 
@@ -14,7 +14,8 @@ function Bar1({ srcAudio, srcCanvas, options, audioContext }: vizComponentProps)
   const wavizReference = useRef<Waviz | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasReady, setCanvasReady] = useState(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
-  
+   
+
   let userOptions = {}
   if(options){
     userOptions = {color:[options[0]], viz:['bars', options[1]]}

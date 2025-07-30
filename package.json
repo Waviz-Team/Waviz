@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "files": [
     "dist",
     "README.md",
@@ -27,7 +28,8 @@
     "prepublishOnly": "npm run clean && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite --host",
-    "lint": "eslint src --ext .ts,.tsx"
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",

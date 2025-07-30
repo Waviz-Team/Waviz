@@ -11,7 +11,7 @@ import {
 //* User props: ['color', number]
 
 type vizComponentProps = {
-  srcAudio: any;
+  srcAudio: React.RefObject<HTMLAudioElement>;
   srcCanvas?: React.RefObject<HTMLCanvasElement | null>;
   options?: {};
   audioContext?: AudioContext;
@@ -21,19 +21,19 @@ function Wave7({
   srcAudio,
   srcCanvas,
   options,
-  audioContext,
+  audioContext
 }: vizComponentProps) {
   // References
   const wavizReference = useRef<Waviz | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasReady, setCanvasReady] = useState(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
 
-  let userOptions = {};
+  const userOptions = {};
   // if(options){
   //   userOptions = {color}
   // }
 
-  let defaults = [
+  const defaults = [
     { domain: ['time', 400], coord: ['polar', 100], color: ['#eb1b00ff'] },
     { domain: ['time', 350], coord: ['polar', 100], color: ['#eb4300ff'] },
     { domain: ['time', 300], coord: ['polar', 100], color: ['#ff6715ff'] },

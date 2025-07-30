@@ -261,7 +261,7 @@ class Visualizer {
         // Distance calculations
         const dx = x1 - centerX;
         const dy = y1 - centerY;
-        let dist = Math.sqrt(dx * dx + dy * dy);
+        const dist = Math.sqrt(dx * dx + dy * dy);
 
         const magnitude = Math.abs(dist - innerRadius) + innerRadius;
 

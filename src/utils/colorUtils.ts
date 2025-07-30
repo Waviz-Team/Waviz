@@ -3,8 +3,8 @@ export function rgbToHsl(r, g, b) {
   g /= 255;
   b /= 255;
 
-  let max = Math.max(r, g, b);
-  let min = Math.min(r, g, b);
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
   let h,
     s,
     l = (max + min) / 2;
@@ -12,7 +12,7 @@ export function rgbToHsl(r, g, b) {
   if (max === min) {
     h = 0; // achromatic
   } else {
-    let d = max - min;
+    const d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
     switch (max) {
       case r:
@@ -32,9 +32,9 @@ export function rgbToHsl(r, g, b) {
 }
 
 export function hexToRgb(hex) {
-  let r = parseInt(hex.substring(1, 3), 16);
-  let g = parseInt(hex.substring(3, 5), 16);
-  let b = parseInt(hex.substring(5, 7), 16);
+  const r = parseInt(hex.substring(1, 3), 16);
+  const g = parseInt(hex.substring(3, 5), 16);
+  const b = parseInt(hex.substring(5, 7), 16);
   return [r, g, b];
 }
 

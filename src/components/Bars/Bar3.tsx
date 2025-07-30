@@ -3,9 +3,9 @@ import Waviz from '../../core/waviz';
 //* User props: ['color', num: # of bars]
 
 type vizComponentProps = {
-  srcAudio: any;
+  srcAudio: React.RefObject<HTMLAudioElement>;
   srcCanvas?: React.RefObject<HTMLCanvasElement | null>;
-  options?: {};
+  options?: object;
   audioContext?: AudioContext;
 };
 

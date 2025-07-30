@@ -11,7 +11,7 @@ import {
 //* User props: ['color', number]
 
 type vizComponentProps = {
-  srcAudio: any;
+  srcAudio: React.RefObject<HTMLAudioElement>;
   srcCanvas?: React.RefObject<HTMLCanvasElement | null>;
   options?: {};
   audioContext?: AudioContext;
@@ -28,9 +28,9 @@ function Wave4({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [canvasReady, setCanvasReady] = useState(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
 
-  let userOptions = {};
+  const userOptions = {};
 
-  let defaults = [
+  const defaults = [
     { domain: ['time', 450], color: ['#eb1b00ff'] },
     { domain: ['time', 400], color: ['#eb4300ff'] },
     { domain: ['time', 350], color: ['#ff6715ff'] },

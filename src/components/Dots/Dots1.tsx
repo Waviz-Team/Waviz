@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
 
 type VizComponentProps = {
-  srcAudio: any;
+  srcAudio: React.RefObject<HTMLAudioElement>;
   srcCanvas?: React.RefObject<HTMLCanvasElement | null>;
   options?: {};
   audioContext?: AudioContext;
