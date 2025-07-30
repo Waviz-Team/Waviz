@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "declaration": true,
+    "declarationMap": false,
+    "emitDeclarationOnly": false
+  },
+  "include": ["src"]
+}

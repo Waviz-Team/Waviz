@@ -6,14 +6,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsx_runtime_1 = require("react/jsx-runtime");
 const react_1 = require("react");
 const waviz_1 = __importDefault(require("../../core/waviz"));
-function Mixed8({ srcAudio, srcCanvas, options, audioContext }) {
+function Mixed8({ srcAudio, srcCanvas, options, audioContext, }) {
     // References
     const wavizReference = (0, react_1.useRef)(null);
     const canvasRef = (0, react_1.useRef)(null);
     const [canvasReady, setCanvasReady] = (0, react_1.useState)(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
     let userOptions = {};
     if (options) {
-        userOptions = { color: [options[0]], domain: ['time', options[1]] };
+        userOptions = [
+            { color: ['linearGradient', options[0], options[1]] },
+            { color: ['linearGradient', options[0], options[1]] },
+            { color: ['linearGradient', options[0], options[1]] },
+            { color: ['linearGradient', options[0], options[1]] },
+            { color: ['linearGradient', options[0], options[1]] },
+        ];
     }
     const defaults = [
         {
@@ -33,15 +39,29 @@ function Mixed8({ srcAudio, srcCanvas, options, audioContext }) {
         },
         {
             domain: ['time', 400],
-            viz: ['particles', [1, 1], 0.2, 100, 2, 100], // velocity, gravity, lifespan, birthrate, samples
+            viz: ['particles', [1, 1], 0.02, 30, 5, 40], // velocity, gravity, lifespan, birthrate, samples
+            color: ['linearGradient', '#7FFFD4', '#00FFFF'],
+            stroke: [2],
+        },
+        {
+            domain: ['time', 400],
+            viz: ['particles', [1, 1], -0.02, 30, 5, 40], // velocity, gravity, lifespan, birthrate, samples
             color: ['linearGradient', '#7FFFD4'],
             stroke: [2],
-        }
+        },
     ];
-    const optionsObject = Object.assign(defaults, userOptions);
+    const optionsObject = [
+        Object.assign(defaults[0], userOptions[0]),
+        Object.assign(defaults[1], userOptions[1]),
+        Object.assign(defaults[2], userOptions[2]),
+        Object.assign(defaults[3], userOptions[3]),
+        Object.assign(defaults[4], userOptions[4]),
+    ];
     // Use Effect Logic
     (0, react_1.useEffect)(() => {
-        if (srcCanvas === null || srcCanvas === void 0 ? void 0 : srcCanvas.current) { //! Logic shortened with ? operator to throw undefined instead of of error
+        //Check if canvas is passed in and assign srcCanvas to canvasRef if passed in
+        if (srcCanvas === null || srcCanvas === void 0 ? void 0 : srcCanvas.current) {
+            //! Logic shortened with ? operator to throw undefined instead of of error
             canvasRef.current = srcCanvas.current;
             setCanvasReady(true);
         }
@@ -60,12 +80,13 @@ function Mixed8({ srcAudio, srcCanvas, options, audioContext }) {
             const playWave = () => { var _a; return (_a = wavizReference.current) === null || _a === void 0 ? void 0 : _a.render(optionsObject); };
             const stopWave = () => { var _a; return (_a = wavizReference.current) === null || _a === void 0 ? void 0 : _a.visualizer.stop(); };
             // Event Listeners
-            srcAudio.current.addEventListener("play", playWave);
-            srcAudio.current.addEventListener("pause", stopWave);
+            srcAudio.current.addEventListener('play', playWave);
+            srcAudio.current.addEventListener('pause', stopWave);
             return () => {
                 var _a;
-                srcAudio.current.removeEventListener("play", playWave);
-                srcAudio.current.removeEventListener("pause", stopWave);
+                // Cleanup Listeners
+                srcAudio.current.removeEventListener('play', playWave);
+                srcAudio.current.removeEventListener('pause', stopWave);
                 (_a = wavizReference.current) === null || _a === void 0 ? void 0 : _a.visualizer.stop();
             };
         }

@@ -1,6 +1,3 @@
-import Waviz from './core/waviz';
-export default Waviz;
-
 // Core Library exports for Waviz library
 export { default as Waviz } from './core/waviz';
 export { default as Input } from './input/input';

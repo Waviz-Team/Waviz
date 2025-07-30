@@ -13,17 +13,14 @@ function Wave4({ srcAudio, srcCanvas, options, audioContext, }) {
     const canvasRef = (0, react_1.useRef)(null);
     const [canvasReady, setCanvasReady] = (0, react_1.useState)(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
     let userOptions = {};
-    // if(options){
-    //   userOptions = {color}
-    // }
     let defaults = [
-        { domain: ['time', 800], color: ['#eb1b00ff'] },
-        { domain: ['time', 700], color: ['#eb4300ff'] },
-        { domain: ['time', 600], color: ['#ff6715ff'] },
-        { domain: ['time', 500], color: ['#ff9320ff'] },
-        { domain: ['time', 400], color: ['#ffb836ff'] },
-        { domain: ['time', 300], color: ['#ffca68ff'] },
-        { domain: ['time', 200], color: ['#ffdd9dff'] },
+        { domain: ['time', 450], color: ['#eb1b00ff'] },
+        { domain: ['time', 400], color: ['#eb4300ff'] },
+        { domain: ['time', 350], color: ['#ff6715ff'] },
+        { domain: ['time', 300], color: ['#ff9320ff'] },
+        { domain: ['time', 250], color: ['#ffb836ff'] },
+        { domain: ['time', 200], color: ['#ffca68ff'] },
+        { domain: ['time', 150], color: ['#ffdd9dff'] },
         { domain: ['time', 100], color: ['#ffeeceff'] },
     ];
     defaults.forEach((e, i) => {
