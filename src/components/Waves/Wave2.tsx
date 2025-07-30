@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../../core/waviz";
-//* Desc: wave line viz windowed through hanning with gradient options
-//* User props: ['color1', 'color2']
+//* Waveform line hanned with a linear gradient.
+//* Props: Color1, Color2
 
 type vizComponentProps = {
   srcAudio: any;

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
-
-//* User props: ['color', number]
+//* Multi-layered polar lines and particles with radial gradients.
+//* Props: Color1, Color2
 
 type vizComponentProps = {
   srcAudio: any;

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../../core/waviz";
-//* Desc: polar hanned wave that defaults to look like fire
-//* User props: ['color1', 'color2', num: radius size, num: rotation angle]
+//* Polar hanned wave that defaults to look like fire
+//* User props: Color1, Color2, Radius, Angle
 
 type vizComponentProps = {
   srcAudio: any;

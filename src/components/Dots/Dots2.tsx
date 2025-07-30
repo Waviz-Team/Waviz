@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
+//* Dots with a linear gradient.
+//* Props: Color1, Color2
 
 type VizComponentProps = {
   srcAudio: any;

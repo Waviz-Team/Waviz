@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
-
-//* User props: ['color', number]
+//* Particles and lines with a linear gradient and "flip" effect.
+//* Props: Color1, Color2
 
 type vizComponentProps = {
   srcAudio: any;

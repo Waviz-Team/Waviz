@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../../core/waviz";
-//* Desc: 'simple' bars with linear gradient - windowed hamming to normalize on center
-//* User props: ['color1', 'color2', number: bars]
+//* Bars with a customizable linear gradient and bar count.
+//* Props: Color1, Color2, Number of bars
 
 type vizComponentProps = {
   srcAudio: any;

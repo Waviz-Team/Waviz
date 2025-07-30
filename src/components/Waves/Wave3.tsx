@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
-
-//* User props: ['color', number]
+//* Three overlapping waveform lines, each with its own color.
+//* Props: Color1, Color2, Color3
 
 type vizComponentProps = {
   srcAudio: any;

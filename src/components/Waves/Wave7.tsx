@@ -7,8 +7,8 @@ import {
   rgbToArray,
   HSLtoArray,
 } from '../../utils/colorUtils';
-
-//* User props: ['color', number]
+//* Multi-layered polar waveform with dynamic color shifting.
+//* Props: Color
 
 type vizComponentProps = {
   srcAudio: any;

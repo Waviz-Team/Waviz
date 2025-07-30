@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../../core/waviz";
-//* Desc: Simple Bars using freq (fft) and the first 300 bins/samples
-//* User props: ['color', number: bars]
+//* Frequency-domain bars using FFT on first 300 samples, with color and bar count options.
+//* Props: Color, Number of bars
 
 type vizComponentProps = {
   srcAudio: any;
