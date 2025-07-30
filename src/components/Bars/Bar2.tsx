@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
-//* Desc: Wave-like bars windowed through hann to be in the center
-//* User props: ['color', number: bars]
+//* Desc: Centered, wave-like bars using a Hann window.
+//* Props: Color, Number of bars
 
 type vizComponentProps = {
   srcAudio: any;

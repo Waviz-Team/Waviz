@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
 
-//* User props: ['color', number]
+//* Polar lines and dots, customizable color.
+//* Props: Color
 
 type vizComponentProps = {
   srcAudio: any;

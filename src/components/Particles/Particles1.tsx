@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
-
-//* User props: ['color', number]
+//* Particle burst visualizer with radial gradient coloring.
+//* Props: Color1, Color2
 
 type vizComponentProps = {
   srcAudio: any;

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../../core/waviz";
-//* Desc: polar wave ampped up with exp window to look like lightning
-//* User props: ['color1', 'color2', num: radius size]
+//* Polar wave ampped up with exp window to look like lightning
+//* Props: Color1, Color2, Radius
 
 type vizComponentProps = {
   srcAudio: any;

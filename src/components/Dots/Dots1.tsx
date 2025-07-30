@@ -1,5 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
+//* Simple dots visualizer, customizable color and dot count.
+//* Props: Color, Number of dots
+
 
 type VizComponentProps = {
   srcAudio: any;

@@ -37,21 +37,21 @@ npm i waviz
 ![Waviz Library](public/readMe/WavizLibraries.png)
 
 Waviz has two primary libraries: 
-* Waviz Core
-* Plug n Play
+* [Waviz Core](#waviz-core)
+* [Plug n Play](#plug--play-react-components)
 
-If you want a simple plug-in and use React Components, go to our (Plug & Play React Components section). Plug n Play uses the Waviz Core Library to generate presets. 
+If you want a simple plug-in and use React Components, go to our [Plug & Play React Components section](#plug--play-react-components). Plug n Play uses the Waviz Core Library to generate presets. 
 
-If you want to have more control over what you build, go to our (Waviz Core Section). Waviz Core uses Web Audio API and HTML Canvas to generate a visualizer. 
+If you want to have more control over what you build, go to our [Waviz Core Section](#waviz-core). Waviz Core uses Web Audio API and HTML Canvas to generate a visualizer. 
 
-For a more in-depth documentation, visit our website/docs: [www.ipsemLorum.com](www.ipsemLorum.com)
+For a more in-depth documentation, visit our website: [www.wavizJS.com](www.wavizJS.com)
 
 ## Waviz Core
 
 Waviz Core has 3 primitive classes: 
-* Input
-* Analyzer
-* Visualizer
+* [Input](#input-class)
+* [Analyzer](#analyzer-class)
+* [Visualizer](#visualizer-class)
 
 While they are designed to work together, each of these classes can be used independently. The basic flow of data is: Input -> Analyzer -> Visualizer. 
 
@@ -69,17 +69,17 @@ The Waviz class takes in three arguments:
 
 While all three arguments are optional, an Audio Source and a HTMLCanvas are the bare minimum needed to initialize a visualizer. The Audio Source argument should only be passed in if you have already established an AudioContext. 
 
-To get started, make sure to intialize the waviz class passing in an Audio Source and a HTML Canvas element:
+To get started, initialize the waviz class by passing in an Audio Source and a HTML Canvas element:
 ```ts
 const wavizTest = new Waviz(canvas, audio);
 ```
 
-From here, you can call your visualize within a relevant event listener. Because of browser protection policies, you cannot initialize a visualizer without tying it to a user gesture. 
+From here, you can call your visualize within a relevant event listener. Due to browser protection policies, you cannot initialize a visualizer without tying it to a user gesture. 
 ```ts
 wavizTest.visualizer.simpleBars();
 ```
 
-If you are using a media stream element (microphone, tab audio, etc), you need to also intialize the pending method. This will ensure that the visualizer waits for user permissions before continuing forward. It is recommended that regardless of what input element you are using, you always intialize pending. This will be an async call so make sure you call this within an asynchronous function. 
+If you are using a media stream element (microphone, tab audio, etc), you need to also initialize the pending method. This will ensure that the visualizer waits for user permissions before continuing forward. It is recommended that regardless of what input element you are using, you always initialize pending. This will be an async call, so make sure you call this within an asynchronous function. 
 ```ts
 await wavizTest.input.initializePending();
 ```
@@ -100,26 +100,26 @@ audio.addEventListener('pause', () => {
 ```
 
 ### Input Class
-The Input class handles the 'preparation' of the audio inputs you would like to use. It takes in a callback function (to initialize source nodes) and an optional AudioContext. The current inputs supported are: 
-* HTML Audio elements (defined as a HTML Audio Element)
-* HTML Video elements (defined as a HTML Video Element)
+The Input class handles the 'preparation' of the audio inputs you would like to use. It takes in a callback function (to initialize source nodes) and an optional AudioContext. The current supported inputs are: 
+* HTML Audio elements
+* HTML Video elements 
 * Local File inputs
-* URL/path strings to media files (defined as a string path)
-* Microphone (defined by 'microphone') - This will require user permission for microphone access of the tab.
-* Tab Audio (defined by 'screenAudio')- Warning: This feature is currently only supported by Chromium Browsers. It will require user permission for screen video capture of the tab. Will only capture current tab. This may change in the future. Refer to MDN docs for up-to-date support: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia
-MediaStream input (defined by an await statement of a mediaStream) 
+* URL/path strings to media files 
+* Microphone (defined by 'microphone')
+* Tab Audio (defined by 'screenAudio')
 
-An example initlaization of the input class will look like such: 
+An example initialization of the input class will look like such: 
 ```ts
-this.input = new Input((sourceNode) => {
-    this.setupAudioAnalysis(sourceNode);
+const input = new Input((sourceNode) => {
+  // Setup your analyzer or other logic here
+  analyzer.startAnalysis(audioContext, sourceNode);
 }, audioContext);
 ```
 
-Refer to our [www.ipsemLorum.com](www.ipsemLorum.com) for more detailed information on the Input methods and handling.
+Refer to our [www.ipsemLorum.com](www.ipsemLorum.com) for more detailed information on the different inputs, methods, and handling.
 
 ### Analyzer Class
-The Analyzer class is the primary handler of transforming an input into a readable data frequency. The analyzer class does not take in any arguments; however, it needs to be initiated via the 'startAnalysis' method - a function that takes in an AudioContext and a sourceNode. 
+The Analyzer class is the primary handler for transforming an input into a readable data frequency. The analyzer class does not take in any arguments; however, it needs to be initiated via the 'startAnalysis' method - a function that takes in an AudioContext and a sourceNode. 
 
 ```ts
 const testAnalyzer = new AudioAnalyzer();
@@ -202,7 +202,7 @@ const audioRef = useRef('screenAudio')
 - `Waves` - 7 different presets of Wave visualization
 - `Dots` - 4 different presets of Dots visualization
 - `Particles` - 1 preset using Particle visualization
-- `Mixed` – Flexible visualizer supporting multiple styles and layer
+- `Mixed` – 11 mixed presets of different visualizations
 
 More component presets will be added in the future! Each component is organized via a number system. For instance for Dots, the imports for each would be as such: 
 

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
-//* Desc: Bars in polor arrang like dots with linear gradient
-//* User props: ['color1', 'color2', num: radius-size]
+//* Bars arranged in a polar (circular) layout with a linear gradient.
+//* Props: Color1, Color2, Radius
 
 type vizComponentProps = {
   srcAudio: any;
