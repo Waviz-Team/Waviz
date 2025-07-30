@@ -22,7 +22,7 @@ const wavizTest = new Waviz(canvas, audio);
 //Test on play
 audio.addEventListener('play', async () => {
     await wavizTest.input.initializePending(); //TODO: Figure out how to make this done in the classes
-    wavizTest.visualizer!.bars();
+    wavizTest.visualizer!.simpleBars();
 });
 
 
@@ -34,7 +34,7 @@ audio.addEventListener('pause', () => {
 // Video Test
 video.addEventListener('play', async () => {
   await wavizTest.input.initializePending();
-  wavizTest.visualizer!.bars();
+  wavizTest.visualizer!.simpleLine();
 });
 
 video.addEventListener('pause', () => {
