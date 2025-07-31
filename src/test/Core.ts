@@ -9,7 +9,15 @@ const viz = new Waviz(canvas, audio);
 
 //Test on play
 audio.addEventListener('play', async () => {
-  viz.simpleBars();
+  viz.render([
+    {
+      domain: ['time'],
+      coord: ['rect'],
+      viz: ['line'],
+      color: ['linearGradient'],
+      stroke: [2],
+    },
+  ]);
 });
 
 // Test on pause

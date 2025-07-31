@@ -125,8 +125,8 @@ class Visualizer {
     velocity: number[] = [1, 1],
     gravity: number = 1,
     lifespan: number = Infinity,
-    birthrate: number = 1,
-    samples: number = 100
+    birthrate: number = 3,
+    samples: number = 50
   ) {
     const frame = this.frame;
     class particle {
