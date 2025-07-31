@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
-
-//* User props: ['color', number]
+//* Polar particles and lines with a linear gradient.
+//* Props: Color1, Color2
 
 type vizComponentProps = {
   srcAudio: React.RefObject<HTMLAudioElement | null>;

@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
+//* Multi-layered dots with radial gradients.
+//* Props: Color1, Color2
 
 type VizComponentProps = {
   srcAudio: React.RefObject<HTMLAudioElement | null>;

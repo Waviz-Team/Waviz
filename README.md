@@ -2,20 +2,20 @@
 
 Waviz is a modern, modular React library for audio and signal visualization. Designed to fill the gap left by outdated or deprecated alternatives, Waviz helps developers build beautiful, customizable sound visualizations with ease.
 
-⸻
+
 
 ## 🚀 Overview
 
 Waviz provides plug-and-play React components for audio visualization, including waveform and bar visualizers. Whether you’re building a music player, educational app, or audio signal monitor, Waviz gives you the tools to integrate dynamic visuals quickly and cleanly.
 
-⸻
+
 
 ## ✨ Features
-* 🎵 File reading
-* 📊 Audio visualization (waveform and bars)
+* 🎵 File reading, MediaStream reading 
+* 📊 Audio visualization (waveform, bars, dots, particles)
 * 🎛️ Component presets and styling options
 
-⸻
+
 
 ## 🧱 Architecture
 
@@ -25,107 +25,260 @@ Waviz uses a modular architecture with single-responsibility function nodes:
 * 🔄 Easy to extend and maintain
 * 🧩 Built for composability
 
-⸻
+## 📦 Installation 
 
-## How to use
+```
+npm i waviz
+```
 
-⸻
+
+
+## 📚 Library
+![Waviz Library](public/readMe/WavizLibraries.png)
+
+Waviz has two primary libraries: 
+* [Waviz Core](#waviz-core)
+* [Plug n Play](#plug--play-react-components)
+
+If you want a simple plug-in and use React Components, go to our [Plug & Play React Components section](#plug--play-react-components). Plug n Play uses the Waviz Core Library to generate presets. 
+
+If you want to have more control over what you build, go to our [Waviz Core Section](#waviz-core). Waviz Core uses Web Audio API and HTML Canvas to generate a visualizer. 
+
+For a more in-depth documentation, visit our website: [www.wavizJS.com](www.wavizJS.com)
+
+## Waviz Core
+
+Waviz core is designed to work with vanilla JS. If you have already installed waviz from npm, you can directly import waviz to use at the top of whatever file you choose. We have support for both commonJS and ESM!
+```
+import Waviz from 'waviz/core'
+```
+
+However, this initialization will only work if you are using existing build tools/compilers. If you want to run your file on a browser directly, there are some extra steps. Please refer to our [waviz core documentation](#waviz-core-usage-notes) for more info. 
+
+Waviz Core has 3 primitive classes: 
+* [Input](#input-class)
+* [Analyzer](#analyzer-class)
+* [Visualizer](#visualizer-class)
+
+While they are designed to work together, each of these classes can be used independently. The basic flow of data is: Input -> Analyzer -> Visualizer. 
+
+![coreStructure](public/readMe/coreStructure.png)
+
+If you want to use all three classes in tandem, we have a composition class 'Waviz' that you can initialize.
 
 ### Waviz Class
-The purpose of the Waviz class is to provide a wrapper class for all the modularized classes we have defined below (input, analyzer, visualizer) through class composition. If you want a simple, effective way to create a visualizer that isn't a react component, use this class! The Waviz class takes in 3 optional arguments: 
-* canvas - type should be an HTML Canvas Element. We need a provided user canvas to draw our visualizer on! 
-* audioSource - type will be the same type defined in the Input class .connectAudioSource() below. This is necessary as well if you want to start the visualizer!
-* audioContext - type will be an AudioContext. This is the currently the only optional parameter that is not needed to start the visualizer. However, if an audioContext has already been established and you don't want to duplicate audioContext (you probably shouldn't), then you can pass in your already existing audioContext. This is also helpful in the case you want to create multiple visualizers on the same page. 
-All 3 arguments are not needed to initialize the class. However, the first two (canvas, audioSource) should be passed in if you want to start the visualizer. Using these arguments, the Waviz class will auto initialize the visualizer/audioContext for you. 
+The Waviz class is the 'wrapper' class that uses all three primitive classes to initialize a visualizer. This is the recommended class to get started if you are using the Core Library. 
 
-### Methods
-**Delegator Methods:**
-* getFrequencyData( ) - pulls the frequency data while providing sanity checks. For more details, refer to our audioAnalyzer documentation!
-* getTimeDomainData( ) - pulls the time domain data while providing sanity checks. For more details, refer to our audioAnalyzer documentation!
-* cleanup( ) - delegation of the cleanup from our Input class with sanity checks. This will clean up the audioContext and disconnect the sourceNode. 
+The Waviz class takes in three arguments: 
+* HTML Canvas element
+* Audio Source
+* Audio Context
 
-**Convenience Methods:**
-* wave( ) - takes in the optional arguments of options (for the full list of options, refer to the visualizer documentation!). This will initialize the wave visualizer for you. ***If using mediaStream inputs, make sure to call within an event listener, tied to a user gesture, in order to comply with browser autoplay and permission policies!***
-* bar( ) - takes in the optional arguments of options (for the full list of options, refer to the visualizer documentation!). This will initialize the bar visualizer for you. ***If using mediaStream inputs, make sure to call within an event listener, tied to a user gesture, in order to comply with browser autoplay and permission policies!***
+While all three arguments are optional, an Audio Source and a HTMLCanvas are the bare minimum needed to initialize a visualizer. The Audio Source argument should only be passed in if you have already established an AudioContext. 
 
-⸻
+To get started, initialize the waviz class by passing in an Audio Source and a HTML Canvas element:
+```ts
+const wavizTest = new Waviz(canvas, audio);
+```
+
+From here, you can call your visualize within a relevant event listener. Due to browser protection policies, you cannot initialize a visualizer without tying it to a user gesture. 
+```ts
+wavizTest.visualizer.simpleBars();
+```
+
+If you are using a media stream element (microphone, tab audio, etc), you need to also initialize the pending method. This will ensure that the visualizer waits for user permissions before continuing forward. It is recommended that regardless of what input element you are using, you always initialize pending. This will be an async call, so make sure you call this within an asynchronous function. 
+```ts
+await wavizTest.input.initializePending();
+```
+
+The recommended initialization should look like so: 
+
+```tsx
+const wavizTest = new Waviz(canvas, audio);
+
+audio.addEventListener('play', async () => {
+    await wavizTest.input.initializePending(); 
+    wavizTest.visualizer.simpleBars();
+});
+
+audio.addEventListener('pause', () => {
+  wavizTest.visualizer.stop();
+});
+```
 
 ### Input Class
-The purpose of the Input class is to help initialize an audio analyzer as well as identify the different types of audio/signals. The Input Class takes in two optional argument: a callback and an audioContext. The callback (tailored for an audio analyzer) must be initialized in order to use the other methods. The audioContext should only be passed if an audio context has already been set up. Otherwise, our Input class will create an audioContext by default for the user. ***If using mediaStream methods, make sure to call on them within an event listener tied to a user gesture to stay in line with CORS policy!***
+The Input class handles the 'preparation' of the audio inputs you would like to use. It takes in a callback function (to initialize source nodes) and an optional AudioContext. The current supported inputs are: 
+* HTML Audio elements
+* HTML Video elements 
+* Local File inputs
+* URL/path strings to media files 
+* Microphone (defined by 'microphone')
+* Tab Audio (defined by 'screenAudio')
 
-### Methods
-**connectAudioSource( ):** A router that takes in an audioSource as an argument. This will route the audio to correct managers that we have pre-defined. The current audio supported are: 
-* HTML Audio elements (defined as a HTML Audio Element)
-* HTML Video elements (defined as a HTML Video Element)
-* Local File inputs 
-* URL/path strings to media files (defined as a string path)
-* Microphone (defined by 'microphone') - This will require user permission for microphone access of the tab.
-* Tab Audio (defined by 'screenAudio')- ***Warning: This feature is currently only supported by Chromium Browsers. It will require user permission for screen video capture of the tab. Will only capture current tab. This may change in the future. Refer to MDN docs for up-to-date support: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia***
-* MediaStream input (defined by an await statement of a mediaStream) - Highly recommend only using pre-defined methods if it exists for the mediaStream. This input will not have sanity checks and is here for edge cases/more flexibility and control for the user. 
+An example initialization of the input class will look like such: 
+```ts
+const input = new Input((sourceNode) => {
+  // Setup your analyzer or other logic here
+  analyzer.startAnalysis(audioContext, sourceNode);
+}, audioContext);
+```
 
-**Handlers:** We currently have two primary handlers for an audio input.
-* connectToAudioElement( ) - takes in an audio element as an argument. This will handle local files, htmls, and URL strings/paths to audio.
-* connectToMediaStream( ) - takes in a stream element as an argument. This will handle all mediaStream connections.
+Refer to our [www.ipsemLorum.com](www.ipsemLorum.com) for more detailed information on the different inputs, methods, and handling.
 
-**initializePending( ):** This method is important for waiting for the async user permissions (for media streams). Without this wait, a connection will be set up without waiting for permission, leading to a permanently suspended audio context. 
-* Make sure to call this method before calling a visualizer function to prevent problem listed above!
-* This method also acts as a middleware router for Microphone and screenAudio!
+### Analyzer Class
+The Analyzer class is the primary handler for transforming an input into a readable data frequency. The analyzer class does not take in any arguments; however, it needs to be initiated via the 'startAnalysis' method - a function that takes in an AudioContext and a sourceNode. 
 
-**Local audio methods. All methods here route to connectToAudioElement**
-* loadAudioFile( ) - takes in an event from an event handler and routes to the handler. 
-* connectToAudioURL( ) - takes in a string. String should point to the path of an audio file. 
-* connectToHTMLElement( ) - takes in an existing HTML audio/video element to process through WebAudioAPI. It is currently tied to an event listener listening for 'play' to resume audio context. 
+```ts
+const testAnalyzer = new AudioAnalyzer();
+testAnalyzer.startAnalysis(audioContext, sourceNode);
+```
 
-**MediaStream methods. All methods here route to connectToMediaStream( ):**
-* connectToMicrophone( ) - is routed from initializePending(). Sets up access to user microphone through the browser. *supported by most modern browsers (chrome, firefox, safari, edge)*
-* connectToScreenAudio( ) - is routed from initializePending(). Sets up access to user tab audio via getDisplayMedia(). It is limited to the tab in which the application is contained within. It does this by grabbing video access, and then turning off video while keeping audio from the video feed. Without this, audio cannot be grabbed. This feature is currently only supported by Chromium Browsers (*Subject to change - refer to MDN documentation). 
+Once an analysis has been started, you can grab the frequency domain data or time domain data using the getFrequencyData and getTimeDomainData methods. 
 
-**API Methods:**
-* getSourceNode( ) - if you want to figure out which sourceNode is being passed in
-* getAudioContext( ) - to get the current used audioContext
-* cleanup( ) - this will clear the current audioContext and disconnect the sourceNode. To reaccess features, a re-initialization of the audioContext/sourceNode will be necessary. 
-
-⸻
-
-### AudioAnalyzer Class
-The purpose of the analyzer class is to provide an in-house analyzer for audio data while maintaining a clear separation of concerns. The analyzer uses methods pre-defined on webAudio API to conduct Fourier transformations on a given audio context. startAnalysis takes two mandatory arguments: audioContext and sourceNode. sourceNode must be an AudioNode that we can connect to in order to run the analysis. 
-
-### Methods
-**startAnalysis( ):** The primary method of the audioAnalyzer class. It will run a Fourier analysis on the audioContext using .createAnalyser() defined by WebAudioApi. By default, it will take a fftSize of 2048. *Future Update: Allow users to dynamically change fftSize!*
-
-**API Methods:**
-* getFrequencyData( ) - allows users/functions to pull the array of frequency data mapped by FFT in bins to access. The array will be of type 8-bit unsigned integers with an array length of 1/2 the fftSize. 
-* getTimeDomainData( ) - allows users/functions to pull the array of time mapped data by FFT in bins to access. The array will be of type 8-bit unsigned integers with an array length of 1/2 the fftSize.
-* getDataArray( ) - allows users/functions to grab the raw freq data in type 8-bit unsigned integers. 
-* getBufferLength( ) - this will output the frequency bin count as a number, which will be 1/2 the fftSize.
-* get timeData( ) - a getter function that outputs the same result as getTimeDomainData(). This is here in case users want to access live data via a getter function instead. 
-* get freqData( ) - a getter function that outputs the same result as getFrequencyData(). This is here in case users want to access live data via a getter function instead. 
-
-⸻
+```ts
+const frequencyData = analyzer.getFrequencyData();
+const timeDomainData = analyzer.getTimeDomainData();
+```
 
 ### Visualizer Class
-Coming Soon!
+The visualizer class is the engine of our visualization. It paints 2d visualizations by taking in a HTML Canvas Element and a Uint8Array (or our audioAnalyzer instance).
 
-⸻
+**Key Features:**
+* Supports multiple visualization types: lines, bars, dots, particles, and more
+* Works with both time and frequency domain data
+* Customizable colors, gradients, and styles
 
-### Plug & Play React Components
-Coming Soon!
+**Basic Usage:**
 
-⸻
+```ts
+import Visualizer from './src/visualizers/visualizer';
+import AudioAnalyzer from './src/analysers/analyzer';
 
-## 📦 Installation (coming soon)
+const canvas = document.getElementById('canvas') as HTMLCanvasElement;
+const audioContext = new AudioContext();
+const audioElement = document.getElementById('audio') as HTMLAudioElement;
+const sourceNode = audioContext.createMediaElementSource(audioElement);
+
+const analyzer = new AudioAnalyzer();
+analyzer.startAnalysis(audioContext, sourceNode);
+
+const visualizer = new Visualizer(canvas, analyzer);
+visualizer.simpleLine('#3498db'); // Draws a simple blue waveform line
+```
+
+For more advanced options and layering, see the [Visualizer Documentation](doc/VisualizerDocs.md).
+
+## Plug & Play React Components
+Waviz offers easy-to-use, plug-and-play React components for rapid integration of audio visualizations into your React applications. 
+
+**Key Features:**
+* Simple React props API—just provide an audio source and (optionally) a canvas ref
+* Supports multiple visualization types and presets
+* Fully compatible with React functional components and hooks
+
+**Basic Usage:**
+
+To use, make sure you establish a useRef( ) for the audio. The canvas useRef ( ) can be optional but for the most control over the size, it is recommended that you create a canvas that will be passed down. 
+
+```tsx
+import React, { useRef } from 'react';
+import { Mixed3 } from 'waviz';
+
+export default function App() {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  return (
+    <div>
+      <Mixed3 srcAudio={audioRef} srcCanvas={canvasRef} />
+      <canvas ref={canvasRef} width={400} height={400}></canvas>
+      <audio ref={audioRef} src="/your-audio-file.mp3" controls />
+    </div>
+  );
+}
+```
+
+*Note: Make sure the imported React component is wrapped in {brackets}. If not, the component will not render properly.*
+
+Just like from the Input class, you can also initialize the visualizer using mediaStream inputs instead. You would set the useRef directly at the top instead of assigning it to the audio. 
+
+```ts
+const audioRef = useRef('screenAudio')
+```
+
+**Available Components:**
+- `Bars` - 6 different presets of Bar visualization
+- `Waves` - 7 different presets of Wave visualization
+- `Dots` - 4 different presets of Dots visualization
+- `Particles` - 1 preset using Particle visualization
+- `Mixed` – 11 mixed presets of different visualizations
+
+More component presets will be added in the future! Each component is organized via a number system. For instance for Dots, the imports for each would be as such: 
+
+```tsx
+import { Dots1 } from 'waviz';
+import { Dots2 } from 'waviz';
+import { Dots3 } from 'waviz';
+import { Dots4 } from 'waviz';
+```
+
+For advanced configuration and customization, check out the [components documentation](./components/README.md).
+
+## Waviz Core usage notes
+If you want to run Waviz Core directly in a browser, you need to configure your file structure to read a UMD file. **These notes assume you are using a Linux terminal and nodeJS.** After NPM installation, on your terminal, you will run:
+```
+mkdir -p libs
+```
+This will make a parent directly for the library in which the umd file will be stored. If you already have a libs folder, you can skip this step. 
+
+Next, you will run:
+```
+cp node_modules/waviz/dist/waviz.umd.js libs/
+```
+This will move the UMD file into the libs folder. 
+
+That's it! You can then import waviz core from this UMD file! Below is an example of how this import would look like for native browser running.
+
+**HTML File:**
+```tsx
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WavizHTMLTest</title>
+  </head>
+  <body>
+      <canvas id="canvas" width="800" height="400"></canvas>
+      <audio id="audio" src="/CoolMusic.mp3" controls></audio>
+      <script src="libs/waviz.umd.js"></script>
+      <script type="module" src="index.js"></script>
+  </body>
+</html>
 
 ```
-npm install waviz
-```
+**Index.js script file:**
+```tsx
+const Waviz = window.Waviz.default;
 
-⸻
+const canvas = document.getElementById('canvas')
+const audio = document.getElementById('audio')
+
+const wavizTest = new Waviz(canvas, audio);
+
+audio.addEventListener('play', async () => {
+    wavizTest.visualizer.simpleBars();
+});
+
+audio.addEventListener('pause', () => {
+  wavizTest.visualizer.stop();
+});
+```
 
 ## 🤝 Contributing
 
 We welcome contributions! Whether you’re fixing bugs, adding features, or improving docs, feel free to open an issue or PR.
 
-⸻
 
 ## 📄 License
 

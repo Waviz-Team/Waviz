@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Waviz from "../../core/waviz";
-//* User props: ['color', num: # of bars]
+//* Combination of polar bars, dots, and particles with random palettes.
+//* Props: Color, Number of bars
 
 type vizComponentProps = {
   srcAudio: React.RefObject<HTMLAudioElement | null>;

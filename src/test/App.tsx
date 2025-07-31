@@ -1,5 +1,5 @@
-import React, { useRef} from 'react';
-import Viz from '../components/Waves/Wave7';
+import React, { useRef, useEffect, useState } from 'react';
+import Viz from '../components/Mixed/Mixed3';
 
 export default function App() {
   // audio element can take an HTMLAudioElement, microphone, or screenAudio
@@ -23,7 +23,7 @@ export default function App() {
         width='400
       '
         height='400'></canvas>
-      <audio ref={audioElement} src='/FreshFocus.mp3' controls></audio>
+      <audio ref={audioElement} src='/Motions.mp3' controls></audio>
     </div>
   );
 }

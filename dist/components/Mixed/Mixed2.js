@@ -6,36 +6,46 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsx_runtime_1 = require("react/jsx-runtime");
 const react_1 = require("react");
 const waviz_1 = __importDefault(require("../../core/waviz"));
-function Mixed2({ srcAudio, srcCanvas, options, audioContext }) {
+function Mixed2({ srcAudio, srcCanvas, options, audioContext, }) {
     // References
     const wavizReference = (0, react_1.useRef)(null);
     const canvasRef = (0, react_1.useRef)(null);
     const [canvasReady, setCanvasReady] = (0, react_1.useState)(false); // Needed in case of defaulting back to preset canvas. UseRef only will not trigger page re-render, causing visualizer to run before canvas is rendered
     let userOptions = {};
     if (options) {
-        userOptions = { color: [options[0]], viz: ['bars', options[1]] };
+        userOptions = [
+            { color: ['randomPalette', options[0]] },
+            { color: [options[1]] },
+        ];
     }
     const defaults = [
         {
-            domain: ['time', 250],
+            domain: ['time', 500],
             coord: ['rect'],
-            viz: ['bars', 40],
-            color: ['randomPalette', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#00BCD4'
+            viz: ['bars', 10],
+            color: [
+                'randomPalette',
+                ['#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#00BCD4'],
             ],
-            stroke: [16, 'dashes'],
+            stroke: [25, 'dashes'],
         },
         {
             domain: ['time', 500],
             coord: ['rect'],
-            viz: ['particles', [1, 1], 0.1, 120, 2, 100],
-            color: ['linearGradient', '#00bcd4', '#6D109C'],
+            viz: ['particles', [1, 1], 0.1, 40, 5, 50],
+            color: ['#00bcd4'],
             stroke: [3],
         },
     ];
-    const optionsObject = Object.assign(defaults, userOptions);
+    const optionsObject = [
+        Object.assign(defaults[0], userOptions[0]),
+        Object.assign(defaults[1], userOptions[1]),
+    ];
     // Use Effect Logic
     (0, react_1.useEffect)(() => {
-        if (srcCanvas === null || srcCanvas === void 0 ? void 0 : srcCanvas.current) { //! Logic shortened with ? operator to throw undefined instead of of error
+        //Check if canvas is passed in and assign srcCanvas to canvasRef if passed in
+        if (srcCanvas === null || srcCanvas === void 0 ? void 0 : srcCanvas.current) {
+            //! Logic shortened with ? operator to throw undefined instead of of error
             canvasRef.current = srcCanvas.current;
             setCanvasReady(true);
         }
@@ -54,12 +64,13 @@ function Mixed2({ srcAudio, srcCanvas, options, audioContext }) {
             const playWave = () => { var _a; return (_a = wavizReference.current) === null || _a === void 0 ? void 0 : _a.render(optionsObject); };
             const stopWave = () => { var _a; return (_a = wavizReference.current) === null || _a === void 0 ? void 0 : _a.visualizer.stop(); };
             // Event Listeners
-            srcAudio.current.addEventListener("play", playWave);
-            srcAudio.current.addEventListener("pause", stopWave);
+            srcAudio.current.addEventListener('play', playWave);
+            srcAudio.current.addEventListener('pause', stopWave);
             return () => {
                 var _a;
-                srcAudio.current.removeEventListener("play", playWave);
-                srcAudio.current.removeEventListener("pause", stopWave);
+                // Cleanup Listeners
+                srcAudio.current.removeEventListener('play', playWave);
+                srcAudio.current.removeEventListener('pause', stopWave);
                 (_a = wavizReference.current) === null || _a === void 0 ? void 0 : _a.visualizer.stop();
             };
         }

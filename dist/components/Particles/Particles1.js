@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const jsx_runtime_1 = require("react/jsx-runtime");
 const react_1 = require("react");
 const waviz_1 = __importDefault(require("../../core/waviz"));
-function Particles1({ srcAudio, srcCanvas, options, audioContext }) {
+function Particles1({ srcAudio, srcCanvas, options, audioContext, }) {
     // References
     const wavizReference = (0, react_1.useRef)(null);
     const canvasRef = (0, react_1.useRef)(null);
@@ -19,20 +19,22 @@ function Particles1({ srcAudio, srcCanvas, options, audioContext }) {
             coord: ['polar'],
             viz: ['particles', [2, 2], 0, 15, 3],
             color: ['radialGradient', options[0], options[1]],
-            stroke: [5]
+            stroke: [5],
         };
     }
     const defaults = {
         domain: ['time', 300],
         coord: ['polar'],
         viz: ['particles', [2, 2], 0, 15, 3],
-        color: ['radialGradient'],
-        stroke: [5]
+        color: ['radialGradient', , , 100, 150],
+        stroke: [10],
     };
     const optionsObject = Object.assign(defaults, userOptions);
     // Use Effect Logic
     (0, react_1.useEffect)(() => {
-        if (srcCanvas === null || srcCanvas === void 0 ? void 0 : srcCanvas.current) { //! Logic shortened with ? operator to throw undefined instead of of error
+        //Check if canvas is passed in and assign srcCanvas to canvasRef if passed in
+        if (srcCanvas === null || srcCanvas === void 0 ? void 0 : srcCanvas.current) {
+            //! Logic shortened with ? operator to throw undefined instead of of error
             canvasRef.current = srcCanvas.current;
             setCanvasReady(true);
         }
@@ -51,12 +53,13 @@ function Particles1({ srcAudio, srcCanvas, options, audioContext }) {
             const playWave = () => { var _a; return (_a = wavizReference.current) === null || _a === void 0 ? void 0 : _a.render(optionsObject); };
             const stopWave = () => { var _a; return (_a = wavizReference.current) === null || _a === void 0 ? void 0 : _a.visualizer.stop(); };
             // Event Listeners
-            srcAudio.current.addEventListener("play", playWave);
-            srcAudio.current.addEventListener("pause", stopWave);
+            srcAudio.current.addEventListener('play', playWave);
+            srcAudio.current.addEventListener('pause', stopWave);
             return () => {
                 var _a;
-                srcAudio.current.removeEventListener("play", playWave);
-                srcAudio.current.removeEventListener("pause", stopWave);
+                // Cleanup Listeners
+                srcAudio.current.removeEventListener('play', playWave);
+                srcAudio.current.removeEventListener('pause', stopWave);
                 (_a = wavizReference.current) === null || _a === void 0 ? void 0 : _a.visualizer.stop();
             };
         }

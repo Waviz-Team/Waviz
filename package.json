@@ -1,6 +1,7 @@
 {
   "name": "waviz",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4.1",
+  "type": "module",
   "description": "Modern, modular React library for audio and signal visualization.",
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
@@ -15,6 +16,10 @@
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/index.js"
+    },
+    "./core": {
+      "import": "./dist/esm/indexCore.js",
+      "require": "./dist/indexCore.js"
     }
   },
   "directories": {
@@ -24,6 +29,7 @@
   },
   "scripts": {
     "build": "tsc && tsc -p tsconfig.esm.json",
+    "build:umd": "rollup -c rollup.config.js",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run clean && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
-
-//* User props: ['color', number]
+//* Simple waveform line, customizable color and sample count.
+//* Props: Color, Number of samples
 
 type vizComponentProps = {
   srcAudio: React.RefObject<HTMLAudioElement | null>;

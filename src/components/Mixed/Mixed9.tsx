@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Waviz from '../../core/waviz';
-
-//* User props: ['color', number]
+//* Multi-layered polar lines and dots, customizable color.
+//* Props: Color
 
 type vizComponentProps = {
   srcAudio: React.RefObject<HTMLAudioElement | null>;
@@ -27,7 +27,7 @@ function Mixed9({
     userOptions = [
       {
         domain: ['time', 300, 512],
-        color: [options],
+        color: [options[0]],
       },
       { domain: ['time', 600], color: ['ghostwhite'] },
     ];

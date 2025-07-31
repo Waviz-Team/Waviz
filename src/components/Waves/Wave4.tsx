@@ -7,8 +7,8 @@ import {
   rgbToArray,
   HSLtoArray,
 } from '../../utils/colorUtils';
-
-//* User props: ['color', number]
+//* Multi-layered waveform lines with dynamic color gradients.
+//* Props: Color
 
 type vizComponentProps = {
   srcAudio: React.RefObject<HTMLAudioElement | null>;
