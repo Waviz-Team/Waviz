@@ -6,12 +6,15 @@ Waviz is a modern, modular React library for audio and signal visualization. Des
 
 ## 🚀 Overview
 
-Waviz provides plug-and-play React components for audio visualization, including waveform and bar visualizers. Whether you’re building a music player, educational app, or audio signal monitor, Waviz gives you the tools to integrate dynamic visuals quickly and cleanly.
+Waviz provides Plug-and-Play React components for audio visualization, including waveform and bar visualizers. Whether you’re building a music player, educational app, or audio signal monitor, Waviz gives you the tools to integrate dynamic visuals quickly and cleanly.
+
+For developers who want more control, Waviz Core provides low-level access to the underlying architecture—allowing you to build custom visualizations and components tailored to your specific needs.
+
 
 
 
 ## ✨ Features
-* 🎵 File reading, MediaStream reading 
+* 🎵 File reading, MediaStream reading, 
 * 📊 Audio visualization (waveform, bars, dots, particles)
 * 🎛️ Component presets and styling options
 
@@ -78,31 +81,31 @@ While all three arguments are optional, an Audio Source and a HTMLCanvas are the
 
 To get started, initialize the waviz class by passing in an Audio Source and a HTML Canvas element:
 ```ts
-const wavizTest = new Waviz(canvas, audio);
+const myWaviz = new Waviz(canvas, audio);
 ```
 
-From here, you can call your visualize within a relevant event listener. Due to browser protection policies, you cannot initialize a visualizer without tying it to a user gesture. 
+From here, you can call your visualizer within a relevant event listener. Due to browser protection policies, you cannot initialize a visualizer without tying it to a user gesture. 
 ```ts
-wavizTest.visualizer.simpleBars();
+myWaviz.visualizer.simpleBars();
 ```
 
 If you are using a media stream element (microphone, tab audio, etc), you need to also initialize the pending method. This will ensure that the visualizer waits for user permissions before continuing forward. It is recommended that regardless of what input element you are using, you always initialize pending. This will be an async call, so make sure you call this within an asynchronous function. 
 ```ts
-await wavizTest.input.initializePending();
+await myWaviz.input.initializePending();
 ```
 
 The recommended initialization should look like so: 
 
 ```tsx
-const wavizTest = new Waviz(canvas, audio);
+const myWaviz = new Waviz(canvas, audio);
 
 audio.addEventListener('play', async () => {
-    await wavizTest.input.initializePending(); 
-    wavizTest.visualizer.simpleBars();
+    await myWaviz.input.initializePending(); 
+    myWaviz.visualizer.simpleBars();
 });
 
 audio.addEventListener('pause', () => {
-  wavizTest.visualizer.stop();
+  myWaviz.visualizer.stop();
 });
 ```
 
@@ -123,10 +126,10 @@ const input = new Input((sourceNode) => {
 }, audioContext);
 ```
 
-Refer to our [www.ipsemLorum.com](www.ipsemLorum.com) for more detailed information on the different inputs, methods, and handling.
+Refer to our [website](https://wavizjs.com) for more detailed information on the different inputs, methods, and handling.
 
 ### Analyzer Class
-The Analyzer class is the primary handler for transforming an input into a readable data frequency. The analyzer class does not take in any arguments; however, it needs to be initiated via the 'startAnalysis' method - a function that takes in an AudioContext and a sourceNode. 
+The Analyzer class is the primary handler for transforming an input into readable frequency data. The analyzer class does not take in any arguments; however, it needs to be initiated via the 'startAnalysis' method - a function that takes in an AudioContext and a sourceNode. 
 
 ```ts
 const testAnalyzer = new AudioAnalyzer();
@@ -141,7 +144,7 @@ const timeDomainData = analyzer.getTimeDomainData();
 ```
 
 ### Visualizer Class
-The visualizer class is the engine of our visualization. It paints 2d visualizations by taking in a HTML Canvas Element and a Uint8Array (or our audioAnalyzer instance).
+The visualizer class is the engine of our visualization. It draws 2d visualizations by taking in a HTML Canvas Element and a Uint8Array (or our audioAnalyzer instance).
 
 **Key Features:**
 * Supports multiple visualization types: lines, bars, dots, particles, and more
@@ -151,19 +154,16 @@ The visualizer class is the engine of our visualization. It paints 2d visualizat
 **Basic Usage:**
 
 ```ts
-import Visualizer from './src/visualizers/visualizer';
-import AudioAnalyzer from './src/analysers/analyzer';
+import {Waviz} from 'waviz'
 
-const canvas = document.getElementById('canvas') as HTMLCanvasElement;
-const audioContext = new AudioContext();
-const audioElement = document.getElementById('audio') as HTMLAudioElement;
-const sourceNode = audioContext.createMediaElementSource(audioElement);
+const canvas = document.getElementById('canvas');
+const audio = document.getElementById('audio');
 
-const analyzer = new AudioAnalyzer();
-analyzer.startAnalysis(audioContext, sourceNode);
+const myWaviz = new Waviz(canvas, audio);
 
-const visualizer = new Visualizer(canvas, analyzer);
-visualizer.simpleLine('#3498db'); // Draws a simple blue waveform line
+audio.addEventListener('play', async () => {
+  myWaviz.simpleLine('#3498db'); // Draws a simple blue waveform line
+});
 ```
 
 For more advanced options and layering, see the [Visualizer Documentation](doc/VisualizerDocs.md).
