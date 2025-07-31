@@ -1,9 +1,3 @@
-import type { ChangeEvent } from 'react';
-declare global {
-    interface DisplayMediaStreamOptions {
-        preferCurrentTab?: boolean;
-    }
-}
 type AudioSourceType = HTMLAudioElement | HTMLVideoElement | MediaStream | 'microphone' | 'screenAudio' | string;
 declare class Input {
     file: File | null;
@@ -17,7 +11,9 @@ declare class Input {
     private manageAudioContext;
     private connectToAudioElement;
     private connectToMediaStream;
-    loadAudioFile: (event: ChangeEvent<HTMLInputElement>) => void;
+    loadAudioFile: (event: Event & {
+        target: HTMLInputElement;
+    }) => void;
     private connectToAudioURL;
     connectToHTMLElement: (mediaEl: HTMLAudioElement | HTMLVideoElement) => void;
     initializePending(): Promise<void>;

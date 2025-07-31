@@ -16,3 +16,8 @@ export interface IOptions {
     stroke?: [number?, string?];
     fill?: ['solid' | 'linearGradient', string | [string, string], string?];
 }
+declare global {
+    interface DisplayMediaStreamOptions {
+        preferCurrentTab?: boolean;
+    }
+}

@@ -1,6 +1,6 @@
 {
   "name": "waviz",
-  "version": "1.0.0-beta.4.1",
+  "version": "1.0.0",
   "type": "module",
   "description": "Modern, modular React library for audio and signal visualization.",
   "main": "dist/index.js",
@@ -68,9 +68,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/OSP1-CSVJ/Waviz/issues"
+    "url": "https://github.com/Waviz-Team/Waviz/issues"
   },
-  "homepage": "https://github.com/OSP1-CSVJ/Waviz#readme",
+  "homepage": "https://github.com/Waviz-Team/Waviz#readme",
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
