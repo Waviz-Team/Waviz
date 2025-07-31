@@ -6,7 +6,6 @@
   "main": "dist/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
-  "type": "module",
   "files": [
     "dist",
     "README.md",
@@ -31,7 +30,7 @@
     "build": "tsc && tsc -p tsconfig.esm.json",
     "build:umd": "rollup -c rollup.config.js",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm run build",
+    "prepublishOnly": "npm run clean && npm run build && npm run build:umd",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite --host",
     "lint": "eslint src --ext .ts,.tsx",
@@ -79,6 +78,7 @@
     "react-dom": ">=18.0.0"
   },
   "devDependencies": {
+    "@rollup/plugin-typescript": "^12.1.4",
     "@eslint/js": "^9.32.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
@@ -92,8 +92,12 @@
     "prettier": "^3.6.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "rollup": "^4.46.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
     "vite": "^7.0.3"
+  },
+  "dependencies": {
+    "tslib": "^2.8.1"
   }
 }
