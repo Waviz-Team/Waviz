@@ -108,6 +108,7 @@ audio.addEventListener('pause', () => {
   myWaviz.visualizer.stop();
 });
 ```
+*Warning: The above initialization will only work in vanilla JS if you are using a build tools. If you want to use Waviz core using direct browser read, (or would like to use it in tandem with React) refer to our [Waviz Core usage notes](#waviz-core-usage-notes).*
 
 ### Input Class
 The Input class handles the 'preparation' of the audio inputs you would like to use. It takes in a callback function (to initialize source nodes) and an optional AudioContext. The current supported inputs are: 
@@ -166,7 +167,7 @@ audio.addEventListener('play', async () => {
 });
 ```
 
-For more advanced options and layering, see the [Visualizer Documentation](doc/VisualizerDocs.md).
+For more advanced options and layering, see the [Visualizer Documentation](https://wavizjs.com/docs).
 
 ## Plug & Play React Components
 Waviz offers easy-to-use, plug-and-play React components for rapid integration of audio visualizations into your React applications. 
@@ -273,6 +274,12 @@ audio.addEventListener('play', async () => {
 audio.addEventListener('pause', () => {
   wavizTest.visualizer.stop();
 });
+```
+----
+
+If you want to use the Waviz Core library within React, the steps will be similar to [Waviz Core](#waviz-core). Just make sure that your import call is calling on Waviz (as if you were calling our Plug n Play Library) instead of waviz/core.
+```
+import Waviz from 'waviz'
 ```
 
 ## 🤝 Contributing
