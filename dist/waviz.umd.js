@@ -504,7 +504,7 @@
             if (mode === 'polar') {
                 for (let i = 0; i < data.length; i += sampling) {
                     // Calculate angle for this bar
-                    const angle = (i * 2 * Math.PI) / data.length;
+                    const angle = -(i * 2 * Math.PI) / data.length;
                     // Inner Circle start
                     const x0 = centerX + innerRadius * Math.cos(angle);
                     const y0 = centerY + innerRadius * Math.sin(angle);
@@ -572,7 +572,7 @@
                         case 'solid':
                             this.ctx.fillStyle = fillColor;
                             break;
-                        case 'linearGradient':
+                        case 'gradient':
                             this.ctx.fillStyle = this.linearGradient(fillColor[0], fillColor[1], flip);
                             break;
                     }
@@ -581,7 +581,7 @@
                         case 'solid':
                             this.ctx.fillStyle = fillColor;
                             break;
-                        case 'radialGradient':
+                        case 'gradient':
                             this.ctx.fillStyle = this.radialGradient(fillColor[0], fillColor[1]);
                             break;
                     }
@@ -687,7 +687,7 @@
             // this.mirror();
             // Close path if polar
             // TODO Integrate this check into line method
-            if (options.coord[0] === 'polar') {
+            if (options.coord[0] === 'polar' && options.viz[0] !== 'bars') {
                 this.ctx.closePath();
             }
             // Draw Path
@@ -734,7 +734,7 @@
                 domain: ['time', 300],
                 viz: ['bars', undefined, undefined, undefined, undefined, undefined],
                 color: [options],
-                style: [30],
+                stroke: [30],
             });
         }
         simplePolarLine(options = '#E34AB0') {
@@ -744,9 +744,9 @@
             this.render({
                 domain: ['time', 200],
                 coord: ['polar'],
-                viz: ['polarBars'],
+                viz: ['bars', 25],
                 color: [options],
-                style: [10],
+                stroke: [20],
             });
         }
     }
