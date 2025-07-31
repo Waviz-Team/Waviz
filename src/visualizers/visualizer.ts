@@ -360,7 +360,7 @@ class Visualizer {
           case 'solid':
             this.ctx.fillStyle = fillColor;
             break;
-          case 'linearGradient':
+          case 'gradient':
             this.ctx.fillStyle = this.linearGradient(
               fillColor[0],
               fillColor[1],
@@ -373,7 +373,7 @@ class Visualizer {
           case 'solid':
             this.ctx.fillStyle = fillColor;
             break;
-          case 'radialGradient':
+          case 'gradient':
             this.ctx.fillStyle = this.radialGradient(
               fillColor[0],
               fillColor[1]
