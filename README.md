@@ -1,3 +1,5 @@
+![](public/readMe/ReadmeGIF.gif)
+
 # 🎧 Waviz
 
 Waviz is a modern, modular React library for audio and signal visualization. Designed to fill the gap left by outdated or deprecated alternatives, Waviz helps developers build beautiful, customizable sound visualizations with ease.
