@@ -49,7 +49,7 @@ If you want a simple plug-in and use React Components, go to our [Plug & Play Re
 
 If you want to have more control over what you build, go to our [Waviz Core Section](#waviz-core). Waviz Core uses Web Audio API and HTML Canvas to generate a visualizer. 
 
-For a more in-depth documentation, visit our website: [www.wavizJS.com](www.wavizJS.com)
+For a more in-depth documentation, visit our website: [www.wavizJS.com](https://www.wavizJS.com)
 
 ## Waviz Core
 
